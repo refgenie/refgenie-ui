@@ -4,7 +4,7 @@ import './GenomesList.css';
 // Data loader function for React Router
 export async function genomesLoader() {
   try {
-    const response = await fetch('http://api.refgenie.org/v4/genomes', {
+    const response = await fetch('https://api.refgenie.org/v4/genomes', {
       // Add CORS mode to handle cross-origin requests
       mode: 'cors',
       headers: {
