@@ -4,7 +4,7 @@ import './GenomesList.css';
 // Data loader function for React Router
 export async function genomesLoader() {
   try {
-    const response = await fetch('http://refgenomes.databio.org/genomes/alias_dict', {
+    const response = await fetch('http://api.refgenie.org/v4/genomes', {
       // Add CORS mode to handle cross-origin requests
       mode: 'cors',
       headers: {
@@ -24,12 +24,7 @@ export async function genomesLoader() {
     return {
       error: error.message,
       mockData: true,
-      hg38: ['GRCh38', 'hg38.p12'],
-      mm10: ['GRCm38', 'mm10'],
-      rn6: ['Rnor_6.0', 'rn6'],
-      dm6: ['BDGP6', 'dm6'],
-      sacCer3: ['R64-1-1', 'sacCer3'],
-      danRer11: ['GRCz11', 'danRer11']
+      hg38: {digest: "abc", description:"Abyssinian ground-hornbill (primary hap 2019)"},
     };
   }
 }
@@ -49,15 +44,13 @@ function GenomesList() {
         <div className="genomes-grid">
           {Object.entries(data)
             .filter(([key]) => !['error', 'mockData'].includes(key))
-            .map(([genome, aliases]) => (
+            .map(([genome, description]) => (
               <div key={genome} className="genome-card">
                 <h3>{genome}</h3>
                 <div className="aliases">
                   <h4>Aliases:</h4>
                   <ul>
-                    {aliases.map((alias, index) => (
-                      <li key={index}>{alias}</li>
-                    ))}
+                    test
                   </ul>
                 </div>
                 <div className="demo-badge">Demo Data</div>
@@ -93,15 +86,14 @@ function GenomesList() {
     <div className="genomes-container">
       <h2>Available Genomes</h2>
       <div className="genomes-grid">
-        {Object.entries(data).map(([genome, aliases]) => (
-          <div key={genome} className="genome-card">
-            <h3>{genome}</h3>
+        {Object.entries(data).map(([key, obj]) => (
+          console.log(obj),
+          <div key={key} className="genome-card">
+            <h3>{obj.digest}</h3>
             <div className="aliases">
-              <h4>Aliases:</h4>
-              <ul>
-                {aliases.map((alias, index) => (
-                  <li key={index}>{alias}</li>
-                ))}
+              <h4>Description:</h4>
+              <ul >
+                {obj.description}
               </ul>
             </div>
           </div>
