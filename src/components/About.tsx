@@ -1,4 +1,4 @@
-import './About.css';
+// import './About.css';
 import logo from '../assets/refgenie_logo.svg';
 
 function About() {
@@ -6,7 +6,7 @@ function About() {
     <div className="about">
       <div className="about-container">
         <div className="about-header">
-          <img src={logo} alt="Refgenie Logo" className="about-logo" />
+          <img src={logo} alt="Refgenie Logo" className="logo" />
           <h1>About Refgenie</h1>
         </div>
         
