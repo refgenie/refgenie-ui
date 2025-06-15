@@ -1,18 +1,21 @@
 /* FONTS */
-
-@import url('https://fonts.googleapis.com/css2?family=Asap+Condensed:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Asap+Condensed:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 /* MAIN */
 main, p, span, button, a, ul, li {
-  font-family: 'Asap Condensed', arial, sans-serif !important;
+  font-family: 'Nunito', arial, sans-serif !important;
   font-weight: 400 !important;
   font-style: normal !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Asap Condensed', arial, sans-serif  !important;
-  font-weight: 300 !important;
+  font-family: 'Nunito', arial, sans-serif  !important;
+  font-weight: 500 !important;
   font-style: normal  !important;
+}
+
+.fst-condensed {
+  font-family: 'Asap Condensed', arial, sans-serif  !important;
 }
 
 .text-xs {
@@ -28,6 +31,14 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
 }
 
+.cursor-grab {
+  cursor: grab;
+}
+
+.cursor-grab:active {
+  cursor: grabbing;
+}
+
 .cursor-default {
   cursor: default;
 }
@@ -40,7 +51,7 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
   }
   .main {
-    padding: 1rem 1.5rem 1.5rem !important;
+    padding: 1.5rem !important;
   }
   .topbar {
     width: calc(100% + 5vw) !important;
@@ -71,9 +82,26 @@ h1, h2, h3, h4, h5, h6 {
   .content {
     width: 85%;
     padding-left: 2rem;
+    padding-right: 2rem;
   }
   .text-hover:hover {
     text-decoration-line: underline;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .about {
+    margin-top: 3rem !important;
+  }
+  .tree {
+    margin-top: 1.5rem !important;
+  }
+}
+@media (min-width: 1200px) {
+  .about {
+    margin-top: 7rem !important;
+  }
+  .tree {
+    margin-top: 2rem !important;
   }
 }
 
@@ -92,4 +120,8 @@ h1, h2, h3, h4, h5, h6 {
 .logo {
   height: 33px;
   /* filter: drop-shadow(0 0 5px rgba(0, 150, 255, 0.7)); */
+}
+
+.nav-hover:hover {
+  background-color: #ffffffbb;
 }

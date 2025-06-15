@@ -14,14 +14,14 @@ const NavLink = (props: NavLinkProps) => {
 
   if (position === 'top') return (
     <Link className={`text-hover cursor-pointer ${currentPage === page ? 'text-dark' : 'text-black-50'}`} to={page}>
-      <p className='mb-0 nav-hover cursor-pointer'>{title}</p>
+      <p className='fst-condensed mb-0 nav-hover cursor-pointer'>{title}</p>
     </Link>
   )
 
   return (
-    <p className='mb-0'>
+    <p className={`mb-0 nav-hover ps-2 cursor-pointer rounded-2 position-relative ${currentPage === page ? 'bg-white' : ''}`}>
       <Link
-        className={`text-hover cursor-pointer ${currentPage === page ? 'fw-light' : 'fw-lighter text-black-50'}`}
+        className={`fst-condensed text-decoration-none stretched-link text-hover ${currentPage === page ? 'fw-light' : 'fw-lighter text-black-50'}`}
         style={currentPage === page ? { color: '#008066' } : {}}
         to={page}
       >
@@ -33,51 +33,60 @@ const NavLink = (props: NavLinkProps) => {
 
 
 function Navbar() {
-  const location = useLocation().pathname.substring(1) || '';
+  const location = useLocation().pathname.substring(1) || 'about';
 
   return (
     <>
-      <div className='flex-0 sidebar border-end bg-body-secondary px-3'>
+      <div className='flex-0 sidebar border-end bg-body-secondary px-2'>
         <div className='row page-width sticky-top'>
           <div className='col-12 p-4'>
             <Link to='' className='text-decoration-none text-dark'>
-              <img src={logo} alt="Refgenie Logo" className="logo" />
-              {/* <h4 className='fw-lighter mb-0'>Refgenie</h4> */}
+              <img src={logo} alt='Refgenie Logo' className='logo d-block mx-auto' />
             </Link>
             <div className='col-12 text-start'>
-              <p className='mt-3 mb-0'>
+              <p className='fst-condensed mt-4 mb-0'>
                 Home
               </p>
-              <div className='ps-2'>
+              <div className=''>
                 <NavLink page={'about'} title={'About'} position='side' currentPage={location}/>
-                <a className='text-hover cursor-pointer text-black-50' href='https://refgenie.org' target='_blank' rel='noopener noreferrer'>
-                  <p className='mb-0 nav-hover cursor-pointer text-black-50 fw-lighter'>Docs</p>
+                <a className='text-decoration-none cursor-pointer text-black-50' href='https://refgenie.org' target='_blank' rel='noopener noreferrer'>
+                  <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>Docs</p>
                 </a>
+                <NavLink page={'search'} title={'Search'} position='side' currentPage={location}/>
               </div>
               
-              <p className='mt-3 mb-0'>
+              <p className='fst-condensed mt-3 mb-0'>
                 Browse
               </p>
-              <div className='ps-2'>
+              <div className=''>
                 <NavLink page={'genomes'} title={'Genomes'} position='side' currentPage={location}/>
                 <NavLink page={'assets'} title={'Assets'} position='side' currentPage={location}/>
                 <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
                 <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/>
               </div>
               
-              <p className='mt-3 mb-0'>
+              <p className='fst-condensed mt-3 mb-0'>
                 Manage
               </p>
-              <div className='ps-2'>
+              <div className=''>
                 <NavLink page={'downloads'} title={'Downloads'} position='side' currentPage={location}/>
                 <NavLink page={'config'} title={'Config'} position='side' currentPage={location}/>
               </div>
 
-              <p className='mt-3 mb-0'>
+              <p className='fst-condensed mt-3 mb-0'>
                 Tools
               </p>
-              <div className='ps-2'>
-                <NavLink page={'seqcol'} title={'SeqCol Validator'} position='side' currentPage={location}/>
+              <div className=''>
+                {/* <NavLink page={'seqcol'} title={'SeqCol Validator'} position='side' currentPage={location}/> */}
+                <a className='text-decoration-none cursor-pointer text-black-50' href='https://refget.databio.org' target='_blank' rel='noopener noreferrer'>
+                  <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>SeqCol Validator</p>
+                </a>
+                <a className='text-decoration-none cursor-pointer text-black-50' href='https://github.com/refgenie/refgenie' target='_blank' rel='noopener noreferrer'>
+                  <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>GitHub</p>
+                </a>
+                <a className='text-decoration-none cursor-pointer text-black-50' href='https://api.refgenie.org/docs' target='_blank' rel='noopener noreferrer'>
+                  <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>API</p>
+                </a>
               </div>
             </div>
           </div>

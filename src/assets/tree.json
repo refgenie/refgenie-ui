@@ -1,0 +1,225 @@
+{
+  "name": "Root",
+  "children": [
+    {
+      "name": "Eukaryota",
+      "taxonomicLevel": "domain",
+      "children": [
+        {
+          "name": "Metazoa",
+          "taxonomicLevel": "kingdom",
+          "children": [
+            {
+              "name": "Chordata",
+              "taxonomicLevel": "phylum",
+              "children": [
+                {
+                  "name": "Actinopteri",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Perciformes",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Sebastidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Sebastes",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Sebastes fasciatus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Aves",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Bucerotiformes",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Bucorvidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Bucorvus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Bucorvus abyssinicus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Struthioniformes",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Struthionidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Struthio",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Struthio camelus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Lepidosauria",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Squamata",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Lacertidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Podarcis",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Podarcis raffonei",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Viperidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Vipera",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Vipera berus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Mammalia",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Carnivora",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Canidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Lycaon",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Lycaon pictus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Rodentia",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Muridae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Arvicanthis",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Arvicanthis niloticus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Proboscidea",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Elephantidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Loxodonta",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Loxodonta africana",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
