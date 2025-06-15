@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-import treeData from '../assets/tree.json'
+// import treeData from '../assets/tree.json'
+import treeData from '../assets/sample_tree.json'
+
 
 // Type definitions
 interface TreeNode {
@@ -63,16 +65,18 @@ const Tree: React.FC = () => {
     // Create hierarchy
     const root = tree(d3.hierarchy(treeData as TreeNode));
 
-    const findTaxonomicClass = (node: d3.HierarchyPointNode<TreeNode>): string | null => {
+    const selectedLevel = 'kingdom'
+
+    const findTaxonomicLevel = (node: d3.HierarchyPointNode<TreeNode>): string | null => {
       // If this node is a class, return it
-      if (node.data.taxonomicLevel === 'class') {
+      if (node.data.taxonomicLevel === selectedLevel) {
         return node.data.name;
       }
       
       // Walk up the tree to find the class
       let current = node.parent;
       while (current) {
-        if (current.data.taxonomicLevel === 'class') {
+        if (current.data.taxonomicLevel === selectedLevel) {
           return current.data.name;
         }
         current = current.parent;
@@ -81,10 +85,11 @@ const Tree: React.FC = () => {
       return null; // No class found
     };
 
-    const classNames = new Set<string>();
+    // Identify unique classes
+    const levelNames = new Set<string>();
     const extractClasses = (node: TreeNode) => {
-      if (node.taxonomicLevel === 'class') {
-        classNames.add(node.name);
+      if (node.taxonomicLevel === selectedLevel) {
+        levelNames.add(node.name);
       }
       if (node.children) {
         node.children.forEach(extractClasses);
@@ -93,8 +98,8 @@ const Tree: React.FC = () => {
     extractClasses(treeData as TreeNode);
 
     const colorScale = d3.scaleOrdinal<string>()
-      .domain(Array.from(classNames))
-      .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf']);
+      .domain(Array.from(levelNames))
+      .range(['#e41a1cbb', '#377eb8bb', '#4daf4abb', '#984ea3bb', '#ff7f00bb', '#ffff33bb', '#a65628bb', '#f781bfbb']);
 
     // // Color scale for different taxonomic levels
     // const colorScale = d3.scaleOrdinal<string>()
@@ -110,8 +115,12 @@ const Tree: React.FC = () => {
         .angle(d => d.x)
         .radius(d => d.y))
       .style('fill', 'none')
-      .style('stroke', '#ccc')
-      .style('stroke-width', 2);
+      .style('stroke', (d: d3.HierarchyPointLink<TreeNode>) => {
+        const taxonomicLevel = findTaxonomicLevel(d.target);
+        return taxonomicLevel ? colorScale(taxonomicLevel) : '#999';
+      })
+      // .style('stroke', '#ccc')
+      .style('stroke-width', 1.5);
 
     // Draw nodes
     const node = g.selectAll('.node')
@@ -131,12 +140,12 @@ const Tree: React.FC = () => {
     //   .style('stroke-width', 2);
 
     node.append('circle')
-      .attr('r', (d: D3Node) => d.children ? 0 : 4) // Only show circles for leaf nodes
+      .attr('r', (d: D3Node) => d.children ? 0 : 0) // Only show circles for leaf nodes
       .style('fill', (d: D3Node) => {
         if (d.children) return 'transparent'; // Hide non-leaf nodes
         
-        const taxonomicClass = findTaxonomicClass(d);
-        return taxonomicClass ? colorScale(taxonomicClass) : '#999';
+        const taxonomicLevel = findTaxonomicLevel(d);
+        return taxonomicLevel ? colorScale(taxonomicLevel) : '#999';
       })
       .style('stroke', '#fff')
       .style('stroke-width', 2);
@@ -166,9 +175,9 @@ const Tree: React.FC = () => {
       .style('pointer-events', 'none'); // Prevent legend from interfering with zoom
 
     // Get the class names and colors for the legend
-    const legendData = Array.from(classNames).map(className => ({
-      name: className,
-      color: colorScale(className)
+    const legendData = Array.from(levelNames).map(levelName => ({
+      name: levelName,
+      color: colorScale(levelName)
     }));
 
     // Legend background
@@ -295,6 +304,14 @@ const Tree: React.FC = () => {
         .duration(250)
         .call(zoom.scaleBy, 0.67);
     });
+    
+    // After creating the zoom behavior and applying it to SVG
+    svg.call(zoom);
+
+    // Set initial zoom level with proper centering
+    const initialScale = 0.88;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
     // Reset zoom button
     const resetButton = controls.append('g')
@@ -324,8 +341,19 @@ const Tree: React.FC = () => {
       d3.select(svgRef.current)
         .transition()
         .duration(500)
-        .call(zoom.transform, d3.zoomIdentity);
-    });
+        .call(zoom.transform, 
+          d3.zoomIdentity
+            .translate(centerX, centerY)
+            .scale(initialScale)
+            .translate(-centerX, -centerY));
+        });
+
+    svg.call(zoom.transform, 
+      d3.zoomIdentity
+        .translate(centerX, centerY)
+        .scale(initialScale)
+        .translate(-centerX, -centerY)
+    );
 
   }, []);
 
@@ -333,7 +361,7 @@ const Tree: React.FC = () => {
     <div className='w-100 h-full bg-white cursor-grab'>
       <div className='flex justify-center'>
         {/* <svg ref={svgRef} className='w-100 border rounded shadow-sm'></svg> */}
-        <svg ref={svgRef} className='w-100'></svg>
+        <svg ref={svgRef} className='w-100 rounded'></svg>
       </div>
     </div>
   );

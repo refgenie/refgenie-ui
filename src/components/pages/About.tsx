@@ -4,8 +4,8 @@ import Tree from '../Tree';
 function About() {
   return (
     <>
-      <div className='row mx-xl-3'>
-        <div className='col-4 about'>
+      <div className='row px-lg-4 px-xl-5 align-items-center pb-md-3 pb-xl-5'>
+        <div className='col-12 col-lg-4 about d-flex align-items-center mb-4 mb-lg-0'>
           
           <section>
             <h5 className='fw-bold'>What is Refgenie?</h5>
@@ -33,10 +33,11 @@ function About() {
           </section>
         
         </div>
-        <div className='col-8 tree'>
-          <section className='ms-auto text-center' style={{width: '88%'}}>
+        <div className='col-12 col-lg-8 tree d-flex align-items-center'>
+
+          <section className='ms-auto text-center pt-lg-2 ps-lg-5 w-100'>
             <Tree />
-            <span className='text-xs fw-bold'>Genomes on Refgenie</span>
+            <p className='text-xs fw-bold mt-3 mb-0'>Genomes on Refgenie</p>
           </section>
         </div>
       </div>

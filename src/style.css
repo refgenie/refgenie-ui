@@ -44,21 +44,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 992px) {
-  .page-padding {
-    padding: 0 2.5vw;
-  }
   .sidebar, .desktop {
     display: none;
   }
-  .main {
-    padding: 1.5rem !important;
-  }
   .topbar {
-    width: calc(100% + 5vw) !important;
+    /* width: calc(100% + 5vw) !important;
     margin: 0 -2.5vw !important;
-    padding: 0 2.5vw !important;
+    padding: 0 2.5vw !important; */
     backdrop-filter: blur(6px);
-    background-color: #ffffffbb;
+    background-color: #f7f7f7bb;
   }
   .content {
     width: 100%;
@@ -76,33 +70,31 @@ h1, h2, h3, h4, h5, h6 {
   .topbar, .mobile {
     display: none;
   }
-  .main {
-    padding: 1.5rem !important;
-  }
   .content {
     width: 85%;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    /* padding-left: 2rem;
+    padding-right: 2rem; */
+    min-height: 100vh;
   }
   .text-hover:hover {
     text-decoration-line: underline;
   }
 }
 @media (min-width: 992px) and (max-width: 1200px) {
-  .about {
+  /* .about {
     margin-top: 3rem !important;
   }
   .tree {
     margin-top: 1.5rem !important;
-  }
+  } */
 }
 @media (min-width: 1200px) {
-  .about {
+  /* .about {
     margin-top: 7rem !important;
   }
   .tree {
     margin-top: 2rem !important;
-  }
+  } */
 }
 
 .btn-xs {

@@ -107,19 +107,88 @@ refgenie_res <- content(refgenie_req, as = 'parsed') %>% data.frame()
 
 genomes <- gsub('\\..*', '', refgenie_res$description)
 
-taxonomies <- data.frame(matrix(nrow = 0, ncol = 8)) %>% 
+taxonomies <- data.frame(matrix(nrow = 0, ncol = 8)) %>%
   setnames(c('domain', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'))
 
 for (genome in genomes) {
   new_row <- get_ncbi_lineage(genome)
   new_row$species <- genome
-  taxonomies <- rbind(taxonomies, new_row)
+  if (ncol(new_row) == ncol(taxonomies)) {
+    taxonomies <- rbind(taxonomies, new_row)
+  }
   Sys.sleep(1)
 }
-
 
 taxonomy_tree <- build_taxonomy_tree(taxonomies)
 json_output <- toJSON(taxonomy_tree, pretty = TRUE, auto_unbox = TRUE)
 
 write(json_output, '/Users/sam/Documents/Work/refgenie-ui/src/assets/tree.json')
+
+
+sample_genomes <- c(
+  "Homo sapiens",
+  "Mus musculus", 
+  "Rattus norvegicus",
+  "Drosophila melanogaster",
+  "Caenorhabditis elegans",
+  "Saccharomyces cerevisiae",
+  "Escherichia coli",
+  "Arabidopsis thaliana",
+  "Danio rerio",
+  "Gallus gallus",
+  "Sus scrofa",
+  "Bos taurus",
+  "Canis lupus familiaris",
+  "Felis catus",
+  "Macaca mulatta",
+  "Pan troglodytes",
+  "Gorilla gorilla",
+  "Pongo abelii",
+  "Xenopus tropicalis",
+  "Takifugu rubripes",
+  "Oryzias latipes",
+  "Oryza sativa",
+  "Zea mays",
+  "Solanum lycopersicum",
+  "Glycine max",
+  "Populus trichocarpa",
+  "Vitis vinifera",
+  "Medicago truncatula",
+  "Lotus japonicus",
+  "Chlamydomonas reinhardtii",
+  "Schizosaccharomyces pombe",
+  "Neurospora crassa",
+  "Aspergillus nidulans",
+  "Candida albicans",
+  "Plasmodium falciparum",
+  "Trypanosoma brucei",
+  "Leishmania major",
+  "Trichomonas vaginalis",
+  "Giardia lamblia",
+  "Entamoeba histolytica",
+  "Dictyostelium discoideum",
+  "Tetrahymena thermophila",
+  "Paramecium tetraurelia",
+  "Thalassiosira pseudonana",
+  "Phaeodactylum tricornutum",
+  "Ostreococcus tauri",
+  "Micromonas pusilla",
+  "Cyanidioschyzon merolae",
+  "Nematostella vectensis",
+  "Strongylocentrotus purpuratus"
+)
+
+for (genome in sample_genomes) {
+  new_row <- get_ncbi_lineage(genome)
+  new_row$species <- genome
+  if (ncol(new_row) == ncol(taxonomies)) {
+    taxonomies <- rbind(taxonomies, new_row)
+  }
+  Sys.sleep(1)
+}
+
+taxonomy_tree <- build_taxonomy_tree(taxonomies)
+json_output <- toJSON(taxonomy_tree, pretty = TRUE, auto_unbox = TRUE)
+
+write(json_output, '/Users/sam/Documents/Work/refgenie-ui/src/assets/sample_tree.json')
 

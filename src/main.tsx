@@ -24,11 +24,11 @@ function Main() {
 
   return (
     <BrowserRouter basename=''>
-      <div className='d-flex flex-column flex-lg-row h-100 w-100 page-padding'>
+      <div className='d-flex flex-column flex-lg-row min-vh-100'>
         <Navbar />
-        <div className='flex-1 content'>
-          <div className='row page-width'>
-            <div className='col-12 main'>
+        <div className='flex-1 content d-flex flex-column flex-lg-row px-2 px-lg-0'>
+          <div className='row page-width flex-grow-1 g-0'>
+            <div className='col-12 p-3 p-lg-4 d-flex flex-column flex-lg-row'>
               <Routes>
                 <Route path='/' element={<About />} />
                 <Route path='/about' element={<About />} />
