@@ -103,7 +103,7 @@ build_taxonomy_tree <- function(taxonomies) {
 
 refgenie_url <- 'https://api.refgenie.org/v4/genomes'
 refgenie_req <- GET(refgenie_url)
-refgenie_res <- content(refgenie_req, as = 'parsed') %>% data.frame()
+refgenie_res <- content(refgenie_req, as = 'text', encoding = 'UTF-8') %>% fromJSON()
 
 genomes <- gsub('\\..*', '', refgenie_res$description)
 
