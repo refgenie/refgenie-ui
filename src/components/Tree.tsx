@@ -1,9 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import * as d3 from 'd3';
 
-// import treeData from '../assets/tree.json'
-import treeData from '../assets/sample_tree.json'
-
+import treeData from '../assets/tree.json'
+// import treeData from '../assets/sample_tree.json'
 
 // Type definitions
 interface TreeNode {
@@ -24,16 +23,18 @@ interface ZoomEvent extends d3.D3ZoomEvent<SVGSVGElement, unknown> {
 
 const Tree: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!svgRef.current) return;
+  const drawTree = useCallback(() => {
+    if (!svgRef.current || !containerRef.current) return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove(); // Clear previous render
 
-    const containerRect = svgRef.current.getBoundingClientRect();
-    const width = containerRect.width || 800;  // fallback
-    const height = Math.min(width, window.innerHeight * 0.8);
+    // Get current container dimensions
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const width = containerRect.width;
+    const height = window.innerHeight;
     const radius: number = Math.min(width, height) / 2 - 100;
 
     // Set up the SVG with zoom behavior
@@ -52,6 +53,26 @@ const Tree: React.FC = () => {
     // Apply zoom to SVG
     svg.call(zoom);
 
+    // Set initial zoom level with proper centering
+    const initialScale = 0.725;
+
+    let centerX, centerY;
+    if (width < 992) {
+      // Center on screen for mobile/tablet
+      centerX = width / 2;
+      centerY = height / 2;
+    } else {
+      // Your existing positioning for larger screens
+      centerX = width / 2.22;
+      centerY = height / 4.44;
+    }
+
+    svg.call(zoom.transform, 
+      d3.zoomIdentity
+        .scale(initialScale)
+        .translate(centerX, centerY)
+    );
+
     // Set up the main group with initial translation
     const g = container
       .append('g')
@@ -65,7 +86,7 @@ const Tree: React.FC = () => {
     // Create hierarchy
     const root = tree(d3.hierarchy(treeData as TreeNode));
 
-    const selectedLevel = 'kingdom'
+    const selectedLevel = 'kingdom';
 
     const findTaxonomicLevel = (node: d3.HierarchyPointNode<TreeNode>): string | null => {
       // If this node is a class, return it
@@ -101,11 +122,6 @@ const Tree: React.FC = () => {
       .domain(Array.from(levelNames))
       .range(['#e41a1cbb', '#377eb8bb', '#4daf4abb', '#984ea3bb', '#ff7f00bb', '#ffff33bb', '#a65628bb', '#f781bfbb']);
 
-    // // Color scale for different taxonomic levels
-    // const colorScale = d3.scaleOrdinal<string>()
-    //   .domain(['class', 'order', 'family', 'genus', 'species'])
-    //   .range(['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00']);
-
     // Draw links
     g.selectAll('.link')
       .data(root.links())
@@ -119,8 +135,7 @@ const Tree: React.FC = () => {
         const taxonomicLevel = findTaxonomicLevel(d.target);
         return taxonomicLevel ? colorScale(taxonomicLevel) : '#999';
       })
-      // .style('stroke', '#ccc')
-      .style('stroke-width', 1.5);
+      .style('stroke-width', 2);
 
     // Draw nodes
     const node = g.selectAll('.node')
@@ -131,13 +146,6 @@ const Tree: React.FC = () => {
         rotate(${d.x * 180 / Math.PI - 90}) 
         translate(${d.y},0)
       `);
-
-    // Node circles
-    // node.append('circle')
-    //   .attr('r', (d: D3Node) => d.data.taxonomicLevel === 'species' ? 4 : 0)
-    //   .style('fill', (d: D3Node) => d.data.taxonomicLevel ? colorScale(d.data.taxonomicLevel) : '#999')
-    //   .style('stroke', '#fff')
-    //   .style('stroke-width', 2);
 
     node.append('circle')
       .attr('r', (d: D3Node) => d.children ? 0 : 0) // Only show circles for leaf nodes
@@ -156,7 +164,8 @@ const Tree: React.FC = () => {
       .attr('x', (d: D3Node) => d.x < Math.PI === !d.children ? 6 : -6)
       .attr('text-anchor', (d: D3Node) => d.x < Math.PI === !d.children ? 'start' : 'end')
       .attr('transform', (d: D3Node) => d.x >= Math.PI ? 'rotate(180)' : null)
-      .style('font-size', (d: D3Node) => d.data.taxonomicLevel === 'species' ? '10px' : '10px')
+      .style('font-family', 'Nunito, arial, sans-serif')
+      .style('font-size', (d: D3Node) => d.data.taxonomicLevel === 'species' ? '11px' : '11px')
       .style('font-weight', (d: D3Node) => d.data.taxonomicLevel === 'species' ? 'semibold' : 'normal')
       .style('fill', '#333')
       .style('opacity', (d: D3Node) => d.data.taxonomicLevel === 'species' ? 1 : 0)
@@ -170,8 +179,9 @@ const Tree: React.FC = () => {
     // Create legend (fixed position, not affected by zoom)
     const legend = svg.append('g')
       .attr('class', 'legend')
-      .attr('transform', `translate(${width - 151}, 20)`) // Right side positioning
+      .attr('transform', `translate(${width - 150}, 20)`) // Right side positioning
       .style('opacity', 0)
+      .style('transition', 'opacity 0.25s ease')
       .style('pointer-events', 'none'); // Prevent legend from interfering with zoom
 
     // Get the class names and colors for the legend
@@ -185,28 +195,17 @@ const Tree: React.FC = () => {
       .attr('x', -10)
       .attr('y', -10)
       .attr('width', 150)
-      // .attr('height', legendData.length * 20 + 25)
       .attr('height', legendData.length * 20)
       .attr('rx', 5)
       .style('fill', 'rgba(255, 255, 255, 0.9)')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
 
-    // Legend title
-    // legend.append('text')
-    //   .attr('x', 0)
-    //   .attr('y', 5)
-    //   .style('font-size', '14px')
-    //   .style('font-weight', 'bold')
-    //   .style('fill', '#333')
-    //   .text('Taxonomic Classes');
-
     // Legend items
     const legendItems = legend.selectAll('.legend-item')
       .data(legendData)
       .enter().append('g')
       .attr('class', 'legend-item')
-      // .attr('transform', (d, i) => `translate(0, ${i * 20 + 25})`);
       .attr('transform', (_, i) => `translate(0, ${i * 20})`);
 
     // Legend circles
@@ -221,28 +220,20 @@ const Tree: React.FC = () => {
       .attr('x', 15)
       .attr('y', 0)
       .attr('dy', '0.35em')
+      .style('font-family', 'Nunito, arial, sans-serif')
       .style('font-size', '12px')
       .style('fill', '#333')
       .text(d => d.name);
 
+    const legendHeight = legendData.length * 20;
+
     // Add zoom controls (fixed position)
     const controls = svg.append('g')
       .attr('class', 'zoom-controls')
-      .attr('transform', 'translate(10, 10)')
+      .attr('transform', `translate(${width - 40}, ${legendHeight + 15})`)
       .style('pointer-events', 'all')
       .style('opacity', 0)
       .style('transition', 'opacity 0.25s ease');
-
-    // Add hover behavior to the entire tree area
-    svg
-      .on('mouseenter', () => {
-        controls.transition().duration(0).style('opacity', 1);
-        legend.transition().duration(0).style('opacity', 1);
-      })
-      .on('mouseleave', () => {
-        controls.transition().duration(0).style('opacity', 0);
-        legend.transition().duration(0).style('opacity', 0);
-      });
 
     // Zoom in button
     const zoomInButton = controls.append('g')
@@ -277,7 +268,7 @@ const Tree: React.FC = () => {
     // Zoom out button
     const zoomOutButton = controls.append('g')
       .attr('class', 'zoom-button')
-      .attr('transform', 'translate(0, 35)')
+      .attr('transform', 'translate(-35, 0)')
       .style('cursor', 'pointer');
 
     zoomOutButton.append('rect')
@@ -304,19 +295,11 @@ const Tree: React.FC = () => {
         .duration(250)
         .call(zoom.scaleBy, 0.67);
     });
-    
-    // After creating the zoom behavior and applying it to SVG
-    svg.call(zoom);
-
-    // Set initial zoom level with proper centering
-    const initialScale = 0.88;
-    const centerX = width / 2;
-    const centerY = height / 2;
 
     // Reset zoom button
     const resetButton = controls.append('g')
       .attr('class', 'zoom-button')
-      .attr('transform', 'translate(0, 70)')
+      .attr('transform', 'translate(-70, 0)')
       .style('cursor', 'pointer');
 
     resetButton.append('rect')
@@ -343,28 +326,76 @@ const Tree: React.FC = () => {
         .duration(500)
         .call(zoom.transform, 
           d3.zoomIdentity
-            .translate(centerX, centerY)
             .scale(initialScale)
-            .translate(-centerX, -centerY));
-        });
+            .translate(centerX, centerY));
+    });
 
-    svg.call(zoom.transform, 
-      d3.zoomIdentity
-        .translate(centerX, centerY)
-        .scale(initialScale)
-        .translate(-centerX, -centerY)
-    );
+    container.append('text')
+      .attr('class', 'title-label')
+      .attr('x', centerX / 0.625)
+      .attr('y', centerY / 0.525 + radius + 130)
+      .style('text-anchor', 'middle')
+      .style('font-family', 'Nunito, arial, sans-serif')
+      .style('font-weight', 'bold')
+      .style('font-size', '21px')
+      .style('fill', '#333')
+      .style('pointer-events', 'none')
+      .text('Available Genomes');
 
+    // Add hover behavior to the entire tree area
+    svg
+      .on('mouseenter', () => {
+        controls.transition().duration(0).style('opacity', 1);
+        legend.transition().duration(0).style('opacity', 1);
+      })
+      .on('mouseleave', () => {
+        controls.transition().duration(0).style('opacity', 0);
+        legend.transition().duration(0).style('opacity', 0);
+      });
   }, []);
 
+  useEffect(() => {
+    // Initial draw
+    drawTree();
+
+    // Add resize event listener
+    const handleResize = () => {
+      // Debounce the resize event to avoid excessive re-renders
+      clearTimeout(window.resizeTimeout);
+      window.resizeTimeout = setTimeout(drawTree, 150);
+    };
+
+    window.addEventListener('resize', handleResize);
+    
+    // Optional: Listen for orientation changes on mobile devices
+    window.addEventListener('orientationchange', () => {
+      setTimeout(drawTree, 100); // Small delay for orientation change
+    });
+
+    // Cleanup event listeners on unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', drawTree);
+      if (window.resizeTimeout) {
+        clearTimeout(window.resizeTimeout);
+      }
+    };
+  }, [drawTree]);
+
   return (
-    <div className='w-100 h-full bg-white cursor-grab'>
+    <div ref={containerRef} className='w-100 h-full cursor-grab'>
       <div className='flex justify-center'>
-        {/* <svg ref={svgRef} className='w-100 border rounded shadow-sm'></svg> */}
         <svg ref={svgRef} className='w-100 rounded'></svg>
       </div>
     </div>
   );
 };
+
+// Extend the Window interface to include resizeTimeout
+declare global {
+  interface Window {
+    resizeTimeout: number;
+  }
+}
 
 export default Tree;

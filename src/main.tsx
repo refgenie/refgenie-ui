@@ -26,20 +26,22 @@ function Main() {
     <BrowserRouter basename=''>
       <div className='d-flex flex-column flex-lg-row min-vh-100'>
         <Navbar />
-        <div className='flex-1 content d-flex flex-column flex-lg-row px-2 px-lg-0'>
-          <div className='row page-width flex-grow-1 g-0'>
-            <div className='col-12 p-3 p-lg-4 d-flex flex-column flex-lg-row'>
-              <Routes>
-                <Route path='/' element={<About />} />
-                <Route path='/about' element={<About />} />
-                <Route path='/search' element={<Search />} />
-                <Route path='/genomes' element={<Genomes />} />
-                <Route path='/assets' element={<Assets />} />
-                <Route path='/assetclasses' element={<AssetClasses />} />
-                <Route path='/recipes' element={<Recipes />} />
-                <Route path='/downloads' element={<Downloads />} />
-                <Route path='/config' element={<Config />} />
-              </Routes>
+        <div className='flex-1 content px-2 px-lg-0'>
+          <div className='container-fluid'>
+            <div className='row'>
+              <div className='col-12'>
+                <Routes>
+                  <Route path='/' element={<About />} />
+                  <Route path='/about' element={<About />} />
+                  <Route path='/search' element={<Search />} />
+                  <Route path='/genomes' element={<Genomes />} />
+                  <Route path='/assets' element={<Assets />} />
+                  <Route path='/assetclasses' element={<AssetClasses />} />
+                  <Route path='/recipes' element={<Recipes />} />
+                  <Route path='/downloads' element={<Downloads />} />
+                  <Route path='/config' element={<Config />} />
+                </Routes>
+              </div>
             </div>
           </div>
         </div>

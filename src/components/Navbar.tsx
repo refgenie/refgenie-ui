@@ -49,10 +49,10 @@ function Navbar() {
               </p>
               <div className=''>
                 <NavLink page={'about'} title={'About'} position='side' currentPage={location}/>
+                <NavLink page={'search'} title={'Search'} position='side' currentPage={location}/>
                 <a className='text-decoration-none cursor-pointer text-black-50' href='https://refgenie.org' target='_blank' rel='noopener noreferrer'>
                   <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>Docs</p>
                 </a>
-                <NavLink page={'search'} title={'Search'} position='side' currentPage={location}/>
               </div>
               
               <p className='fst-condensed mt-3 mb-0'>
@@ -105,11 +105,50 @@ function Navbar() {
               <h5 className='bi bi-three-dots'></h5>
             </span>
             <div className='dropdown-menu px-3 shadow border-0'>
-              <NavLink page={''} title={'Home'} position='side' currentPage={location}/>
-              <NavLink page={'about'} title={'About'} position='side' currentPage={location}/>
-              <a className='text-hover cursor-pointer text-black-50' href='https://refgenie.org' target='_blank' rel='noopener noreferrer'>
-                <p className='mb-0 nav-hover cursor-pointer text-black-50 fw-lighter'>Docs</p>
-              </a>
+              <p className='fst-condensed mb-0'>
+                Home
+              </p>
+              <div className=''>
+                <NavLink page={'about'} title={'About'} position='side' currentPage={location}/>
+                <NavLink page={'search'} title={'Search'} position='side' currentPage={location}/>
+                <a className='text-decoration-none cursor-pointer text-black-50' href='https://refgenie.org' target='_blank' rel='noopener noreferrer'>
+                  <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>Docs</p>
+                </a>
+              </div>
+              
+              <p className='fst-condensed mt-2 mb-0'>
+                Browse
+              </p>
+              <div className=''>
+                <NavLink page={'genomes'} title={'Genomes'} position='side' currentPage={location}/>
+                <NavLink page={'assets'} title={'Assets'} position='side' currentPage={location}/>
+                <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
+                <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/>
+              </div>
+              
+              <p className='fst-condensed mt-2 mb-0'>
+                Manage
+              </p>
+              <div className=''>
+                <NavLink page={'downloads'} title={'Downloads'} position='side' currentPage={location}/>
+                <NavLink page={'config'} title={'Config'} position='side' currentPage={location}/>
+              </div>
+
+              <p className='fst-condensed mt-2 mb-0'>
+                Tools
+              </p>
+              <div className=''>
+                {/* <NavLink page={'seqcol'} title={'SeqCol Validator'} position='side' currentPage={location}/> */}
+                <a className='text-decoration-none cursor-pointer text-black-50' href='https://refget.databio.org' target='_blank' rel='noopener noreferrer'>
+                  <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>SeqCol Validator</p>
+                </a>
+                <a className='text-decoration-none cursor-pointer text-black-50' href='https://github.com/refgenie/refgenie' target='_blank' rel='noopener noreferrer'>
+                  <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>GitHub</p>
+                </a>
+                <a className='text-decoration-none cursor-pointer text-black-50' href='https://api.refgenie.org/docs' target='_blank' rel='noopener noreferrer'>
+                  <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>API</p>
+                </a>
+              </div>
             </div>
           </div>
         </div>

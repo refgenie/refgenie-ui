@@ -16,7 +16,7 @@ function Recipes() {
   
   return (
     <>
-      <div className='row'>
+      <div className='row p-2 p-lg-4 mt-4 mt-lg-0'>
         <div className='col-12'>
           
           <h5 className='fw-bold'>Available Recipes</h5>

@@ -48,9 +48,6 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
   }
   .topbar {
-    /* width: calc(100% + 5vw) !important;
-    margin: 0 -2.5vw !important;
-    padding: 0 2.5vw !important; */
     backdrop-filter: blur(6px);
     background-color: #f7f7f7bb;
   }
@@ -59,6 +56,14 @@ h1, h2, h3, h4, h5, h6 {
   }
   .text-hover:hover {
     text-decoration-line: none;
+  }
+  .tree {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 0;
   }
 }
 @media (min-width: 992px) {
@@ -72,29 +77,30 @@ h1, h2, h3, h4, h5, h6 {
   }
   .content {
     width: 85%;
-    /* padding-left: 2rem;
-    padding-right: 2rem; */
     min-height: 100vh;
   }
   .text-hover:hover {
     text-decoration-line: underline;
   }
+  .tree {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: max(15%, 200px);
+    bottom: 0;
+    z-index: 0;
+  }
+  .about {
+    mask: radial-gradient(
+      circle at calc(100% + 8rem) calc(100% + 10rem),
+      transparent calc(min(100vw, 100vh) / 2 - 1.5rem),
+      black calc(min(100vw, 100vh) / 2)
+    );
+  }
 }
 @media (min-width: 992px) and (max-width: 1200px) {
-  /* .about {
-    margin-top: 3rem !important;
-  }
-  .tree {
-    margin-top: 1.5rem !important;
-  } */
 }
 @media (min-width: 1200px) {
-  /* .about {
-    margin-top: 7rem !important;
-  }
-  .tree {
-    margin-top: 2rem !important;
-  } */
 }
 
 .btn-xs {
@@ -115,5 +121,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-hover:hover {
+  background-color: #ffffffbb;
+}
+
+.bg-blur {
+  z-index: 99999;
+  backdrop-filter: blur(6px);
   background-color: #ffffffbb;
 }
