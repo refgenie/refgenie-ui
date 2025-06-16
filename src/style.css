@@ -92,7 +92,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   .about {
     mask: radial-gradient(
-      circle at calc(100% + 8rem) calc(100% + 10rem),
+      circle at calc(100% + 8rem) calc(100% + 8rem),
       transparent calc(min(100vw, 100vh) / 2 - 1.5rem),
       black calc(min(100vw, 100vh) / 2)
     );

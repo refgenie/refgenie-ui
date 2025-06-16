@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import * as d3 from 'd3';
 
-import treeData from '../assets/tree.json'
-// import treeData from '../assets/sample_tree.json'
+// import treeData from '../assets/tree.json'
+import treeData from '../assets/sample_tree.json'
 
 // Type definitions
 interface TreeNode {
@@ -63,8 +63,8 @@ const Tree: React.FC = () => {
       centerY = height / 2;
     } else {
       // Your existing positioning for larger screens
-      centerX = width / 2.22;
-      centerY = height / 4.44;
+      centerX = width / 2.24;
+      centerY = height / 4.48;
     }
 
     svg.call(zoom.transform, 
@@ -72,6 +72,37 @@ const Tree: React.FC = () => {
         .scale(initialScale)
         .translate(centerX, centerY)
     );
+
+    // Create radial gradient for background circle
+    const defs = svg.append('defs');
+    const gradient = defs.append('radialGradient')
+      .attr('id', 'background-gradient')
+      .attr('cx', '50%')
+      .attr('cy', '50%')
+      .attr('r', '50%');
+
+    gradient.append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', '#ffeaa7') // Light yellow
+      .attr('stop-opacity', 0.33);
+
+    gradient.append('stop')
+      .attr('offset', '67%')
+      .attr('stop-color', '#ffeaa7')
+      .attr('stop-opacity', 0.11);
+
+    gradient.append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', '#ffeaa7')
+      .attr('stop-opacity', 0);
+
+    // Add background circle
+    container.append('circle')
+      .attr('cx', width / 2)
+      .attr('cy', height / 2)
+      .attr('r', radius + 100)
+      .style('fill', 'url(#background-gradient)')
+      .style('pointer-events', 'none'); // Don't interfere with interactions
 
     // Set up the main group with initial translation
     const g = container
@@ -332,8 +363,8 @@ const Tree: React.FC = () => {
 
     container.append('text')
       .attr('class', 'title-label')
-      .attr('x', centerX / 0.625)
-      .attr('y', centerY / 0.525 + radius + 130)
+      .attr('x', centerX / 0.59)
+      .attr('y', centerY / 0.51 + radius + 130)
       .style('text-anchor', 'middle')
       .style('font-family', 'Nunito, arial, sans-serif')
       .style('font-weight', 'bold')

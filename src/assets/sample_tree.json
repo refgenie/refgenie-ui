@@ -37,6 +37,23 @@
                               ]
                             }
                           ]
+                        },
+                        {
+                          "name": "Gasterosteidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Gasterosteus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Gasterosteus aculeatus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     },
@@ -81,6 +98,17 @@
                                   "genomeAlias": null
                                 }
                               ]
+                            },
+                            {
+                              "name": "Tetraodon",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Tetraodon nigroviridis",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
                             }
                           ]
                         }
@@ -100,6 +128,29 @@
                               "children": [
                                 {
                                   "name": "Oryzias latipes",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Semionotiformes",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Lepisosteidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Lepisosteus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Lepisosteus oculatus",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
                                 }
@@ -325,6 +376,56 @@
                                   "name": "Rattus norvegicus",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
+                                },
+                                {
+                                  "name": "Rattus rattus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Cricetidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Cricetulus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Cricetulus griseus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Mesocricetus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Mesocricetus auratus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Caviidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Cavia",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Cavia porcellus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
                                 }
                               ]
                             }
@@ -463,6 +564,74 @@
                                   "genomeAlias": null
                                 }
                               ]
+                            },
+                            {
+                              "name": "Ovis",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Ovis aries",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Capra",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Capra hircus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Perissodactyla",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Equidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Equus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Equus caballus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Lagomorpha",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Leporidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Oryctolagus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Oryctolagus cuniculus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
                             }
                           ]
                         }
@@ -488,6 +657,132 @@
                               "children": [
                                 {
                                   "name": "Xenopus tropicalis",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Xenopus laevis",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Ascidiacea",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Phlebobranchia",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Cionidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Ciona",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Ciona intestinalis",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Ciona savignyi",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Leptocardii",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Amphioxiformes",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Branchiostomatidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Branchiostoma",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Branchiostoma floridae",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Hyperoartia",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Petromyzontiformes",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Petromyzontidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Petromyzon",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Petromyzon marinus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Chondrichthyes",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Chimaeriformes",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Callorhinchidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Callorhinchus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Callorhinchus milii",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
                                 }
@@ -523,6 +818,171 @@
                               "children": [
                                 {
                                   "name": "Drosophila melanogaster",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Drosophila simulans",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Drosophila yakuba",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Drosophila erecta",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Drosophila ananassae",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Drosophila pseudoobscura",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Drosophila virilis",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Culicidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Anopheles",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Anopheles gambiae",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Anopheles darlingi",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Anopheles funestus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Aedes",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Aedes aegypti",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Culex",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Culex quinquefasciatus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Lepidoptera",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Bombycidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Bombyx",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Bombyx mori",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Coleoptera",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Tenebrionidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Tribolium",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Tribolium castaneum",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Hymenoptera",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Apidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Apis",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Apis mellifera",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Pteromalidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Nasonia",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Nasonia vitripennis",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
                                 }
@@ -572,6 +1032,41 @@
               ]
             },
             {
+              "name": "Echinodermata",
+              "taxonomicLevel": "phylum",
+              "children": [
+                {
+                  "name": "Echinoidea",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Camarodonta",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Strongylocentrotidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Strongylocentrotus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Strongylocentrotus purpuratus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
               "name": "Cnidaria",
               "taxonomicLevel": "phylum",
               "children": [
@@ -603,31 +1098,95 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "name": "Hydrozoa",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Anthoathecata",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Hydridae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Hydra",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Hydra vulgaris",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
             {
-              "name": "Echinodermata",
+              "name": "Placozoa",
               "taxonomicLevel": "phylum",
               "children": [
                 {
-                  "name": "Echinoidea",
+                  "name": "Uniplacotomia",
                   "taxonomicLevel": "class",
                   "children": [
                     {
-                      "name": "Camarodonta",
+                      "name": "Trichoplacea",
                       "taxonomicLevel": "order",
                       "children": [
                         {
-                          "name": "Strongylocentrotidae",
+                          "name": "Trichoplacidae",
                           "taxonomicLevel": "family",
                           "children": [
                             {
-                              "name": "Strongylocentrotus",
+                              "name": "Trichoplax",
                               "taxonomicLevel": "genus",
                               "children": [
                                 {
-                                  "name": "Strongylocentrotus purpuratus",
+                                  "name": "Trichoplax adhaerens",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Porifera",
+              "taxonomicLevel": "phylum",
+              "children": [
+                {
+                  "name": "Demospongiae",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Haplosclerida",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Niphatidae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Amphimedon",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Amphimedon queenslandica",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
                                 }
@@ -710,6 +1269,35 @@
                   ]
                 },
                 {
+                  "name": "Pichiomycetes",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Serinales",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Debaryomycetaceae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Candida",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Candida albicans",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
                   "name": "Sordariomycetes",
                   "taxonomicLevel": "class",
                   "children": [
@@ -727,6 +1315,29 @@
                               "children": [
                                 {
                                   "name": "Neurospora crassa",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Magnaporthales",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Pyriculariaceae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Pyricularia",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Magnaporthe oryzae",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
                                 }
@@ -758,6 +1369,11 @@
                                   "name": "Aspergillus nidulans",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
+                                },
+                                {
+                                  "name": "Aspergillus fumigatus",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
                                 }
                               ]
                             }
@@ -768,23 +1384,87 @@
                   ]
                 },
                 {
-                  "name": "Pichiomycetes",
+                  "name": "Pneumocystomycetes",
                   "taxonomicLevel": "class",
                   "children": [
                     {
-                      "name": "Serinales",
+                      "name": "Pneumocystales",
                       "taxonomicLevel": "order",
                       "children": [
                         {
-                          "name": "Debaryomycetaceae",
+                          "name": "Pneumocystaceae",
                           "taxonomicLevel": "family",
                           "children": [
                             {
-                              "name": "Candida",
+                              "name": "Pneumocystis",
                               "taxonomicLevel": "genus",
                               "children": [
                                 {
-                                  "name": "Candida albicans",
+                                  "name": "Pneumocystis jirovecii",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Basidiomycota",
+              "taxonomicLevel": "phylum",
+              "children": [
+                {
+                  "name": "Ustilaginomycetes",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Ustilaginales",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Ustilaginaceae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Mycosarcoma",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Ustilago maydis",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Tremellomycetes",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Tremellales",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Cryptococcaceae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Cryptococcus",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Cryptococcus neoformans",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
                                 }
@@ -864,25 +1544,57 @@
                                   "genomeAlias": null
                                 }
                               ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Solanales",
-                      "taxonomicLevel": "order",
-                      "children": [
-                        {
-                          "name": "Solanaceae",
-                          "taxonomicLevel": "family",
-                          "children": [
+                            },
                             {
-                              "name": "Solanum",
+                              "name": "Sorghum",
                               "taxonomicLevel": "genus",
                               "children": [
                                 {
-                                  "name": "Solanum lycopersicum",
+                                  "name": "Sorghum bicolor",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Triticum",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Triticum aestivum",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Hordeum",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Hordeum vulgare",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Brachypodium",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Brachypodium distachyon",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Setaria",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Setaria italica",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
                                 }
@@ -982,6 +1694,74 @@
                           ]
                         }
                       ]
+                    },
+                    {
+                      "name": "Solanales",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Solanaceae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Solanum",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Solanum lycopersicum",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                },
+                                {
+                                  "name": "Solanum tuberosum",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Nicotiana",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Nicotiana tabacum",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Bryopsida",
+                  "taxonomicLevel": "class",
+                  "children": [
+                    {
+                      "name": "Funariales",
+                      "taxonomicLevel": "order",
+                      "children": [
+                        {
+                          "name": "Funariaceae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Physcomitrium",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Physcomitrella patens",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 }
@@ -1015,6 +1795,23 @@
                               ]
                             }
                           ]
+                        },
+                        {
+                          "name": "Volvocaceae",
+                          "taxonomicLevel": "family",
+                          "children": [
+                            {
+                              "name": "Volvox",
+                              "taxonomicLevel": "genus",
+                              "children": [
+                                {
+                                  "name": "Volvox carteri",
+                                  "taxonomicLevel": "species",
+                                  "genomeAlias": null
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
@@ -1037,24 +1834,7 @@
                               "taxonomicLevel": "genus",
                               "children": [
                                 {
-                                  "name": "Ostreococcus tauri",
-                                  "taxonomicLevel": "species",
-                                  "genomeAlias": null
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Mamiellaceae",
-                          "taxonomicLevel": "family",
-                          "children": [
-                            {
-                              "name": "Micromonas",
-                              "taxonomicLevel": "genus",
-                              "children": [
-                                {
-                                  "name": "Micromonas pusilla",
+                                  "name": "Ostreococcus lucimarinus",
                                   "taxonomicLevel": "species",
                                   "genomeAlias": null
                                 }
