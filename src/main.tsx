@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 import './style.css'
 import 'bootstrap/dist/css/bootstrap.css';
@@ -53,6 +54,7 @@ function Main() {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
+    <Toaster position="bottom-right" />
     <Main />
   </QueryClientProvider>
 )
