@@ -11,11 +11,11 @@ function About() {
       <section className='tree'>
         <Tree />
       </section>
-      <div className='row p-2 p-lg-4 p-xxl-5 mt-3 mt-lg-0'>
-        <div className='col-12 col-lg-7 col-xl-6'>
+      <div className='row p-2 px-lg-3 py-lg-4 pt-xxl-5 mt-3 mt-lg-0'>
+        <div className='col-12 col-lg-7 col-xl-6 ms-xxl-4'>
 
           <div className='me-lg-5'>
-            <div className='p-2 p-lg-4 rounded-end-5 d-inline-block bg-blur'>
+            <div className='p-3 mx-lg-2 mt-lg-2 rounded-top-3 rounded-end-3 d-inline-block bg-blur'>
               <h5 className='fw-bold'>What is Refgenie?</h5>
               <p className='mb-0'>
                 Refgenie is a standardized genome asset management system. It provides a command-line interface and API for 
@@ -25,7 +25,7 @@ function About() {
               </p>
             </div>
             
-            <div className='px-2 pb-1 px-lg-4 rounded-end-5 w-75 bg-blur'>
+            <div className='ps-3 pe-5 pt-2 pb-3 mx-lg-2 rounded-bottom-3 rounded-start-0 rounded-end-0 w-75 bg-blur'>
               <div className='input-group'>
                 <input 
                   id='search-about' 
@@ -41,7 +41,7 @@ function About() {
               </div>
             </div>
             
-            <div className='p-2 p-lg-4 rounded-end-5 d-inline-block bg-blur'>
+            <div className='p-3 mx-lg-2 mb-lg-2 rounded-bottom-3 d-inline-block bg-blur'>
               <h6 className='fw-bold'>Key Features</h6>
               <ul className='mb-0'>
                 <li>Standardized genome asset management</li>
