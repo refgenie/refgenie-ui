@@ -29,6 +29,7 @@ const Tree: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [isActuallyLocked, setIsActuallyLocked] = useState(true);
+  const [selectedLevel, setSelectedLevel] = useState('kingdom');
   const { searchTerm } = useAboutSearch();
 
   const matchesSearch = (speciesName: string, searchTerm: string): boolean => {
@@ -64,6 +65,7 @@ const Tree: React.FC = () => {
     const width = containerRect.width;
     const height = window.innerHeight;
     const radius: number = Math.min(width, height) / 2 - 100;
+    const rectRadius = 4;
 
     // Set up the SVG with zoom behavior
     svg.attr('width', width).attr('height', height);
@@ -154,7 +156,7 @@ const Tree: React.FC = () => {
     // Create hierarchy
     const root = tree(d3.hierarchy(treeData as TreeNode));
 
-    const selectedLevel = 'kingdom';
+    // const selectedLevel = 'kingdom';
 
     const findTaxonomicLevel = (node: d3.HierarchyPointNode<TreeNode>): string | null => {
       // If this node is a class, return it
@@ -375,10 +377,10 @@ const Tree: React.FC = () => {
     // Legend background
     legend.append('rect')
       .attr('x', -10)
-      .attr('y', -10)
+      .attr('y', 60)
       .attr('width', 135)
       .attr('height', legendData.length * 20)
-      .attr('rx', 5)
+      .attr('rx', rectRadius)
       .style('fill', 'rgba(255, 255, 255, 0.9)')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -388,7 +390,7 @@ const Tree: React.FC = () => {
       .data(legendData)
       .enter().append('g')
       .attr('class', 'legend-item')
-      .attr('transform', (_, i) => `translate(0, ${i * 20})`);
+      .attr('transform', (_, i) => `translate(0, ${i * 20 + 70})`);
 
     // Legend circles
     legendItems.append('circle')
@@ -405,20 +407,22 @@ const Tree: React.FC = () => {
       .style('font-family', 'Nunito, arial, sans-serif')
       .style('font-size', '12px')
       .style('fill', '#333')
-      .text(d => d.name);
-
-    const legendHeight = legendData.length * 20;
+      .text(d => {
+        const maxLength = 14; // Adjust based on your needs
+        return d.name.length > maxLength ? d.name.substring(0, maxLength) + '...' : d.name;
+      });
 
     // Add zoom controls (fixed position)
     const controls = svg.append('g')
       .attr('class', 'zoom-controls')
-      .attr('transform', `translate(${width - 40}, ${legendHeight + 15})`)
+      // .attr('transform', `translate(${width - 40}, ${legendData.length * 20 + 15})`)
+      .attr('transform', `translate(${width - 40}, 10)`)
       .style('pointer-events', 'all')
-      .on('mousedown', (event) => {
-        event.stopPropagation(); // Prevent zoom behavior from capturing this
-      })
       .style('opacity', 0)
-      .style('transition', 'opacity 0.25s ease');
+      .style('transition', 'opacity 0.25s ease')
+      .on('mousedown', (event) => {
+        event.stopPropagation();
+      });
 
     // Zoom in button
     const zoomInButton = controls.append('g')
@@ -428,7 +432,7 @@ const Tree: React.FC = () => {
     zoomInButton.append('rect')
       .attr('width', 30)
       .attr('height', 30)
-      .attr('rx', 3)
+      .attr('rx', rectRadius)
       .style('fill', '#f8f9fa')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -450,6 +454,9 @@ const Tree: React.FC = () => {
         .call(zoom.scaleBy, 1.5, [centerX / initialScale, centerY / initialScale]);
     });
 
+    zoomInButton.append('title')
+      .text('Zoom In');
+
     // Zoom out button
     const zoomOutButton = controls.append('g')
       .attr('class', 'zoom-button')
@@ -459,7 +466,7 @@ const Tree: React.FC = () => {
     zoomOutButton.append('rect')
       .attr('width', 30)
       .attr('height', 30)
-      .attr('rx', 3)
+      .attr('rx', rectRadius)
       .style('fill', '#f8f9fa')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -481,6 +488,9 @@ const Tree: React.FC = () => {
         .call(zoom.scaleBy, 0.67, [centerX / initialScale, centerY / initialScale]);
     });
 
+    zoomOutButton.append('title')
+      .text('Zoom Out');
+
     // Reset zoom button
     const resetButton = controls.append('g')
       .attr('class', 'zoom-button')
@@ -490,7 +500,7 @@ const Tree: React.FC = () => {
     resetButton.append('rect')
       .attr('width', 30)
       .attr('height', 30)
-      .attr('rx', 3)
+      .attr('rx', rectRadius)
       .style('fill', '#f8f9fa')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -515,6 +525,9 @@ const Tree: React.FC = () => {
             .translate(centerX, centerY));
     });
 
+    resetButton.append('title')
+      .text('Reset Zoom');
+
     // Reset zoom button
     const panButton = controls.append('g')
       .attr('class', 'zoom-button')
@@ -524,7 +537,7 @@ const Tree: React.FC = () => {
     panButton.append('rect')
       .attr('width', 30)
       .attr('height', 30)
-      .attr('rx', 3)
+      .attr('rx', rectRadius)
       .style('fill', '#f8f9fa')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -550,6 +563,27 @@ const Tree: React.FC = () => {
         .text(isLocked ? '⊗' : '○');
     });
 
+    panButton.append('title')
+      .text(isLocked ? 'Enable Panning' : 'Disable Panning');
+
+    const dropdown = svg.append('g')
+      .attr('class', 'dropdown-box')
+      .attr('transform', `translate(${width - 145}, 45)`)
+      .style('pointer-events', 'all')
+      .style('opacity', 0)
+      .style('transition', 'opacity 0.25s ease')
+      .on('mousedown', (event) => {
+        event.stopPropagation();
+      });
+
+    dropdown.append('rect')
+      .attr('width', 135)
+      .attr('height', 30)
+      .attr('rx', rectRadius)
+      .style('fill', 'transparent')
+      .style('stroke', '#dee2e6')
+      .style('stroke-width', 1);
+
     container.append('text')
       .attr('class', 'title-label')
       .attr('x', centerX / 0.587)
@@ -562,18 +596,26 @@ const Tree: React.FC = () => {
       .style('pointer-events', 'none')
       .text('Available Genomes');
 
+
     // Add hover behavior to the entire tree area
     // might be a problem if you hover the d3 while updating searchTerm because opacities reset
     svg
       .on('mouseenter', () => {
         controls.transition().duration(0).style('opacity', 1);
         legend.transition().duration(0).style('opacity', 1);
+        dropdown.transition().duration(0).style('opacity', 1);
       })
-      .on('mouseleave', () => {
+      .on('mouseleave', (e) => {
+        const relatedTarget = e.relatedTarget as Element;
+        if (relatedTarget?.closest('.form-select')) {
+          return; // Don't hide if moving to select
+        }
         controls.transition().duration(0).style('opacity', 0);
         legend.transition().duration(0).style('opacity', 0);
+        dropdown.transition().duration(0).style('opacity', 0);
+
       });
-  }, [searchTerm]);
+  }, [searchTerm, selectedLevel]);
 
   useEffect(() => {
     // Initial draw
@@ -604,10 +646,34 @@ const Tree: React.FC = () => {
   }, [drawTree]);
 
   return (
-    <div ref={containerRef} className={`w-100 h-full ${isActuallyLocked ? '' : 'cursor-grab'}`}>
-      <div className='flex justify-center'>
+    <div ref={containerRef} className={`w-100 h-full tree-container ${isActuallyLocked ? '' : 'cursor-grab'}`}>
+      {/* <div className='tree-container'> */}
+        <select 
+          className='form-select form-select-sm border-0 bg-transparent fw-semibold cursor-pointer' 
+          aria-label='Default select example'
+          style={{
+            position: 'fixed',
+            right: '10px',
+            top: '45px',
+            width: '135px',
+            height: '30px',
+            fontSize: '12px',
+          }}
+          onChange={(e) => setSelectedLevel(e.target.value)}
+        >
+          {/* 'domain' | 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'genus' | 'species' */}
+          <option value='domain'>Domain</option>
+          <option value='kingdom' selected>Kingdom</option>
+          <option value='phylum'>Phylum</option>
+          <option value='class'>Class</option>
+          <option value='order'>Order</option>
+          <option value='family'>Family</option>
+          <option value='genus'>Genus</option>
+          <option value='species'>Species</option>
+        </select>
+
         <svg ref={svgRef} className='w-100 rounded'></svg>
-      </div>
+      {/* </div> */}
     </div>
   );
 };
