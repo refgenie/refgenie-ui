@@ -188,9 +188,21 @@ const Tree: React.FC = () => {
     };
     extractClasses(treeData as TreeNode);
 
-    const colorScale = d3.scaleOrdinal<string>()
+    // const colorScale = d3.scaleOrdinal<string>()
+    //   .domain(Array.from(levelNames))
+    //   .range(['#e41a1cbb', '#377eb8bb', '#4daf4abb', '#984ea3bb', '#ff7f00bb', '#ffff33bb', '#a65628bb', '#f781bfbb']);
+
+    // Generate evenly spaced hues
+    const generateColors = (count: number) => {
+      return Array.from({ length: count }, (_, i) => {
+        const hue = (i * 360 / count) % 360;
+        return d3.hsl(hue, 0.725, 0.475).formatHex() + 'bb'; // Add transparency
+      });
+    };
+
+    const colorScale = d3.scaleOrdinal()
       .domain(Array.from(levelNames))
-      .range(['#e41a1cbb', '#377eb8bb', '#4daf4abb', '#984ea3bb', '#ff7f00bb', '#ffff33bb', '#a65628bb', '#f781bfbb']);
+      .range(generateColors(levelNames.size)); // Ensure at least 12 colors
 
     // Draw links
     g.selectAll('.link')
@@ -203,7 +215,8 @@ const Tree: React.FC = () => {
       .style('fill', 'none')
       .style('stroke', (d: d3.HierarchyPointLink<TreeNode>) => {
         const taxonomicLevel = findTaxonomicLevel(d.target);
-        return taxonomicLevel ? colorScale(taxonomicLevel) : '#999';
+        const color = taxonomicLevel ? colorScale(taxonomicLevel) : '#999';
+        return typeof color === 'string' ? color : '#999';
       })
       // .style('stroke-width', 1.25)
       .style('stroke-width', (d: d3.HierarchyPointLink<TreeNode>) => {
@@ -395,7 +408,7 @@ const Tree: React.FC = () => {
     // Legend circles
     legendItems.append('circle')
       .attr('r', 3.5)
-      .style('fill', d => d.color)
+      .style('fill', d => d.color as string)
       .style('stroke', '#fff')
       .style('stroke-width', 2);
 
