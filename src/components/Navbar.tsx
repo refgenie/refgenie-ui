@@ -97,9 +97,7 @@ function Navbar() {
         <div className='row page-width'>
           <div className='col-12 pt-4 px-4 pb-3'>
             <Link to='' className='text-decoration-none text-dark'>
-              <Link to='' className='text-decoration-none text-dark'>
-                <img src={logo} alt='Refgenie Logo' className='logo' />
-              </Link>
+              <img src={logo} alt='Refgenie Logo' className='logo' />
             </Link>
             <span className='d-inline float-end cursor-pointer dropdown-hover' data-bs-toggle='dropdown' aria-expanded='false'>
               <h5 className='bi bi-three-dots'></h5>

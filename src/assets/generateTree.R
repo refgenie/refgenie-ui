@@ -12,7 +12,7 @@ get_ncbi_lineage <- function(species_name) {
   search_req <- GET(search_url)
   search_res <- content(search_req, as = 'parsed')
   
-  if(length(search_res$esearchresult$idlist) > 0) {
+  if (length(search_res$esearchresult$idlist) > 0) {
     taxid <- search_res$esearchresult$idlist[[1]]
     
     fetch_url <- paste0('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&id=', 
@@ -105,16 +105,18 @@ refgenie_url <- 'https://api.refgenie.org/v4/genomes'
 refgenie_req <- GET(refgenie_url)
 refgenie_res <- content(refgenie_req, as = 'text', encoding = 'UTF-8') %>% fromJSON()
 
-genomes <- gsub('\\..*', '', refgenie_res$description)
+genomes <- unique(gsub('\\..*', '', refgenie_res$description))
 
 taxonomies <- data.frame(matrix(nrow = 0, ncol = 8)) %>%
   setnames(c('domain', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'))
 
 for (genome in genomes) {
   new_row <- get_ncbi_lineage(genome)
-  new_row$species <- genome
-  if (ncol(new_row) == ncol(taxonomies)) {
-    taxonomies <- rbind(taxonomies, new_row)
+  if (!is.null(new_row)) {
+    new_row$species <- genome
+    if (ncol(new_row) == ncol(taxonomies)) {
+      taxonomies <- rbind(taxonomies, new_row)
+    }
   }
   Sys.sleep(1)
 }

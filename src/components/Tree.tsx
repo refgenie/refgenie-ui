@@ -4,8 +4,19 @@ import toast from 'react-hot-toast';
 
 import { useAboutSearch } from '../stores/search';
 
-// import treeData from '../assets/tree.json'
-import treeData from '../assets/sample_tree.json'
+import rawTreeData from '../assets/tree.json'
+// import rawTreeData/ from '../assets/sample_tree.json'
+
+// Helper function to recursively cast taxonomicLevel to the correct type
+function castTreeNode(node: any): TreeNode {
+  return {
+    ...node,
+    taxonomicLevel: node.taxonomicLevel as TreeNode['taxonomicLevel'],
+    children: node.children ? node.children.map(castTreeNode) : undefined,
+  };
+}
+
+const treeData: TreeNode = castTreeNode(rawTreeData);
 
 // Type definitions
 interface TreeNode {
@@ -28,8 +39,11 @@ const Tree: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const defaultSelectedLevel = 'class'
+
   const [isActuallyLocked, setIsActuallyLocked] = useState(true);
-  const [selectedLevel, setSelectedLevel] = useState('kingdom');
+  const [selectedLevel, setSelectedLevel] = useState(defaultSelectedLevel);
+  const [selectedLevelInstance, setSelectedLevelInstance] = useState(['', '']);
   const { searchTerm } = useAboutSearch();
 
   const matchesSearch = (speciesName: string, searchTerm: string): boolean => {
@@ -53,6 +67,59 @@ const Tree: React.FC = () => {
     
     return false;
   };
+
+  // Checks if a node or any of its descendants contains the target taxonomic level and name
+  function hasDescendantWithTarget(node: TreeNode, targetLevel: string, targetName: string): boolean {
+    // Check if this node matches
+    if (node.taxonomicLevel === targetLevel && node.name === targetName) {
+      return true;
+    }
+    
+    // Check children recursively
+    if (node.children) {
+      return node.children.some(child => hasDescendantWithTarget(child, targetLevel, targetName));
+    }
+    
+    return false;
+  }
+
+  // Filters tree data to only include paths that contain the specified taxonomic level and name
+  function pruneTreeToTarget(treeData: TreeNode, targetLevel: string, targetName: string): TreeNode | null {
+    // If targetName is empty, don't filter - return the entire tree
+    if (!targetName || targetName.trim() === '') {
+      return { ...treeData };
+    }
+    
+    // If this node matches the target, return the full path from root to here plus all descendants
+    if (treeData.taxonomicLevel === targetLevel && treeData.name === targetName) {
+      return { ...treeData }; // Return a copy with all descendants
+    }
+    
+    // If this node has children, check which ones should be kept
+    if (treeData.children) {
+      const filteredChildren = treeData.children
+        .filter(child => hasDescendantWithTarget(child, targetLevel, targetName))
+        .map(child => pruneTreeToTarget(child, targetLevel, targetName))
+        .filter(child => child !== null) as TreeNode[];
+      
+      // If we have filtered children, return this node with only those children
+      if (filteredChildren.length > 0) {
+        return {
+          ...treeData,
+          children: filteredChildren
+        };
+      }
+    }
+    
+    // This node and its subtree don't contain the target
+    return null;
+  }
+
+  const prunedTreeData = pruneTreeToTarget(treeData, selectedLevelInstance[0], selectedLevelInstance[1]);
+  const levelOptions = ['Domain', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
+  const prunedLevelOptions = Array.isArray(selectedLevelInstance) && selectedLevelInstance[0] === '' && selectedLevelInstance[1] === '' 
+    ? levelOptions 
+    : levelOptions.slice(levelOptions.map(level => level.toLowerCase()).indexOf(selectedLevelInstance[0]));
 
   const drawTree = useCallback(() => {
     if (!svgRef.current || !containerRef.current) return;
@@ -93,16 +160,14 @@ const Tree: React.FC = () => {
     svg.call(zoom);
 
     // Set initial zoom level with proper centering
-    const initialScale = 0.725;
+    const initialScale = 0.733;
 
     let centerX, centerY;
     if (width < 992) {
-      // Center on screen for mobile/tablet
       centerX = width / 2;
       centerY = height / 2;
     } else {
-      // Your existing positioning for larger screens
-      centerX = width / 2.24;
+      centerX = width / 2.28;
       centerY = height / 4.48;
     }
 
@@ -154,9 +219,7 @@ const Tree: React.FC = () => {
       .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
 
     // Create hierarchy
-    const root = tree(d3.hierarchy(treeData as TreeNode));
-
-    // const selectedLevel = 'kingdom';
+    const root = tree(d3.hierarchy(prunedTreeData as TreeNode));
 
     const findTaxonomicLevel = (node: d3.HierarchyPointNode<TreeNode>): string | null => {
       // If this node is a class, return it
@@ -164,7 +227,7 @@ const Tree: React.FC = () => {
         return node.data.name;
       }
       
-      // Walk up the tree to find the class
+      // Walk up the tree to find the instance of selected level
       let current = node.parent;
       while (current) {
         if (current.data.taxonomicLevel === selectedLevel) {
@@ -173,20 +236,21 @@ const Tree: React.FC = () => {
         current = current.parent;
       }
       
-      return null; // No class found
+      return null;
     };
 
-    // Identify unique classes
+    // Identify unique levels
     const levelNames = new Set<string>();
-    const extractClasses = (node: TreeNode) => {
+    const extractSelectedLevels = (node: TreeNode) => {
       if (node.taxonomicLevel === selectedLevel) {
         levelNames.add(node.name);
       }
       if (node.children) {
-        node.children.forEach(extractClasses);
+        node.children.forEach(extractSelectedLevels);
       }
     };
-    extractClasses(treeData as TreeNode);
+    // extractSelectedLevels(treeData as TreeNode);
+    extractSelectedLevels(prunedTreeData as TreeNode);
 
     // const colorScale = d3.scaleOrdinal<string>()
     //   .domain(Array.from(levelNames))
@@ -196,13 +260,13 @@ const Tree: React.FC = () => {
     const generateColors = (count: number) => {
       return Array.from({ length: count }, (_, i) => {
         const hue = (i * 360 / count) % 360;
-        return d3.hsl(hue, 0.725, 0.475).formatHex() + 'bb'; // Add transparency
+        return d3.hsl(hue, 0.725, 0.475).formatHex() + 'bb';
       });
     };
 
     const colorScale = d3.scaleOrdinal()
       .domain(Array.from(levelNames))
-      .range(generateColors(levelNames.size)); // Ensure at least 12 colors
+      .range(generateColors(levelNames.size));
 
     // Draw links
     g.selectAll('.link')
@@ -215,10 +279,9 @@ const Tree: React.FC = () => {
       .style('fill', 'none')
       .style('stroke', (d: d3.HierarchyPointLink<TreeNode>) => {
         const taxonomicLevel = findTaxonomicLevel(d.target);
-        const color = taxonomicLevel ? colorScale(taxonomicLevel) : '#999';
-        return typeof color === 'string' ? color : '#999';
+        const color = taxonomicLevel ? colorScale(taxonomicLevel) : '#999999bb';
+        return typeof color === 'string' ? color : '#999999bb';
       })
-      // .style('stroke-width', 1.25)
       .style('stroke-width', (d: d3.HierarchyPointLink<TreeNode>) => {
         if (searchTerm === '') {
           return 1.33;
@@ -226,10 +289,42 @@ const Tree: React.FC = () => {
         const hasMatch = hasMatchingDescendant(d.target, searchTerm);
         return hasMatch ? 1.67 : 1.33;
       })
+      .style('stroke-linecap', 'round')
       .style('opacity', (d: d3.HierarchyPointLink<TreeNode>) => {
         // Check if the target node or any of its descendants match the search
         const hasMatch = hasMatchingDescendant(d.target, searchTerm);
         return hasMatch ? 1 : 0.2; // Full opacity for matching paths, reduced for non-matching
+      })
+      
+    g.selectAll('.link-clickable')
+      .data(root.links())
+      .enter().append('path')
+      .attr('class', 'link-clickable')
+      .attr('d', d3.linkRadial<d3.HierarchyPointLink<TreeNode>, d3.HierarchyPointNode<TreeNode>>()
+        .angle(d => d.x)
+        .radius(d => d.y))
+      .style('fill', 'none')
+      .style('stroke', '#44444400')
+      .style('stroke-width', 5)
+      .on('mouseenter', function() {
+        if (isActuallyLocked) {
+          d3.select(this).style('cursor', 'pointer');
+        } else {
+          d3.select(this).style('cursor', 'inherit');
+        }
+      })
+      .on('mouseleave', function() {
+        d3.select(this).style('cursor', 'inherit');
+      })
+      .on('click', function(_, d: d3.HierarchyPointLink<TreeNode>) {
+        if (isLocked) {
+          setSelectedLevel(d.target.data.taxonomicLevel ?? '')
+          setSelectedLevelInstance(d.target.data.name ? [d.target.data.taxonomicLevel ?? '', d.target.data.name ?? ''] : ['', ''])
+        }
+      })
+      .append('title')
+      .text(function(d: d3.HierarchyPointLink<TreeNode>) {
+        return d.target.data.name ?? '';
       });
 
     // Draw nodes
@@ -242,16 +337,7 @@ const Tree: React.FC = () => {
         translate(${d.y},0)
       `);
 
-    // node.append('circle')
-    //   .attr('r', (d: D3Node) => d.children ? 0 : 0) // Only show circles for leaf nodes
-    //   .style('fill', (d: D3Node) => {
-    //     if (d.children) return 'transparent'; // Hide non-leaf nodes
-        
-    //     const taxonomicLevel = findTaxonomicLevel(d);
-    //     return taxonomicLevel ? colorScale(taxonomicLevel) : '#999';
-    //   })
-    //   .style('stroke', '#fff')
-    //   .style('stroke-width', 2);
+    const isSmallText = levelOptions.slice(levelOptions.map(level => level.toLowerCase()).indexOf(defaultSelectedLevel)).map(level => level.toLowerCase()).indexOf(selectedLevelInstance[0].toLowerCase()) == -1
 
     // Node labels
     node.append('text')
@@ -263,11 +349,14 @@ const Tree: React.FC = () => {
       // .style('font-size', (d: D3Node) => d.data.taxonomicLevel === 'species' ? '11px' : '0')
       .style('font-size', (d: D3Node) => {
         if (d.data.taxonomicLevel === 'species' && searchTerm === '') {
-          return '11px';
+          if (isSmallText) {
+            return '7.5px';
+          }
+          return '10.5px';
         }
         if (d.data.taxonomicLevel === 'species') {
           const isMatch = matchesSearch(d.data.name, searchTerm);
-          return isMatch ? '12.5px' : '11px';
+          return isMatch ? '12.5px' : '7.5px';
         }
         return '0';
       })
@@ -282,16 +371,15 @@ const Tree: React.FC = () => {
         }
         return 'normal';
       })
-      // .style('fill', '#333')
       .style('fill', (d: D3Node) => {
         if (searchTerm === '') {
-          return '#333';
+          return '#444';
         }
         if (d.data.taxonomicLevel === 'species') {
           const isMatch = matchesSearch(d.data.name, searchTerm);
-          return isMatch ? '#000' : '#ddd'; // Darker text for matches
+          return isMatch ? '#000' : '#eee'; // Darker text for matches
         }
-        return '#333';
+        return '#444';
       })
       .text((d: D3Node) => {
         if (d.data.taxonomicLevel === 'species') {
@@ -310,18 +398,71 @@ const Tree: React.FC = () => {
       .on('mouseenter', function(_, d: D3Node) {
         if (d.data.taxonomicLevel === 'species' && isLocked) {
           const isMatch = matchesSearch(d.data.name, searchTerm);
+          const currentElement = this;
+          const shouldApplyFade = searchTerm === '' || isMatch;
+          
+          // Highlight the hovered label
           d3.select(this)
-            .style('fill', searchTerm === '' && isMatch ? '#888' : searchTerm !== '' && isMatch ? '#888' : searchTerm !== '' && !isMatch ? '#ddd' : '#333')
+            .style('fill', searchTerm === '' && isMatch ? '#111' : searchTerm !== '' && isMatch ? '#111' : searchTerm !== '' && !isMatch ? '#eee' : '#333')
+            .style('font-size', searchTerm === '' && isMatch ? '14px' : searchTerm !== '' && isMatch ? '14px' : searchTerm !== '' && !isMatch ? (isSmallText ? '7.5px' : '10.5') : '12.5px')
             .style('cursor', searchTerm === '' && isMatch ? 'pointer' : searchTerm !== '' && isMatch ? 'pointer' : searchTerm !== '' && !isMatch ? 'default' : 'default');
+
+          if (shouldApplyFade) {
+            // Calculate distances to other species labels and fade closest ones
+            const hoveredRect = currentElement.getBoundingClientRect();
+            const hoveredCenterX = hoveredRect.left + hoveredRect.width / 2;
+            const hoveredCenterY = hoveredRect.top + hoveredRect.height / 2;
+            
+            g.selectAll('.node text')
+              .filter(function(otherD: any) {
+                const isSpecies = otherD.data.taxonomicLevel === 'species';
+                const isNotCurrent = this !== currentElement;
+                const matchesSearchIfNeeded = searchTerm === '' || matchesSearch(otherD.data.name, searchTerm);
+                return isNotCurrent && isSpecies && matchesSearchIfNeeded;
+              })
+              .each(function() {
+                if (true) {
+                  const otherRect = (this as SVGTextElement).getBoundingClientRect();
+                  const otherCenterX = otherRect.left + otherRect.width / 2;
+                  const otherCenterY = otherRect.top + otherRect.height / 2;
+                  
+                  const distance = Math.sqrt(
+                    Math.pow(hoveredCenterX - otherCenterX, 2) + 
+                    Math.pow(hoveredCenterY - otherCenterY, 2)
+                  );
+                  
+                  // Fade labels within a certain distance (adjust threshold as needed)
+                  const threshold = 100; // pixels - increased for wider effect
+                  if (distance <= threshold) {
+                    // Closer labels get lower opacity (more faded), farther ones stay more visible
+                    const fadeStrength = 1 - (distance / threshold); // 1 for closest, 0 for farthest
+                    const opacity = Math.max(0.1, 1 - fadeStrength); // Closer = more faded
+                    d3.select(this)
+                      .style('transition', 'all 0.125s ease')
+                      .style('opacity', opacity);
+                  }
+                }
+
+              });
+          }
         }
       })
       .on('mouseleave', function(_, d: D3Node) {
         if (d.data.taxonomicLevel === 'species' && isLocked) {
           const isMatch = matchesSearch(d.data.name, searchTerm);
+          
+          // Reset the hovered label
           d3.select(this)
-            .style('fill', searchTerm === '' && isMatch ? '#333' : searchTerm !== '' && isMatch ? '#000' : searchTerm !== '' && !isMatch ? '#ddd' : '#333')
+            .style('fill', searchTerm === '' && isMatch ? '#444' : searchTerm !== '' && isMatch ? '#000' : searchTerm !== '' && !isMatch ? '#eee' : '#444')
+            .style('font-size', searchTerm === '' && isMatch ? (isSmallText ? '7.5px' : '10.5') : searchTerm !== '' && isMatch ? '12.5px' : searchTerm !== '' && !isMatch ? (isSmallText ? '7.5px' : '10.5') : (isSmallText ? '7.5px' : '10.5'))
             .style('font-weight', searchTerm !== '' && isMatch ? 'bold' : 'normal')
             .style('cursor', 'inherit');
+
+          // Restore opacity for all species text labels
+          g.selectAll('.node text')
+            .filter((otherD: any) => otherD.data.taxonomicLevel === 'species')
+            .style('transition', 'all 0.125s ease')
+            .style('opacity', 1);
         }
       })
       // Add click handler for species labels
@@ -528,6 +669,8 @@ const Tree: React.FC = () => {
       .text('↻');
 
     resetButton.on('click', () => {
+      setSelectedLevel(defaultSelectedLevel)
+      setSelectedLevelInstance(['', ''])
       if (!svgRef.current) return;
       d3.select(svgRef.current)
         .transition()
@@ -539,7 +682,7 @@ const Tree: React.FC = () => {
     });
 
     resetButton.append('title')
-      .text('Reset Zoom');
+      .text('Reset');
 
     // Reset zoom button
     const panButton = controls.append('g')
@@ -563,9 +706,7 @@ const Tree: React.FC = () => {
       .style('font-weight', 'bold')
       .style('fill', '#495057')
       .text(isLocked ? '⊗' : '○');
-      // .text('●');
-      // .text('○');
-
+      
     panButton.on('click', () => {
       if (!svgRef.current) return;
       isLocked = !isLocked;
@@ -609,7 +750,6 @@ const Tree: React.FC = () => {
       .style('pointer-events', 'none')
       .text('Available Genomes');
 
-
     // Add hover behavior to the entire tree area
     // might be a problem if you hover the d3 while updating searchTerm because opacities reset
     svg
@@ -628,7 +768,7 @@ const Tree: React.FC = () => {
         dropdown.transition().duration(0).style('opacity', 0);
 
       });
-  }, [searchTerm, selectedLevel]);
+  }, [searchTerm, selectedLevel, selectedLevelInstance]);
 
   useEffect(() => {
     // Initial draw
@@ -660,33 +800,24 @@ const Tree: React.FC = () => {
 
   return (
     <div ref={containerRef} className={`w-100 h-full tree-container ${isActuallyLocked ? '' : 'cursor-grab'}`}>
-      {/* <div className='tree-container'> */}
-        <select 
-          className='form-select form-select-sm border-0 bg-transparent fw-semibold cursor-pointer' 
-          aria-label='Default select example'
-          style={{
-            position: 'fixed',
-            right: '10px',
-            top: '45px',
-            width: '135px',
-            height: '30px',
-            fontSize: '12px',
-          }}
-          onChange={(e) => setSelectedLevel(e.target.value)}
-        >
-          {/* 'domain' | 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'genus' | 'species' */}
-          <option value='domain'>Domain</option>
-          <option value='kingdom' selected>Kingdom</option>
-          <option value='phylum'>Phylum</option>
-          <option value='class'>Class</option>
-          <option value='order'>Order</option>
-          <option value='family'>Family</option>
-          <option value='genus'>Genus</option>
-          <option value='species'>Species</option>
-        </select>
+      <select 
+        className='form-select form-select-sm border-0 bg-transparent fw-semibold cursor-pointer' 
+        aria-label='Default select example'
+        style={{
+          position: 'fixed',
+          right: '10px',
+          top: '45px',
+          width: '135px',
+          height: '30px',
+          fontSize: '12px',
+        }}
+        value={selectedLevel}
+        onChange={(e) => setSelectedLevel(e.target.value)}
+      >
+        {prunedLevelOptions.map((level) => <option key={level} value={level.toLowerCase()}>{level}</option>)}
+      </select>
 
-        <svg ref={svgRef} className='w-100 rounded'></svg>
-      {/* </div> */}
+      <svg ref={svgRef} className='w-100 rounded'></svg>
     </div>
   );
 };
