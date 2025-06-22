@@ -3,9 +3,10 @@ import * as d3 from 'd3';
 import toast from 'react-hot-toast';
 
 import { useAboutSearch } from '../stores/search';
+import { useTreeFullScreen } from '../stores/fullScreen';
 
 import rawTreeData from '../assets/tree.json'
-// import rawTreeData/ from '../assets/sample_tree.json'
+// import rawTreeData from '../assets/sample_tree.json'
 
 // Helper function to recursively cast taxonomicLevel to the correct type
 function castTreeNode(node: any): TreeNode {
@@ -37,6 +38,7 @@ interface ZoomEvent extends d3.D3ZoomEvent<SVGSVGElement, unknown> {
 
 const Tree: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const controlsSvgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const defaultSelectedLevel = 'class'
@@ -44,6 +46,9 @@ const Tree: React.FC = () => {
   const [isActuallyLocked, setIsActuallyLocked] = useState(true);
   const [selectedLevel, setSelectedLevel] = useState(defaultSelectedLevel);
   const [selectedLevelInstance, setSelectedLevelInstance] = useState(['', '']);
+  // const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const { isFullScreen } = useTreeFullScreen();
   const { searchTerm } = useAboutSearch();
 
   const matchesSearch = (speciesName: string, searchTerm: string): boolean => {
@@ -122,10 +127,13 @@ const Tree: React.FC = () => {
     : levelOptions.slice(levelOptions.map(level => level.toLowerCase()).indexOf(selectedLevelInstance[0]));
 
   const drawTree = useCallback(() => {
-    if (!svgRef.current || !containerRef.current) return;
+    if (!svgRef.current || !controlsSvgRef.current || !containerRef.current) return;
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove(); // Clear previous render
+    svg.selectAll('*').remove();
+    
+    const controlsSvg = d3.select(controlsSvgRef.current);
+    controlsSvg.selectAll('*').remove();
 
     // Get current container dimensions
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -136,6 +144,7 @@ const Tree: React.FC = () => {
 
     // Set up the SVG with zoom behavior
     svg.attr('width', width).attr('height', height);
+    controlsSvg.attr('width', width).attr('height', height);
 
     // Create main container group
     const container = svg.append('g');
@@ -160,15 +169,20 @@ const Tree: React.FC = () => {
     svg.call(zoom);
 
     // Set initial zoom level with proper centering
-    const initialScale = 0.733;
+    const initialScale = isFullScreen ? 0.9 : 1.1;
 
     let centerX, centerY;
     if (width < 992) {
       centerX = width / 2;
       centerY = height / 2;
+    } else if (isFullScreen) {
+      centerX = width / 15;
+      centerY = height / 20;
+      // centerX = 0;
+      // centerY = 0;
     } else {
-      centerX = width / 2.28;
-      centerY = height / 4.48;
+      centerX = width / 4.8;
+      centerY = height / 8;
     }
 
     svg.call(zoom.transform, 
@@ -252,10 +266,6 @@ const Tree: React.FC = () => {
     // extractSelectedLevels(treeData as TreeNode);
     extractSelectedLevels(prunedTreeData as TreeNode);
 
-    // const colorScale = d3.scaleOrdinal<string>()
-    //   .domain(Array.from(levelNames))
-    //   .range(['#e41a1cbb', '#377eb8bb', '#4daf4abb', '#984ea3bb', '#ff7f00bb', '#ffff33bb', '#a65628bb', '#f781bfbb']);
-
     // Generate evenly spaced hues
     const generateColors = (count: number) => {
       return Array.from({ length: count }, (_, i) => {
@@ -284,10 +294,10 @@ const Tree: React.FC = () => {
       })
       .style('stroke-width', (d: d3.HierarchyPointLink<TreeNode>) => {
         if (searchTerm === '') {
-          return 1.33;
+          return 1;
         }
         const hasMatch = hasMatchingDescendant(d.target, searchTerm);
-        return hasMatch ? 1.67 : 1.33;
+        return hasMatch ? 1.33 : 1;
       })
       .style('stroke-linecap', 'round')
       .style('opacity', (d: d3.HierarchyPointLink<TreeNode>) => {
@@ -304,7 +314,7 @@ const Tree: React.FC = () => {
         .angle(d => d.x)
         .radius(d => d.y))
       .style('fill', 'none')
-      .style('stroke', '#44444400')
+      .style('stroke', 'transparent')
       .style('stroke-width', 5)
       .on('mouseenter', function() {
         if (isActuallyLocked) {
@@ -352,11 +362,11 @@ const Tree: React.FC = () => {
           if (isSmallText) {
             return '7.5px';
           }
-          return '10.5px';
+          return '10px';
         }
         if (d.data.taxonomicLevel === 'species') {
           const isMatch = matchesSearch(d.data.name, searchTerm);
-          return isMatch ? '12.5px' : '7.5px';
+          return isMatch ? '10px' : '7.5px';
         }
         return '0';
       })
@@ -367,7 +377,7 @@ const Tree: React.FC = () => {
         }
         if (d.data.taxonomicLevel === 'species') {
           const isMatch = matchesSearch(d.data.name, searchTerm);
-          return isMatch ? 'bold' : 'normal';
+          return isMatch ? 'normal' : 'normal';
         }
         return 'normal';
       })
@@ -404,8 +414,9 @@ const Tree: React.FC = () => {
           // Highlight the hovered label
           d3.select(this)
             .style('fill', searchTerm === '' && isMatch ? '#111' : searchTerm !== '' && isMatch ? '#111' : searchTerm !== '' && !isMatch ? '#eee' : '#333')
-            .style('font-size', searchTerm === '' && isMatch ? '14px' : searchTerm !== '' && isMatch ? '14px' : searchTerm !== '' && !isMatch ? (isSmallText ? '7.5px' : '10.5') : '12.5px')
-            .style('cursor', searchTerm === '' && isMatch ? 'pointer' : searchTerm !== '' && isMatch ? 'pointer' : searchTerm !== '' && !isMatch ? 'default' : 'default');
+            .style('font-size', searchTerm === '' && isMatch ? '10px' : searchTerm !== '' && isMatch ? '11.5px' : searchTerm !== '' && !isMatch ? (isSmallText ? '7.5px' : '10') : '10px')
+            .style('cursor', searchTerm === '' && isMatch ? 'pointer' : searchTerm !== '' && isMatch ? 'pointer' : searchTerm !== '' && !isMatch ? 'default' : 'default')
+            .style('font-weight', searchTerm !== '' && isMatch ? 'bold' : 'normal')
 
           if (shouldApplyFade) {
             // Calculate distances to other species labels and fade closest ones
@@ -454,8 +465,8 @@ const Tree: React.FC = () => {
           // Reset the hovered label
           d3.select(this)
             .style('fill', searchTerm === '' && isMatch ? '#444' : searchTerm !== '' && isMatch ? '#000' : searchTerm !== '' && !isMatch ? '#eee' : '#444')
-            .style('font-size', searchTerm === '' && isMatch ? (isSmallText ? '7.5px' : '10.5') : searchTerm !== '' && isMatch ? '12.5px' : searchTerm !== '' && !isMatch ? (isSmallText ? '7.5px' : '10.5') : (isSmallText ? '7.5px' : '10.5'))
-            .style('font-weight', searchTerm !== '' && isMatch ? 'bold' : 'normal')
+            .style('font-size', searchTerm === '' && isMatch ? (isSmallText ? '7.5px' : '10') : searchTerm !== '' && isMatch ? '10px' : searchTerm !== '' && !isMatch ? (isSmallText ? '7.5px' : '10') : (isSmallText ? '7.5px' : '10'))
+            .style('font-weight', searchTerm !== '' && isMatch ? 'normal' : 'normal')
             .style('cursor', 'inherit');
 
           // Restore opacity for all species text labels
@@ -481,8 +492,6 @@ const Tree: React.FC = () => {
               </span>
             ));
 
-            // toast(`Clicked on species: ${d.data.name}`)
-
             // Create a URL-friendly version of the species name
             const speciesSlug = d.data.name.toLowerCase().replace(/\s+/g, '-');
             
@@ -496,23 +505,15 @@ const Tree: React.FC = () => {
             // Option 2: Open in new tab
             // window.open(url, '_blank');
             
-            // Option 3: Navigate to external URL (e.g., NCBI, Ensembl)
-            // const ncbiUrl = `https://www.ncbi.nlm.nih.gov/search/all/?term=${encodeURIComponent(d.data.name)}`;
-            // window.open(ncbiUrl, '_blank');
-            
             // For demo purposes, just log the action
             console.log(`Clicked on species: ${d.data.name}`);
             console.log(`Would navigate to: ${url}`);
-
-            // If you're using React Router, you might want to call a navigation function
-            // passed as a prop to this component
-
           }
         }
       });
 
     // Create legend (fixed position, not affected by zoom)
-    const legend = svg.append('g')
+    const legend = controlsSvg.append('g')
       .attr('class', 'legend')
       .attr('transform', `translate(${width - 135}, 20)`) // Right side positioning
       .style('opacity', 0)
@@ -567,7 +568,7 @@ const Tree: React.FC = () => {
       });
 
     // Add zoom controls (fixed position)
-    const controls = svg.append('g')
+    const controls = controlsSvg.append('g')
       .attr('class', 'zoom-controls')
       // .attr('transform', `translate(${width - 40}, ${legendData.length * 20 + 15})`)
       .attr('transform', `translate(${width - 40}, 10)`)
@@ -605,7 +606,7 @@ const Tree: React.FC = () => {
       d3.select(svgRef.current)
         .transition()
         .duration(250)
-        .call(zoom.scaleBy, 1.5, [centerX / initialScale, centerY / initialScale]);
+        .call(zoom.scaleBy, 1.5, [width / 2, height / 2]);
     });
 
     zoomInButton.append('title')
@@ -639,7 +640,7 @@ const Tree: React.FC = () => {
       d3.select(svgRef.current)
         .transition()
         .duration(250)
-        .call(zoom.scaleBy, 0.67, [centerX / initialScale, centerY / initialScale]);
+        .call(zoom.scaleBy, 0.666666, [width / 2, height / 2]);
     });
 
     zoomOutButton.append('title')
@@ -684,7 +685,7 @@ const Tree: React.FC = () => {
     resetButton.append('title')
       .text('Reset');
 
-    // Reset zoom button
+    // Panning button
     const panButton = controls.append('g')
       .attr('class', 'zoom-button')
       .attr('transform', 'translate(-105, 0)')
@@ -720,7 +721,42 @@ const Tree: React.FC = () => {
     panButton.append('title')
       .text(isLocked ? 'Enable Panning' : 'Disable Panning');
 
-    const dropdown = svg.append('g')
+    // // Full screen toggle button
+    // const fullScreenButton = controls.append('g')
+    //   .attr('class', 'zoom-button')
+    //   .attr('transform', 'translate(-140, 0)')
+    //   .style('cursor', 'pointer');
+
+    // fullScreenButton.append('rect')
+    //   .attr('width', 30)
+    //   .attr('height', 30)
+    //   .attr('rx', rectRadius)
+    //   .style('fill', '#f8f9fa')
+    //   .style('stroke', '#dee2e6')
+    //   .style('stroke-width', 1);
+
+    // fullScreenButton.append('text')
+    //   .attr('x', 15)
+    //   .attr('y', 20)
+    //   .style('text-anchor', 'middle')
+    //   .style('font-size', '12px')
+    //   .style('font-weight', 'bold')
+    //   .style('fill', '#495057')
+    //   .text(isFullScreen ? '■' : '□');
+      
+    // fullScreenButton.on('click', () => {
+    //   if (!svgRef.current) return;
+    //   setIsFullScreen(!isFullScreen);
+
+    //   d3.select(fullScreenButton.node())
+    //     .select('text')
+    //     .text(isFullScreen ? '■' : '□');
+    // });
+
+    // fullScreenButton.append('title')
+    //   .text(isFullScreen ? 'Disable Full Screen' : 'Enable Full Screen');
+
+    const dropdown = controlsSvg.append('g')
       .attr('class', 'dropdown-box')
       .attr('transform', `translate(${width - 145}, 45)`)
       .style('pointer-events', 'all')
@@ -734,41 +770,46 @@ const Tree: React.FC = () => {
       .attr('width', 135)
       .attr('height', 30)
       .attr('rx', rectRadius)
-      .style('fill', 'transparent')
+      .style('fill', 'rgba(255, 255, 255, 0.9)')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
 
     container.append('text')
       .attr('class', 'title-label')
-      .attr('x', centerX / 0.587)
-      .attr('y', centerY / 0.5 + radius + 130)
+      .attr('x', isFullScreen ? width / 6 : centerX / 1.9)
+      .attr('y', isFullScreen ? centerY / 0.15 + radius + 130 : centerY / 0.6 + radius + 130)
       .style('text-anchor', 'middle')
       .style('font-family', 'Nunito, arial, sans-serif')
       .style('font-weight', 'bold')
-      .style('font-size', '21px')
+      .style('font-size', '14px')
       .style('fill', '#333')
       .style('pointer-events', 'none')
       .text('Available Genomes');
 
     // Add hover behavior to the entire tree area
     // might be a problem if you hover the d3 while updating searchTerm because opacities reset
-    svg
-      .on('mouseenter', () => {
+    svg.on('mouseenter', () => {
         controls.transition().duration(0).style('opacity', 1);
         legend.transition().duration(0).style('opacity', 1);
         dropdown.transition().duration(0).style('opacity', 1);
       })
       .on('mouseleave', (e) => {
         const relatedTarget = e.relatedTarget as Element;
-        if (relatedTarget?.closest('.form-select')) {
-          return; // Don't hide if moving to select
+        if (relatedTarget && (
+          relatedTarget.closest('.form-select') ||
+          relatedTarget.closest('.zoom-controls') ||
+          relatedTarget.closest('.legend') ||
+          relatedTarget.closest('.dropdown-box') ||
+          relatedTarget.closest('svg')
+        )) {
+          return;
         }
         controls.transition().duration(0).style('opacity', 0);
         legend.transition().duration(0).style('opacity', 0);
         dropdown.transition().duration(0).style('opacity', 0);
 
       });
-  }, [searchTerm, selectedLevel, selectedLevelInstance]);
+  }, [searchTerm, selectedLevel, selectedLevelInstance, isFullScreen]);
 
   useEffect(() => {
     // Initial draw
@@ -799,26 +840,60 @@ const Tree: React.FC = () => {
   }, [drawTree]);
 
   return (
-    <div ref={containerRef} className={`w-100 h-full tree-container ${isActuallyLocked ? '' : 'cursor-grab'}`}>
-      <select 
-        className='form-select form-select-sm border-0 bg-transparent fw-semibold cursor-pointer' 
-        aria-label='Default select example'
-        style={{
-          position: 'fixed',
-          right: '10px',
-          top: '45px',
-          width: '135px',
-          height: '30px',
-          fontSize: '12px',
-        }}
-        value={selectedLevel}
-        onChange={(e) => setSelectedLevel(e.target.value)}
-      >
-        {prunedLevelOptions.map((level) => <option key={level} value={level.toLowerCase()}>{level}</option>)}
-      </select>
+    <div 
+    ref={containerRef} 
+    className={`tree-container ${isActuallyLocked ? '' : 'cursor-grab'}`}
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 'max(15%, 200px)',
+      right: 0,
+      bottom: 0,
+      zIndex: 0,
+    }}
+  >
+    <select 
+      className='form-select form-select-sm border-0 bg-transparent fw-semibold cursor-pointer' 
+      aria-label='Taxonomy Level Select'
+      style={{
+        position: 'fixed',
+        right: '10px',
+        top: '45px',
+        width: '135px',
+        height: '30px',
+        fontSize: '12px',
+        zIndex: 2,
+      }}
+      value={selectedLevel}
+      onChange={(e) => setSelectedLevel(e.target.value)}
+    >
+      {prunedLevelOptions.map((level) => <option key={level} value={level.toLowerCase()}>{level}</option>)}
+    </select>
+    <svg 
+      ref={controlsSvgRef}
+      className='w-100 rounded'
+      style={{
+        position: 'fixed',
+        top: 0,
+        right: 0,
+        left: 'max(15%, 200px)',
+        zIndex: 1,
+        pointerEvents: 'none',
 
-      <svg ref={svgRef} className='w-100 rounded'></svg>
-    </div>
+      }}
+    />
+    <svg 
+      ref={svgRef} 
+      className='w-100 rounded'
+      style={{
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        height: isFullScreen ? '100vh' : '130vh',
+        zIndex: 0,
+      }}
+    />
+  </div>
   );
 };
 

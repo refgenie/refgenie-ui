@@ -1,21 +1,22 @@
 import Tree from '../Tree';
 import { useAboutSearch } from '../../stores/search';
+import { useTreeFullScreen } from '../../stores/fullScreen';
 
 
 function About() {
   const { searchTerm, setSearchTerm } = useAboutSearch();
-  console.log(searchTerm)
+  const { isFullScreen, setIsFullScreen } = useTreeFullScreen();
 
   return (
     <>
-      <section className='tree'>
+      <section className=''>
         <Tree />
       </section>
       <div className='row p-2 px-lg-3 py-lg-4 pt-xxl-5 mt-3 mt-lg-0'>
         <div className='col-12 col-lg-7 col-xl-6 ms-xxl-4'>
 
           <div className='me-lg-5'>
-            <div className='p-3 mx-lg-2 mt-lg-2 rounded-top-4 rounded-end-4 d-inline-block bg-blur'>
+            <div className={`p-3 mx-lg-2 mt-lg-2 rounded-top-4 rounded-end-4 d-inline-block bg-blur ${isFullScreen ? 'd-none' : ''}`}>
               <h5 className='fw-bold'>What is Refgenie?</h5>
               <p className='mb-0'>
                 Refgenie is a standardized genome asset management system. It provides a command-line interface and API for 
@@ -25,8 +26,8 @@ function About() {
               </p>
             </div>
             
-            <div className='px-3 pt-2 pb-3 mx-lg-2 rounded-bottom-4 rounded-start-0 rounded-end-0 bg-blur about-search'>
-              <div className='input-group'>
+            <div className={`bg-blur about-search ${isFullScreen ? 'rounded-2 about-search-fixed' : 'px-3 pt-2 pb-3 mx-lg-2 rounded-bottom-4 rounded-start-0 rounded-end-0'}`}>
+              <div className={`input-group ${isFullScreen ? 'rounded-3' : ''}`}>
                 <input 
                   id='search-about' 
                   type='text' 
@@ -35,13 +36,18 @@ function About() {
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
+                    if (e.target.value !== '') {
+                      setIsFullScreen(true);
+                    } else {
+                      setIsFullScreen(false);
+                    }
                   }}
                 />
                 <span className='input-group-text bi bi-search'></span>
               </div>
             </div>
             
-            <div className='p-3 mx-lg-2 mb-lg-2 rounded-bottom-4 d-inline-block bg-blur'>
+            <div className={`p-3 mx-lg-2 mb-lg-2 rounded-bottom-4 d-inline-block bg-blur ${isFullScreen ? 'd-none' : ''}`}>
               <h6 className='fw-bold'>Key Features</h6>
               <ul className='mb-0'>
                 <li>Standardized genome asset management</li>
