@@ -16,10 +16,8 @@ function castTreeNode(node: any): TreeNode {
     children: node.children ? node.children.map(castTreeNode) : undefined,
   };
 }
-
 const treeData: TreeNode = castTreeNode(rawTreeData);
 
-// Type definitions
 interface TreeNode {
   name: string;
   taxonomicLevel?: 'domain' | 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'genus' | 'species';
@@ -120,6 +118,25 @@ const Tree: React.FC = () => {
     return null;
   }
 
+  // Identify instance of selected taxonomic level for given node
+  const findTaxonomicLevel = (node: d3.HierarchyPointNode<TreeNode>): string | null => {
+    // If this node is a class, return it
+    if (node.data.taxonomicLevel === selectedLevel) {
+      return node.data.name;
+    }
+    
+    // Walk up the tree to find the instance of selected level
+    let current = node.parent;
+    while (current) {
+      if (current.data.taxonomicLevel === selectedLevel) {
+        return current.data.name;
+      }
+      current = current.parent;
+    }
+    
+    return null;
+  };
+
   const prunedTreeData = pruneTreeToTarget(treeData, selectedLevelInstance[0], selectedLevelInstance[1]);
   const levelOptions = ['Domain', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species']
   const prunedLevelOptions = Array.isArray(selectedLevelInstance) && selectedLevelInstance[0] === '' && selectedLevelInstance[1] === '' 
@@ -128,6 +145,8 @@ const Tree: React.FC = () => {
 
   const drawTree = useCallback(() => {
     if (!svgRef.current || !controlsSvgRef.current || !containerRef.current) return;
+    
+    let isLocked = isActuallyLocked;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -140,7 +159,7 @@ const Tree: React.FC = () => {
     const width = containerRect.width;
     const height = window.innerHeight;
     const radius: number = Math.min(width, height) / 2 - 100;
-    const rectRadius = 4;
+    const borderRadius = 4;
 
     // Set up the SVG with zoom behavior
     svg.attr('width', width).attr('height', height);
@@ -149,8 +168,6 @@ const Tree: React.FC = () => {
     // Create main container group
     const container = svg.append('g');
 
-    let isLocked = isActuallyLocked;
-    
     // Create zoom behavior
     const zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.1, 10])
@@ -158,14 +175,13 @@ const Tree: React.FC = () => {
         container.attr('transform', event.transform.toString());
       })
       .filter((event) => {
-        // Allow programmatic calls, block mouse drag
         if (isLocked) {
           return event.type === null;
         }
         return true;
       });
 
-    // Apply zoom to SVG
+    // needed for panning
     svg.call(zoom);
 
     // Set initial zoom level with proper centering
@@ -178,8 +194,6 @@ const Tree: React.FC = () => {
     } else if (isFullScreen) {
       centerX = width / 15;
       centerY = height / 20;
-      // centerX = 0;
-      // centerY = 0;
     } else {
       centerX = width / 4.8;
       centerY = height / 8;
@@ -220,7 +234,19 @@ const Tree: React.FC = () => {
       .attr('cy', height / 2)
       .attr('r', radius + 100)
       .style('fill', 'url(#background-gradient)')
-      .style('pointer-events', 'none'); // Don't interfere with interactions
+      .style('pointer-events', 'none');
+
+    container.append('text')
+      .attr('class', 'title-label')
+      .attr('x', isFullScreen ? width / 6 : centerX / 1.9)
+      .attr('y', isFullScreen ? centerY / 0.15 + radius + 130 : centerY / 0.6 + radius + 130)
+      .style('text-anchor', 'middle')
+      .style('font-family', 'Nunito, arial, sans-serif')
+      .style('font-weight', 'bold')
+      .style('font-size', '14px')
+      .style('fill', '#333')
+      .style('pointer-events', 'none')
+      .text('Available Genomes');
 
     // Set up the main group with initial translation
     const g = container
@@ -235,24 +261,6 @@ const Tree: React.FC = () => {
     // Create hierarchy
     const root = tree(d3.hierarchy(prunedTreeData as TreeNode));
 
-    const findTaxonomicLevel = (node: d3.HierarchyPointNode<TreeNode>): string | null => {
-      // If this node is a class, return it
-      if (node.data.taxonomicLevel === selectedLevel) {
-        return node.data.name;
-      }
-      
-      // Walk up the tree to find the instance of selected level
-      let current = node.parent;
-      while (current) {
-        if (current.data.taxonomicLevel === selectedLevel) {
-          return current.data.name;
-        }
-        current = current.parent;
-      }
-      
-      return null;
-    };
-
     // Identify unique levels
     const levelNames = new Set<string>();
     const extractSelectedLevels = (node: TreeNode) => {
@@ -263,7 +271,6 @@ const Tree: React.FC = () => {
         node.children.forEach(extractSelectedLevels);
       }
     };
-    // extractSelectedLevels(treeData as TreeNode);
     extractSelectedLevels(prunedTreeData as TreeNode);
 
     // Generate evenly spaced hues
@@ -289,8 +296,8 @@ const Tree: React.FC = () => {
       .style('fill', 'none')
       .style('stroke', (d: d3.HierarchyPointLink<TreeNode>) => {
         const taxonomicLevel = findTaxonomicLevel(d.target);
-        const color = taxonomicLevel ? colorScale(taxonomicLevel) : '#999999bb';
-        return typeof color === 'string' ? color : '#999999bb';
+        const color = taxonomicLevel ? String(colorScale(taxonomicLevel)) : '#999999bb';
+        return color;
       })
       .style('stroke-width', (d: d3.HierarchyPointLink<TreeNode>) => {
         if (searchTerm === '') {
@@ -347,8 +354,6 @@ const Tree: React.FC = () => {
         translate(${d.y},0)
       `);
 
-    const isSmallText = levelOptions.slice(levelOptions.map(level => level.toLowerCase()).indexOf(defaultSelectedLevel)).map(level => level.toLowerCase()).indexOf(selectedLevelInstance[0].toLowerCase()) == -1
-
     // Node labels
     node.append('text')
       .attr('dy', '0.31em')
@@ -356,54 +361,32 @@ const Tree: React.FC = () => {
       .attr('text-anchor', (d: D3Node) => d.x < Math.PI === !d.children ? 'start' : 'end')
       .attr('transform', (d: D3Node) => d.x >= Math.PI ? 'rotate(180)' : null)
       .style('font-family', 'Nunito, arial, sans-serif')
-      // .style('font-size', (d: D3Node) => d.data.taxonomicLevel === 'species' ? '11px' : '0')
       .style('font-size', (d: D3Node) => {
-        if (d.data.taxonomicLevel === 'species' && searchTerm === '') {
-          if (isSmallText) {
-            return '7.5px';
-          }
-          return '10px';
-        }
         if (d.data.taxonomicLevel === 'species') {
-          const isMatch = matchesSearch(d.data.name, searchTerm);
-          return isMatch ? '10px' : '7.5px';
+          if (searchTerm === '') {
+            return '7.5px';
+          } else {
+            const isMatch = matchesSearch(d.data.name, searchTerm);
+            return isMatch ? '10px' : '7.5px';
+          }
         }
         return '0';
       })
-      // .style('font-weight', (d: D3Node) => d.data.taxonomicLevel === 'species' ? 'semibold' : 'normal')
-      .style('font-weight', (d: D3Node) => {
-        if (searchTerm === '') {
-          return 'normal';
-        }
-        if (d.data.taxonomicLevel === 'species') {
-          const isMatch = matchesSearch(d.data.name, searchTerm);
-          return isMatch ? 'normal' : 'normal';
-        }
-        return 'normal';
-      })
+      .style('font-weight', 'normal')
       .style('fill', (d: D3Node) => {
-        if (searchTerm === '') {
-          return '#444';
-        }
         if (d.data.taxonomicLevel === 'species') {
           const isMatch = matchesSearch(d.data.name, searchTerm);
-          return isMatch ? '#000' : '#eee'; // Darker text for matches
+          return isMatch ? '#444' : '#eee';
         }
         return '#444';
       })
       .text((d: D3Node) => {
         if (d.data.taxonomicLevel === 'species') {
-          return `${d.data.name}`;
+          return d.data.name;
         }
         return d.data.name ?? null;
       })
       .style('transition', 'all 0.125s ease')
-      // .text((d: D3Node) => {
-      //   if (d.data.taxonomicLevel === 'species') {
-      //     return `${d.data.name}`;
-      //   }
-      //   return d.data.name ?? null;
-      // })
       // Add hover effects only for species labels when panning is locked
       .on('mouseenter', function(_, d: D3Node) {
         if (d.data.taxonomicLevel === 'species' && isLocked) {
@@ -413,10 +396,10 @@ const Tree: React.FC = () => {
           
           // Highlight the hovered label
           d3.select(this)
-            .style('fill', searchTerm === '' && isMatch ? '#111' : searchTerm !== '' && isMatch ? '#111' : searchTerm !== '' && !isMatch ? '#eee' : '#333')
-            .style('font-size', searchTerm === '' && isMatch ? '10px' : searchTerm !== '' && isMatch ? '11.5px' : searchTerm !== '' && !isMatch ? (isSmallText ? '7.5px' : '10') : '10px')
-            .style('cursor', searchTerm === '' && isMatch ? 'pointer' : searchTerm !== '' && isMatch ? 'pointer' : searchTerm !== '' && !isMatch ? 'default' : 'default')
-            .style('font-weight', searchTerm !== '' && isMatch ? 'bold' : 'normal')
+            .style('fill', searchTerm !== '' && !isMatch ? '#eee' : '#444')
+            .style('font-size', searchTerm === '' ? '10px' : isMatch ? '11.1px' : '7.5px')
+            .style('cursor', isMatch ? 'pointer' : searchTerm !== '' && !isMatch ? 'default' : 'default')
+            .style('font-weight', isMatch ? 'bold' : 'normal')
 
           if (shouldApplyFade) {
             // Calculate distances to other species labels and fade closest ones
@@ -453,7 +436,6 @@ const Tree: React.FC = () => {
                       .style('opacity', opacity);
                   }
                 }
-
               });
           }
         }
@@ -464,9 +446,9 @@ const Tree: React.FC = () => {
           
           // Reset the hovered label
           d3.select(this)
-            .style('fill', searchTerm === '' && isMatch ? '#444' : searchTerm !== '' && isMatch ? '#000' : searchTerm !== '' && !isMatch ? '#eee' : '#444')
-            .style('font-size', searchTerm === '' && isMatch ? (isSmallText ? '7.5px' : '10') : searchTerm !== '' && isMatch ? '10px' : searchTerm !== '' && !isMatch ? (isSmallText ? '7.5px' : '10') : (isSmallText ? '7.5px' : '10'))
-            .style('font-weight', searchTerm !== '' && isMatch ? 'normal' : 'normal')
+            .style('fill', searchTerm === '' ? '#444' : isMatch ? '#000' : '#eee')
+            .style('font-size', searchTerm === '' ? '7.5px' : isMatch ? '10px' : '7.5px')
+            .style('font-weight', 'normal')
             .style('cursor', 'inherit');
 
           // Restore opacity for all species text labels
@@ -515,9 +497,7 @@ const Tree: React.FC = () => {
     // Create legend (fixed position, not affected by zoom)
     const legend = controlsSvg.append('g')
       .attr('class', 'legend')
-      .attr('transform', `translate(${width - 135}, 20)`) // Right side positioning
-      .style('opacity', 0)
-      .style('transition', 'opacity 0.25s ease')
+      .attr('transform', `translate(${width - 135}, 20)`)
       .style('pointer-events', 'all')
       .on('mousedown', (event) => {
         event.stopPropagation(); // Prevent zoom behavior from capturing this
@@ -535,7 +515,7 @@ const Tree: React.FC = () => {
       .attr('y', 60)
       .attr('width', 135)
       .attr('height', legendData.length * 20)
-      .attr('rx', rectRadius)
+      .attr('rx', borderRadius)
       .style('fill', 'rgba(255, 255, 255, 0.9)')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -549,10 +529,8 @@ const Tree: React.FC = () => {
 
     // Legend circles
     legendItems.append('circle')
-      .attr('r', 3.5)
-      .style('fill', d => d.color as string)
-      .style('stroke', '#fff')
-      .style('stroke-width', 2);
+      .attr('r', 2.5)
+      .style('fill', d => d.color as string);
 
     // Legend text
     legendItems.append('text')
@@ -563,7 +541,7 @@ const Tree: React.FC = () => {
       .style('font-size', '12px')
       .style('fill', '#333')
       .text(d => {
-        const maxLength = 14; // Adjust based on your needs
+        const maxLength = 14;
         return d.name.length > maxLength ? d.name.substring(0, maxLength) + '...' : d.name;
       });
 
@@ -573,8 +551,6 @@ const Tree: React.FC = () => {
       // .attr('transform', `translate(${width - 40}, ${legendData.length * 20 + 15})`)
       .attr('transform', `translate(${width - 40}, 10)`)
       .style('pointer-events', 'all')
-      .style('opacity', 0)
-      .style('transition', 'opacity 0.25s ease')
       .on('mousedown', (event) => {
         event.stopPropagation();
       });
@@ -587,7 +563,7 @@ const Tree: React.FC = () => {
     zoomInButton.append('rect')
       .attr('width', 30)
       .attr('height', 30)
-      .attr('rx', rectRadius)
+      .attr('rx', borderRadius)
       .style('fill', '#f8f9fa')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -621,7 +597,7 @@ const Tree: React.FC = () => {
     zoomOutButton.append('rect')
       .attr('width', 30)
       .attr('height', 30)
-      .attr('rx', rectRadius)
+      .attr('rx', borderRadius)
       .style('fill', '#f8f9fa')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -655,7 +631,7 @@ const Tree: React.FC = () => {
     resetButton.append('rect')
       .attr('width', 30)
       .attr('height', 30)
-      .attr('rx', rectRadius)
+      .attr('rx', borderRadius)
       .style('fill', '#f8f9fa')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -694,7 +670,7 @@ const Tree: React.FC = () => {
     panButton.append('rect')
       .attr('width', 30)
       .attr('height', 30)
-      .attr('rx', rectRadius)
+      .attr('rx', borderRadius)
       .style('fill', '#f8f9fa')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
@@ -730,7 +706,7 @@ const Tree: React.FC = () => {
     // fullScreenButton.append('rect')
     //   .attr('width', 30)
     //   .attr('height', 30)
-    //   .attr('rx', rectRadius)
+    //   .attr('rx', borderRadius)
     //   .style('fill', '#f8f9fa')
     //   .style('stroke', '#dee2e6')
     //   .style('stroke-width', 1);
@@ -760,8 +736,6 @@ const Tree: React.FC = () => {
       .attr('class', 'dropdown-box')
       .attr('transform', `translate(${width - 145}, 45)`)
       .style('pointer-events', 'all')
-      .style('opacity', 0)
-      .style('transition', 'opacity 0.25s ease')
       .on('mousedown', (event) => {
         event.stopPropagation();
       });
@@ -769,29 +743,19 @@ const Tree: React.FC = () => {
     dropdown.append('rect')
       .attr('width', 135)
       .attr('height', 30)
-      .attr('rx', rectRadius)
+      .attr('rx', borderRadius)
       .style('fill', 'rgba(255, 255, 255, 0.9)')
       .style('stroke', '#dee2e6')
       .style('stroke-width', 1);
 
-    container.append('text')
-      .attr('class', 'title-label')
-      .attr('x', isFullScreen ? width / 6 : centerX / 1.9)
-      .attr('y', isFullScreen ? centerY / 0.15 + radius + 130 : centerY / 0.6 + radius + 130)
-      .style('text-anchor', 'middle')
-      .style('font-family', 'Nunito, arial, sans-serif')
-      .style('font-weight', 'bold')
-      .style('font-size', '14px')
-      .style('fill', '#333')
-      .style('pointer-events', 'none')
-      .text('Available Genomes');
-
     // Add hover behavior to the entire tree area
     // might be a problem if you hover the d3 while updating searchTerm because opacities reset
+    controlsSvg
+      .style('opacity', 0)
+      .style('transition', 'opacity 0.25s ease')
+
     svg.on('mouseenter', () => {
-        controls.transition().duration(0).style('opacity', 1);
-        legend.transition().duration(0).style('opacity', 1);
-        dropdown.transition().duration(0).style('opacity', 1);
+        controlsSvg.transition().duration(0).style('opacity', 1);
       })
       .on('mouseleave', (e) => {
         const relatedTarget = e.relatedTarget as Element;
@@ -804,11 +768,9 @@ const Tree: React.FC = () => {
         )) {
           return;
         }
-        controls.transition().duration(0).style('opacity', 0);
-        legend.transition().duration(0).style('opacity', 0);
-        dropdown.transition().duration(0).style('opacity', 0);
-
+        controlsSvg.transition().duration(0).style('opacity', 0);
       });
+
   }, [searchTerm, selectedLevel, selectedLevelInstance, isFullScreen]);
 
   useEffect(() => {
