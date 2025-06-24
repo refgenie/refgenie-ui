@@ -13,8 +13,8 @@ import About from './components/pages/About';
 import Search from './components/pages/Search';
 import Genomes from './components/pages/Genomes';
 import Assets from './components/pages/Assets';
-import AssetClasses from './components/pages/AssetClasses';
-import Recipes from './components/pages/Recipes';
+// import AssetClasses from './components/pages/AssetClasses';
+// import Recipes from './components/pages/Recipes';
 import Downloads from './components/pages/Downloads';
 import Config from './components/pages/Config';
 
