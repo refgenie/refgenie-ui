@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useCallback, useState } from 'react';
 import * as d3 from 'd3';
 import toast from 'react-hot-toast';
 
-import { useAboutSearch } from '../stores/search';
+import { useAboutSearch, useSelectedSpecies } from '../stores/search';
 import { useTreeFullScreen } from '../stores/fullScreen';
 
 import rawTreeData from '../assets/tree.json'
@@ -48,6 +48,7 @@ const Tree: React.FC = () => {
 
   const { isFullScreen } = useTreeFullScreen();
   const { searchTerm } = useAboutSearch();
+  const { setSelectedSpecies } = useSelectedSpecies();
 
   const matchesSearch = (speciesName: string, searchTerm: string): boolean => {
     if (!searchTerm.trim()) return true; // If no search term, all match
@@ -401,12 +402,14 @@ const Tree: React.FC = () => {
       .style('cursor', 'pointer')
       .style('transition', 'all 0.125s ease')
       .text(d => d.data.name)
-      .on('mouseenter', function() {
+      .on('mouseenter', function(_, d: D3Node) {
         if (isLocked) {
           // Bold and enlarge on hover - it's already on top!
           d3.select(this)
             .style('font-size', '11.1px')
             .style('font-weight', 'bold');
+
+          setSelectedSpecies(d.data.name)
 
           // Your existing fade logic for nearby elements
           const currentElement = this;
@@ -774,7 +777,7 @@ const Tree: React.FC = () => {
       top: 0,
       left: 'max(15%, 200px)',
       right: 0,
-      bottom: 0,
+      height: isFullScreen ? '100vh' : '130vh',
       zIndex: 0,
     }}
   >

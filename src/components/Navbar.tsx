@@ -61,8 +61,8 @@ function Navbar() {
               <div className=''>
                 <NavLink page={'genomes'} title={'Genomes'} position='side' currentPage={location}/>
                 <NavLink page={'assets'} title={'Assets'} position='side' currentPage={location}/>
-                <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
-                <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/>
+                {/* <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
+                <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/> */}
               </div>
               
               <p className='fst-condensed mt-3 mb-0'>
@@ -120,8 +120,8 @@ function Navbar() {
               <div className=''>
                 <NavLink page={'genomes'} title={'Genomes'} position='side' currentPage={location}/>
                 <NavLink page={'assets'} title={'Assets'} position='side' currentPage={location}/>
-                <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
-                <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/>
+                {/* <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
+                <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/> */}
               </div>
               
               <p className='fst-condensed mt-2 mb-0'>

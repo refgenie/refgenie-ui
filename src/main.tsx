@@ -37,8 +37,8 @@ function Main() {
                   <Route path='/search' element={<Search />} />
                   <Route path='/genomes' element={<Genomes />} />
                   <Route path='/assets' element={<Assets />} />
-                  <Route path='/assetclasses' element={<AssetClasses />} />
-                  <Route path='/recipes' element={<Recipes />} />
+                  {/* <Route path='/assetclasses' element={<AssetClasses />} />
+                  <Route path='/recipes' element={<Recipes />} /> */}
                   <Route path='/downloads' element={<Downloads />} />
                   <Route path='/config' element={<Config />} />
                 </Routes>

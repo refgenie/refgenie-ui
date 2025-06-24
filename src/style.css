@@ -114,6 +114,13 @@ h1, h2, h3, h4, h5, h6 {
     width: 300px;
     z-index: 0;
   }
+  .species-details-fixed {
+    position: fixed;
+    top: 3.5rem;
+    left: calc(max(15%, 200px) + 10px);
+    width: 300px;
+    z-index: 0;
+  }
 }
 @media (min-width: 992px) and (max-width: 1200px) {
 }
@@ -156,11 +163,10 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 1;
 }
 
-.tree-container::-webkit-scrollbar {
+.tree-container::-webkit-scrollbar, body::-webkit-scrollbar {
   display: none;
 }
 
-.tree-container {
-  overflow-y: scroll;
+.tree-container, body {
   scrollbar-width: none; 
 }
