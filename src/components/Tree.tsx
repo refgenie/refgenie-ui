@@ -345,7 +345,7 @@ const Tree: React.FC = () => {
       });
 
     // Draw nodes
-    const node = g.selectAll('.node')
+    g.selectAll('.node')
       .data(root.descendants())
       .enter().append('g')
       .attr('class', 'node')
@@ -354,143 +354,107 @@ const Tree: React.FC = () => {
         translate(${d.y},0)
       `);
 
-    // Node labels
-    node.append('text')
+    // RENDER NON-MATCHING TEXT FIRST (behind)
+    g.selectAll('.non-matching-label')
+      .data(root.descendants().filter(d => 
+        d.data.taxonomicLevel === 'species' && 
+        searchTerm !== '' && 
+        !matchesSearch(d.data.name, searchTerm)
+      ))
+      .enter().append('text')
+      .attr('class', 'non-matching-label')
       .attr('dy', '0.31em')
       .attr('x', (d: D3Node) => d.x < Math.PI === !d.children ? 6 : -6)
       .attr('text-anchor', (d: D3Node) => d.x < Math.PI === !d.children ? 'start' : 'end')
-      .attr('transform', (d: D3Node) => d.x >= Math.PI ? 'rotate(180)' : null)
+      .attr('transform', (d: D3Node) => `
+        rotate(${d.x * 180 / Math.PI - 90}) 
+        translate(${d.y},0)
+        ${d.x >= Math.PI ? 'rotate(180)' : ''}
+      `)
       .style('font-family', 'Nunito, arial, sans-serif')
-      .style('font-size', (d: D3Node) => {
-        if (d.data.taxonomicLevel === 'species') {
-          if (searchTerm === '') {
-            return '7.5px';
-          } else {
-            const isMatch = matchesSearch(d.data.name, searchTerm);
-            return isMatch ? '10px' : '7.5px';
-          }
-        }
-        return '0';
-      })
+      .style('font-size', '7.5px')
       .style('font-weight', 'normal')
-      .style('fill', (d: D3Node) => {
-        if (d.data.taxonomicLevel === 'species') {
-          const isMatch = matchesSearch(d.data.name, searchTerm);
-          return isMatch ? '#444' : '#eee';
-        }
-        return '#444';
-      })
-      .text((d: D3Node) => {
-        if (d.data.taxonomicLevel === 'species') {
-          return d.data.name;
-        }
-        return d.data.name ?? null;
-      })
+      .style('fill', '#eee')
+      .style('cursor', 'default')
+      .text(d => d.data.name);
+
+    // RENDER MATCHING TEXT SECOND (on top) 
+    g.selectAll('.matching-label')
+      .data(root.descendants().filter(d => 
+        d.data.taxonomicLevel === 'species' && 
+        (searchTerm === '' || matchesSearch(d.data.name, searchTerm))
+      ))
+      .enter().append('text')
+      .attr('class', 'matching-label')
+      .attr('dy', '0.31em')
+      .attr('x', (d: D3Node) => d.x < Math.PI === !d.children ? 6 : -6)
+      .attr('text-anchor', (d: D3Node) => d.x < Math.PI === !d.children ? 'start' : 'end')
+      .attr('transform', (d: D3Node) => `
+        rotate(${d.x * 180 / Math.PI - 90}) 
+        translate(${d.y},0)
+        ${d.x >= Math.PI ? 'rotate(180)' : ''}
+      `)
+      .style('font-family', 'Nunito, arial, sans-serif')
+      .style('font-size', searchTerm === '' ? '7.5px' : '10px')
+      .style('font-weight', 'normal')
+      .style('fill', '#444')
+      .style('cursor', 'pointer')
       .style('transition', 'all 0.125s ease')
-      // Add hover effects only for species labels when panning is locked
-      .on('mouseenter', function(_, d: D3Node) {
-        if (d.data.taxonomicLevel === 'species' && isLocked) {
-          const isMatch = matchesSearch(d.data.name, searchTerm);
+      .text(d => d.data.name)
+      .on('mouseenter', function() {
+        if (isLocked) {
+          // Bold and enlarge on hover - it's already on top!
+          d3.select(this)
+            .style('font-size', '11.1px')
+            .style('font-weight', 'bold');
+
+          // Your existing fade logic for nearby elements
           const currentElement = this;
-          const shouldApplyFade = searchTerm === '' || isMatch;
+          const hoveredRect = currentElement.getBoundingClientRect();
+          const hoveredCenterX = hoveredRect.left + hoveredRect.width / 2;
+          const hoveredCenterY = hoveredRect.top + hoveredRect.height / 2;
           
-          // Highlight the hovered label
-          d3.select(this)
-            .style('fill', searchTerm !== '' && !isMatch ? '#eee' : '#444')
-            .style('font-size', searchTerm === '' ? '10px' : isMatch ? '11.1px' : '7.5px')
-            .style('cursor', isMatch ? 'pointer' : searchTerm !== '' && !isMatch ? 'default' : 'default')
-            .style('font-weight', isMatch ? 'bold' : 'normal')
-
-          if (shouldApplyFade) {
-            // Calculate distances to other species labels and fade closest ones
-            const hoveredRect = currentElement.getBoundingClientRect();
-            const hoveredCenterX = hoveredRect.left + hoveredRect.width / 2;
-            const hoveredCenterY = hoveredRect.top + hoveredRect.height / 2;
-            
-            g.selectAll('.node text')
-              .filter(function(otherD: any) {
-                const isSpecies = otherD.data.taxonomicLevel === 'species';
-                const isNotCurrent = this !== currentElement;
-                const matchesSearchIfNeeded = searchTerm === '' || matchesSearch(otherD.data.name, searchTerm);
-                return isNotCurrent && isSpecies && matchesSearchIfNeeded;
-              })
-              .each(function() {
-                if (true) {
-                  const otherRect = (this as SVGTextElement).getBoundingClientRect();
-                  const otherCenterX = otherRect.left + otherRect.width / 2;
-                  const otherCenterY = otherRect.top + otherRect.height / 2;
-                  
-                  const distance = Math.sqrt(
-                    Math.pow(hoveredCenterX - otherCenterX, 2) + 
-                    Math.pow(hoveredCenterY - otherCenterY, 2)
-                  );
-                  
-                  // Fade labels within a certain distance (adjust threshold as needed)
-                  const threshold = 100; // pixels - increased for wider effect
-                  if (distance <= threshold) {
-                    // Closer labels get lower opacity (more faded), farther ones stay more visible
-                    const fadeStrength = 1 - (distance / threshold); // 1 for closest, 0 for farthest
-                    const opacity = Math.max(0.1, 1 - fadeStrength); // Closer = more faded
-                    d3.select(this)
-                      .style('transition', 'all 0.125s ease')
-                      .style('opacity', opacity);
-                  }
-                }
-              });
-          }
+          // Fade other matching labels
+          g.selectAll('.matching-label')
+            .filter(function() { return this !== currentElement; })
+            .each(function() {
+              const otherRect = (this as SVGTextElement).getBoundingClientRect();
+              const otherCenterX = otherRect.left + otherRect.width / 2;
+              const otherCenterY = otherRect.top + otherRect.height / 2;
+              
+              const distance = Math.sqrt(
+                Math.pow(hoveredCenterX - otherCenterX, 2) + 
+                Math.pow(hoveredCenterY - otherCenterY, 2)
+              );
+              
+              const threshold = 100;
+              if (distance <= threshold) {
+                const fadeStrength = 1 - (distance / threshold);
+                const opacity = Math.max(0.1, 1 - fadeStrength);
+                d3.select(this).style('opacity', opacity);
+              }
+            });
         }
       })
-      .on('mouseleave', function(_, d: D3Node) {
-        if (d.data.taxonomicLevel === 'species' && isLocked) {
-          const isMatch = matchesSearch(d.data.name, searchTerm);
-          
-          // Reset the hovered label
+      .on('mouseleave', function() {
+        if (isLocked) {
+          // Reset to normal size
           d3.select(this)
-            .style('fill', searchTerm === '' ? '#444' : isMatch ? '#000' : '#eee')
-            .style('font-size', searchTerm === '' ? '7.5px' : isMatch ? '10px' : '7.5px')
-            .style('font-weight', 'normal')
-            .style('cursor', 'inherit');
+            .style('font-size', searchTerm === '' ? '7.5px' : '10px')
+            .style('font-weight', 'normal');
 
-          // Restore opacity for all species text labels
-          g.selectAll('.node text')
-            .filter((otherD: any) => otherD.data.taxonomicLevel === 'species')
-            .style('transition', 'all 0.125s ease')
-            .style('opacity', 1);
+          // Restore opacity for all matching labels
+          g.selectAll('.matching-label').style('opacity', 1);
         }
       })
-      // Add click handler for species labels
       .on('click', function(_, d: D3Node) {
-        if (d.data.taxonomicLevel === 'species' && isLocked) {
-          // event.stopPropagation(); // Prevent zoom behavior
-          const isMatch = matchesSearch(d.data.name, searchTerm);
-          if (isMatch) {
-
-            toast.success(() => (
-              <span>
-                Clicked on <strong>{d.data.name}</strong>
-                {/* <button onClick={() => toast.dismiss(t.id)}>
-                  Dismiss
-                </button> */}
-              </span>
-            ));
-
-            // Create a URL-friendly version of the species name
-            const speciesSlug = d.data.name.toLowerCase().replace(/\s+/g, '-');
-            
-            // You can customize this URL pattern based on your routing needs
-            const url = `/genome/${speciesSlug}`;
-            
-            // Option 1: Navigate within the same app (React Router)
-            // window.history.pushState({}, '', url);
-            // dispatchEvent(new PopStateEvent('popstate'));
-            
-            // Option 2: Open in new tab
-            // window.open(url, '_blank');
-            
-            // For demo purposes, just log the action
-            console.log(`Clicked on species: ${d.data.name}`);
-            console.log(`Would navigate to: ${url}`);
-          }
+        if (isLocked) {
+          toast.success(() => (
+            <span>
+              Clicked on <strong>{d.data.name}</strong>
+            </span>
+          ));
+          console.log(`Clicked on species: ${d.data.name}`);
         }
       });
 

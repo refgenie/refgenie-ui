@@ -155,3 +155,12 @@ h1, h2, h3, h4, h5, h6 {
 .tree-container:hover .form-select {
   opacity: 1;
 }
+
+.tree-container::-webkit-scrollbar {
+  display: none;
+}
+
+.tree-container {
+  overflow-y: scroll;
+  scrollbar-width: none; 
+}
