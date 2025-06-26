@@ -2,28 +2,15 @@ import React, { useEffect, useRef, useCallback, useState } from 'react';
 import * as d3 from 'd3';
 import toast from 'react-hot-toast';
 
+import type { TreeNode } from '../../types';
+
+import { buildTree } from '../utils/buildTree';
 import { useAboutSearch, useSelectedSpecies } from '../stores/search';
 import { useTreeFullScreen } from '../stores/fullScreen';
 
-import rawTreeData from '../assets/tree.json'
-// import rawTreeData from '../assets/sample_tree.json'
+import taxa from '../assets/taxa.json'
 
-// Helper function to recursively cast taxonomicLevel to the correct type
-function castTreeNode(node: any): TreeNode {
-  return {
-    ...node,
-    taxonomicLevel: node.taxonomicLevel as TreeNode['taxonomicLevel'],
-    children: node.children ? node.children.map(castTreeNode) : undefined,
-  };
-}
-const treeData: TreeNode = castTreeNode(rawTreeData);
-
-interface TreeNode {
-  name: string;
-  taxonomicLevel?: 'domain' | 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'genus' | 'species';
-  genomeAlias?: string | null;
-  children?: TreeNode[];
-}
+const treeData = buildTree(taxa);
 
 interface D3Node extends d3.HierarchyPointNode<TreeNode> {
   x: number;
@@ -91,12 +78,12 @@ const Tree: React.FC = () => {
   function pruneTreeToTarget(treeData: TreeNode, targetLevel: string, targetName: string): TreeNode | null {
     // If targetName is empty, don't filter - return the entire tree
     if (!targetName || targetName.trim() === '') {
-      return { ...treeData };
+      return { ...treeData, children: treeData.children ?? undefined };
     }
     
     // If this node matches the target, return the full path from root to here plus all descendants
     if (treeData.taxonomicLevel === targetLevel && treeData.name === targetName) {
-      return { ...treeData }; // Return a copy with all descendants
+      return { ...treeData, children: treeData.children ?? undefined }; // Return a copy with all descendants
     }
     
     // If this node has children, check which ones should be kept

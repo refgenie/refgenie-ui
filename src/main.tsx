@@ -12,6 +12,7 @@ import Navbar from './components/Navbar';
 import About from './components/pages/About';
 import Search from './components/pages/Search';
 import Genomes from './components/pages/Genomes';
+import Genome from './components/pages/Genome';
 import Assets from './components/pages/Assets';
 // import AssetClasses from './components/pages/AssetClasses';
 // import Recipes from './components/pages/Recipes';
@@ -36,6 +37,7 @@ function Main() {
                   <Route path='/about' element={<About />} />
                   <Route path='/search' element={<Search />} />
                   <Route path='/genomes' element={<Genomes />} />
+                  <Route path='/genomes/:digest' element={<Genome />} />
                   <Route path='/assets' element={<Assets />} />
                   {/* <Route path='/assetclasses' element={<AssetClasses />} />
                   <Route path='/recipes' element={<Recipes />} /> */}
