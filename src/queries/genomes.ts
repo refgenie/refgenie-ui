@@ -4,17 +4,19 @@ import { useQuery } from '@tanstack/react-query';
 
 const API_BASE = 'https://api.refgenie.org/v4';
 
-export const getGenomes = async () => {
+export const getGenomes = async (digest?: string) => {
   const url = `${API_BASE}/genomes`;
-  const { data } = await axios.get<any>(url);
+  
+  const params: any = {};
+  if (digest) params.digest = digest;
+
+  const { data } = await axios.get<any>(url, { params });
   return data;
 };
 
-export const useGenomes = () => {
+export const useGenomes = (digest?: string) => {
   return useQuery({
-    queryKey: ['genomes'],
-    queryFn: () => getGenomes(),
+    queryKey: ['genomes', digest],
+    queryFn: () => getGenomes(digest),
   });
 };
-
-

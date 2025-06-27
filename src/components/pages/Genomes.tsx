@@ -6,6 +6,8 @@ import type { Genome } from '../../../types';
 function Genomes() {
   const { data, isFetched } = useGenomes();
   const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredData = data?.filter((row: any) => row.digest.toLowerCase().includes(searchTerm.toLowerCase()) || row.description.toLowerCase().includes(searchTerm.toLowerCase()))
   
   return (
     <>
@@ -14,7 +16,7 @@ function Genomes() {
 
           <div className="d-flex align-items-center justify-content-center gap-3">
             <h6 className='fw-bold mb-0' style={{width: '10rem'}}>Search Genomes:</h6>
-            <div className={`input-group`}>
+            <div className={`input-group rounded`}>
               <input 
                 id='search-about' 
                 type='text' 
@@ -29,24 +31,26 @@ function Genomes() {
             </div>
           </div>
 
-          {data && isFetched ? (
-            <table className='table table-striped table-hover shadow-sm border text-xs mt-4'>
-              <thead>
-                <tr>
-                  <th>digest</th>
-                  <th>description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((genome: Genome, index: number) => (
-                  <tr key={index} className='cursor-pointer' onClick={() => window.location.href = `/genomes/${genome.digest}`}>
-                    <td>{genome.digest}</td>
-                    <td>{genome.description}</td>
+          {filteredData && isFetched ? (
+            <div className='rounded shadow-sm border text-xs mt-4'>
+              <table className='table table-striped table-hover table-rounded'>
+                <thead>
+                  <tr>
+                    <th>Genome Digest</th>
+                    <th>Description</th>
                   </tr>
-                ))}
-              </tbody>
+                </thead>
+                <tbody>
+                  {filteredData.map((genome: Genome, index: number) => (
+                    <tr key={index} className='cursor-pointer' onClick={() => window.location.href = `/genomes/${genome.digest}`}>
+                      <td>{genome.digest}</td>
+                      <td>{genome.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
 
-            </table>
+              </table>
+            </div>
           ) : (
             <p>Loading...</p>
           )}

@@ -28,7 +28,7 @@ function About() {
             </div>
             
             <div className={`bg-blur about-search ${isFullScreen ? 'rounded-2 about-search-fixed' : 'px-3 pt-2 pb-3 mx-lg-2 rounded-bottom-4 rounded-start-0 rounded-end-0'}`}>
-              <div className={`input-group ${isFullScreen ? 'rounded-3' : ''}`}>
+              <div className={`input-group ${isFullScreen ? 'rounded-3' : 'rounded'}`}>
                 <input 
                   id='search-about' 
                   type='text' 
