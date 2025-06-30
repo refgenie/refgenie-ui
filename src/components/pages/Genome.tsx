@@ -20,7 +20,7 @@ function Genome() {
   const { data: assets } = useAssets(undefined, undefined, digest);
 
   const assetDigests = assets?.map((asset: any) => asset.digest)
-  const archiveAssets = archives?.filter((archive: any) => assetDigests.includes(archive.asset_digest))
+  const archiveAssets = archives?.filter((archive: any) => assetDigests?.includes(archive.asset_digest))
 
   const combinedAssets = archiveAssets?.map((archive: any)  => {
     const matchingAsset = assets?.find((asset: any) => asset.digest === archive.asset_digest);
@@ -30,7 +30,6 @@ function Genome() {
     };
   });
   
-  console.log(genome)
   return (
     <>
       <div className='row p-2 p-lg-4 mt-4 mt-lg-0'>

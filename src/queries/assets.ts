@@ -17,6 +17,13 @@ export const getAssets = async (name?: string, assetGroupName ?: string, genomeD
   return data;
 };
 
+export const getAssetFiles = async (digest: string) => {
+  const url = `${API_BASE}/assets/${digest}/files`;
+
+  const { data } = await axios.get<any>(url);
+  return data;
+};
+
 export const useAssets = (name?: string, assetGroupName ?: string, genomeDigest?: string, recipeName?: string) => {
   return useQuery({
     queryKey: ['assets', name, assetGroupName, genomeDigest, recipeName],
@@ -24,4 +31,9 @@ export const useAssets = (name?: string, assetGroupName ?: string, genomeDigest?
   });
 };
 
-
+export const useAssetFiles = (digest: string) => {
+  return useQuery({
+    queryKey: ['assets', digest],
+    queryFn: () => getAssetFiles(digest),
+  });
+};
