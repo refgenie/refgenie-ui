@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useQuery, useQueries } from '@tanstack/react-query';
 
-const API_BASE = import.meta.env.VITE_API_BASE || '';
+const API_BASE = 'https://api.refgenie.org/v4';
 
 
 export const getArchives = async (digest?: string, assetDigest?: string) => {

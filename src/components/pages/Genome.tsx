@@ -8,7 +8,7 @@ import { useAssetArchives } from '../../queries/archives';
 import { useAssets } from '../../queries/assets';
 import { useAssetGroups } from '../../queries/assetGroups';
 
-const API_BASE = import.meta.env.VITE_API_BASE || '';
+const API_BASE = 'https://api.refgenie.org/v4';
 
 
 // type Props = {
