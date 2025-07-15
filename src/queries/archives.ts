@@ -1,25 +1,32 @@
 import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueries } from '@tanstack/react-query';
+
+const API_BASE = import.meta.env.VITE_API_BASE || '';
 
 
-const API_BASE = 'https://api.refgenie.org/v4';
-
-export const getArchives = async (digest?: string, genomeDigest?: string, assetGroupName ?: string, assetName?: string) => {
+export const getArchives = async (digest?: string, assetDigest?: string) => {
   const url = `${API_BASE}/archives`;
 
   const params: any = {};
   if (digest) params.digest = digest;
-  if (genomeDigest) params.genome_digest = genomeDigest;
-  if (assetGroupName) params.asset_group_name = assetGroupName;
-  if (assetName) params.asset_name = assetName;
+  if (assetDigest) params.asset_digest = assetDigest;
 
   const { data } = await axios.get<any>(url, { params });
   return data;
 };
 
-export const useArchives = (digest?: string, genomeDigest?: string, assetGroupName ?: string, assetName?: string) => {
+export const useArchives = (digest?: string, assetDigest?: string) => {
   return useQuery({
-    queryKey: ['archives', digest, genomeDigest, assetGroupName, assetName],
-    queryFn: () => getArchives(digest, genomeDigest, assetGroupName, assetName),
+    queryKey: ['archives', digest, assetDigest],
+    queryFn: () => getArchives(digest, assetDigest),
+  });
+};
+
+export const useAssetArchives = (assetDigests: string[] = []) => {
+  return useQueries({
+    queries: assetDigests.map(assetDigest => ({
+      queryKey: ['archives', assetDigest],
+      queryFn: () => getArchives(undefined, assetDigest),
+    }))
   });
 };

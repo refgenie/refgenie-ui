@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useGenomes } from '../../queries/genomes';
 import { useAliases } from '../../queries/aliases';
-
-// import type { Genome } from '../../../types';
+import { useNavigate } from 'react-router-dom';
 
 function Genomes() {
+  const navigate = useNavigate();
+  
   const { data: genomes, isFetched: fetchedGenomes } = useGenomes();
   const { data: aliases, isFetched: fetchedAliases } = useAliases();
   const [searchTerm, setSearchTerm] = useState('');
@@ -75,7 +76,7 @@ function Genomes() {
                 </thead>
                 <tbody>
                   {filteredData.map((genome: any, index: number) => (
-                    <tr key={index} className='cursor-pointer' onClick={() => window.location.href = `/genomes/${genome.digest}`}>
+                    <tr key={index} className='cursor-pointer' onClick={() => navigate(`/genomes/${genome.digest}`)}>
                       <td>{genome.digest}</td>
                       <td>{genome.name}</td>
                       <td>{genome.description}</td>

@@ -1,22 +1,36 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
+const API_BASE = import.meta.env.VITE_API_BASE || '';
 
-const API_BASE = 'https://api.refgenie.org/v4';
 
-export const getGenomes = async (digest?: string) => {
+export const getGenome = async (genomeDigest?: string) => {
+  const url = `${API_BASE}/genomes/${genomeDigest}`;
+
+  const { data } = await axios.get<any>(url);
+  return data;
+};
+
+export const getGenomes = async (genomeDigest?: string) => {
   const url = `${API_BASE}/genomes`;
   
   const params: any = {};
-  if (digest) params.digest = digest;
+  if (genomeDigest) params.digest = genomeDigest;
 
   const { data } = await axios.get<any>(url, { params });
   return data;
 };
 
-export const useGenomes = (digest?: string) => {
+export const useGenome = (genomeDigest?: string) => {
   return useQuery({
-    queryKey: ['genomes', digest],
-    queryFn: () => getGenomes(digest),
+    queryKey: ['genomes', genomeDigest],
+    queryFn: () => getGenome(genomeDigest),
+  });
+};
+
+export const useGenomes = (genomeDigest?: string) => {
+  return useQuery({
+    queryKey: ['genomes', genomeDigest],
+    queryFn: () => getGenomes(genomeDigest),
   });
 };

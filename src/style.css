@@ -23,6 +23,11 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1rem; /* 16px */
 }
 
+.text-ss {
+  font-size: calc(13.125rem / 16); /* 13.125px */
+  line-height: 1.125rem; /* 18px */
+}
+
 .text-hover {
   text-decoration-line: none;
 }
@@ -177,4 +182,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .table-rounded thead tr:first-child th:last-child {
   border-top-right-radius: 0.375rem;
+}
+
+.asset-card:hover {
+  -webkit-filter: brightness(97%);
+  filter: brightness(97%);
+}
+
+.asset-card {
+  transition: all 150ms;
 }

@@ -1,43 +1,96 @@
-import { useAssets } from "../../queries/assets";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { useAssets } from '../../queries/assets';
+import { useAssetGroups } from '../../queries/assetGroups';
+
 
 type Asset = {
+  asset_group_id: number;
+  description: string;
   digest: string;
   name: string;
-  description: string;
   recipe_id: number;
-  asset_group_id: number;
   size: number;
 };
 
-function Assets() {
+type AssetGroup = {
+  asset_class_id: number;
+  default_asset: string;
+  description: string;
+  genome_digest: string;
+  id: number;
+  name: string;
+};
 
-  const { data, isFetched } = useAssets();
-  
+function Assets() {
+  const navigate = useNavigate();
+
+  const { data: assets, isFetched: assetsIsFetched } = useAssets();
+  const { data: assetGroups, isFetched: assetGroupsIsFetched } = useAssetGroups();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredAssets = assets?.filter((asset: Asset) => 
+    asset.digest.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    asset.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    asset.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedAssets = assetGroups?.map((assetGroup: AssetGroup) => 
+    filteredAssets?.find((asset: Asset) => asset.asset_group_id === assetGroup.id)
+  ).filter(Boolean);
+
+  const filteredAssetGroups = assetGroups?.filter((assetGroup: AssetGroup) => 
+    sortedAssets?.some((asset: Asset) => asset.asset_group_id === assetGroup.id)
+  );
+
   return (
     <>
       <div className='row p-2 p-lg-4 mt-4 mt-lg-0'>
         <div className='col-12'>
           
-          <h5 className='fw-bold'>Available Assets</h5>
+          <div className="d-flex align-items-center justify-content-center gap-3">
+            <h6 className='fw-bold mb-0' style={{width: '10rem'}}>Search Assets:</h6>
+            <div className={`input-group rounded`}>
+              <input 
+                id='search-about' 
+                type='text' 
+                className='form-control' 
+                placeholder='fasta'
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                }}
+              />
+              <span className='input-group-text bi bi-search'></span>
+            </div>
+          </div>
 
-          {data && isFetched ? (
-            <div className='row row-cols-3 mt-4'>
-              {data.map((asset: Asset) => 
-                <div className='col mb-3' key={asset.digest}>
-                  <div className='card'>
-                  <div className='card-header fw-medium'>
-                    {asset.digest}
+          {assets && assetsIsFetched && assetGroups && assetGroupsIsFetched ? (
+            <div className='row row-cols-1 mt-4'>
+              {sortedAssets.map((asset: Asset, index: number) => {
+                const assetGroup = filteredAssetGroups[index];
+                
+                return (
+                  <div className='col mb-3' key={asset.digest}>
+                    <div className='card asset-card cursor-pointer bg-body-tertiary shadow-sm' onClick={() => navigate(`/genomes/${assetGroup.genome_digest}/${asset.digest}`)}>
+                      <div className='card-body'>
+                        <h6 className='fw-bold'>{assetGroup.name} / {asset.name}</h6>
+                        <div className='text-xs'>
+                          <p className='mb-2 fst-italic text-muted'>{asset.description}</p>
+                          <div className='d-flex align-items-end'>
+                            <span><strong>Asset Digest: </strong><span className='text-muted'>{asset.digest}</span></span>
+                            <span className='ms-3'><strong>Genome Digest: </strong><span className='text-muted'>{assetGroup.genome_digest}</span></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className='card-body text-xs'>
-                    <p className='fw-bold'>{asset.name}</p>
-                    {asset.description}
-                  </div>
-                  </div>
-                </div>
-              )}
+                );
+              })}
             </div>
           ) : (
-            <p>Loading...</p>
+            <p className='mt-4'>Loading...</p>
           )}
 
         </div>

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
+const API_BASE = import.meta.env.VITE_API_BASE || '';
 
-const API_BASE = 'https://api.refgenie.org/v4';
 
 export const getAliases = async (name?: string, genomeDigest?: string) => {
   const url = `${API_BASE}/aliases`;
@@ -21,5 +21,3 @@ export const useAliases = (name?: string, genomeDigest?: string) => {
     queryFn: () => getAliases(name, genomeDigest),
   });
 };
-
-

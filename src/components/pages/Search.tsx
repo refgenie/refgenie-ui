@@ -136,7 +136,7 @@ function Search() {
               </div>
             </div>
           ) : (
-            <p>Loading...</p>
+            <p className='mt-4'>Loading...</p>
           )} */}
           
         </div>

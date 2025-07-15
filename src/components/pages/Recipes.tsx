@@ -1,4 +1,8 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { useRecipes } from "../../queries/recipes";
+
 
 type Recipe = {
   id: number;
@@ -11,33 +15,59 @@ type Recipe = {
 };
 
 function Recipes() {
+  const navigate = useNavigate();
 
-  const { data, isFetched } = useRecipes();
+  const { data: recipes, isFetched } = useRecipes();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredRecipes = recipes?.filter((asset: Recipe) => 
+    asset.version.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    asset.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    asset.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   
   return (
     <>
       <div className='row p-2 p-lg-4 mt-4 mt-lg-0'>
         <div className='col-12'>
           
-          <h5 className='fw-bold'>Available Recipes</h5>
+          <div className="d-flex align-items-center justify-content-center gap-3">
+            <h6 className='fw-bold mb-0' style={{width: '10rem'}}>Search Recipes:</h6>
+            <div className={`input-group rounded`}>
+              <input 
+                id='search-about' 
+                type='text' 
+                className='form-control' 
+                placeholder='fasta'
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                }}
+              />
+              <span className='input-group-text bi bi-search'></span>
+            </div>
+          </div>
 
-          {data && isFetched ? (
-            <div className='row row-cols-3 mt-4'>
-              {data.map((recipe: Recipe) => 
+          {filteredRecipes && isFetched ? (
+            <div className='row row-cols-1 mt-4'>
+              {filteredRecipes.map((recipe: Recipe) => 
                 <div className='col mb-3' key={recipe.id}>
-                  <div className='card'>
-                  <div className='card-header fw-medium'>
-                    {recipe.name}
-                  </div>
-                  <div className='card-body text-xs'>
-                    {recipe.description}
-                  </div>
+                  <div className='card asset-card cursor-pointer bg-body-tertiary shadow-sm' onClick={() => navigate(`/recipes/${recipe.id}`)}>
+                    <div className='card-body'>
+                      <h6 className='fw-bold'>{recipe.name}</h6>
+                      <div className='text-xs'>
+                        <p className='mb-2 fst-italic text-muted'>{recipe.description}</p>
+                        <div className='d-flex align-items-end'>
+                          <span><strong>Version: </strong><span className='text-muted'>{recipe.version}</span></span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <p>Loading</p>
+            <p className='mt-4'>Loading...</p>
           )}
 
         </div>

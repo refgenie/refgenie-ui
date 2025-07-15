@@ -1,8 +1,15 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
+const API_BASE = import.meta.env.VITE_API_BASE || '';
 
-const API_BASE = 'https://api.refgenie.org/v4';
+
+export const getAsset = async (assetDigest?: string) => {
+  const url = `${API_BASE}/assets/${assetDigest}`;
+
+  const { data } = await axios.get<any>(url);
+  return data;
+};
 
 export const getAssets = async (name?: string, assetGroupName ?: string, genomeDigest?: string, recipeName?: string) => {
   const url = `${API_BASE}/assets`;
@@ -22,6 +29,13 @@ export const getAssetFiles = async (digest: string) => {
 
   const { data } = await axios.get<any>(url);
   return data;
+};
+
+export const useAsset = (assetDigest?: string) => {
+  return useQuery({
+    queryKey: ['assets', assetDigest],
+    queryFn: () => getAsset(assetDigest),
+  });
 };
 
 export const useAssets = (name?: string, assetGroupName ?: string, genomeDigest?: string, recipeName?: string) => {

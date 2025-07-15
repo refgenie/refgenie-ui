@@ -13,16 +13,16 @@ const NavLink = (props: NavLinkProps) => {
   const { page, title, position, currentPage } = props;
 
   if (position === 'top') return (
-    <Link className={`text-hover cursor-pointer ${currentPage === page ? 'text-dark' : 'text-black-50'}`} to={page}>
+    <Link className={`text-hover cursor-pointer ${currentPage === page || currentPage.startsWith(`${page}/`) ? 'text-dark' : 'text-black-50'}`} to={page}>
       <p className='fst-condensed mb-0 nav-hover cursor-pointer'>{title}</p>
     </Link>
   )
 
   return (
-    <p className={`mb-0 nav-hover ps-2 cursor-pointer rounded-2 position-relative ${currentPage === page ? 'bg-white' : ''}`}>
+    <p className={`mb-0 nav-hover ps-2 cursor-pointer rounded-2 position-relative ${currentPage === page || currentPage.startsWith(`${page}/`) ? 'bg-white' : ''}`}>
       <Link
-        className={`fst-condensed text-decoration-none stretched-link text-hover ${currentPage === page ? 'fw-light' : 'fw-lighter text-black-50'}`}
-        style={currentPage === page ? { color: '#008066' } : {}}
+        className={`fst-condensed text-decoration-none stretched-link text-hover ${currentPage === page || currentPage.startsWith(`${page}/`) ? 'fw-light' : 'fw-lighter text-black-50'}`}
+        style={currentPage === page || currentPage.startsWith(`${page}/`) ? { color: '#008066' } : {}}
         to={page}
       >
         {title}
@@ -61,15 +61,15 @@ function Navbar() {
               <div className=''>
                 <NavLink page={'genomes'} title={'Genomes'} position='side' currentPage={location}/>
                 <NavLink page={'assets'} title={'Assets'} position='side' currentPage={location}/>
-                {/* <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
-                <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/> */}
+                <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
+                <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/>
               </div>
               
               <p className='fst-condensed mt-3 mb-0'>
                 Manage
               </p>
               <div className=''>
-                <NavLink page={'downloads'} title={'Downloads'} position='side' currentPage={location}/>
+                <NavLink page={'bookmarks'} title={'Bookmarks'} position='side' currentPage={location}/>
                 <NavLink page={'config'} title={'Config'} position='side' currentPage={location}/>
               </div>
 
@@ -120,15 +120,15 @@ function Navbar() {
               <div className=''>
                 <NavLink page={'genomes'} title={'Genomes'} position='side' currentPage={location}/>
                 <NavLink page={'assets'} title={'Assets'} position='side' currentPage={location}/>
-                {/* <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
-                <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/> */}
+                <NavLink page={'assetclasses'} title={'Asset Classes'} position='side' currentPage={location}/>
+                <NavLink page={'recipes'} title={'Recipes'} position='side' currentPage={location}/>
               </div>
               
               <p className='fst-condensed mt-2 mb-0'>
                 Manage
               </p>
               <div className=''>
-                <NavLink page={'downloads'} title={'Downloads'} position='side' currentPage={location}/>
+                <NavLink page={'bookmarks'} title={'Bookmarks'} position='side' currentPage={location}/>
                 <NavLink page={'config'} title={'Config'} position='side' currentPage={location}/>
               </div>
 

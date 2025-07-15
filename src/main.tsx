@@ -14,9 +14,11 @@ import Search from './components/pages/Search';
 import Genomes from './components/pages/Genomes';
 import Genome from './components/pages/Genome';
 import Assets from './components/pages/Assets';
-// import AssetClasses from './components/pages/AssetClasses';
-// import Recipes from './components/pages/Recipes';
-import Downloads from './components/pages/Downloads';
+import Asset from './components/pages/Asset';
+import AssetClasses from './components/pages/AssetClasses';
+import Recipes from './components/pages/Recipes';
+import Recipe from './components/pages/Recipe';
+import Bookmarks from './components/pages/Bookmarks';
 import Config from './components/pages/Config';
 
 
@@ -37,11 +39,14 @@ function Main() {
                   <Route path='/about' element={<About />} />
                   <Route path='/search' element={<Search />} />
                   <Route path='/genomes' element={<Genomes />} />
-                  <Route path='/genomes/:digest' element={<Genome />} />
+                  <Route path='/genomes/:genomeDigest' element={<Genome />} />
+                  <Route path='/genomes/:genomeDigest/:assetDigest' element={<Asset />} />
                   <Route path='/assets' element={<Assets />} />
-                  {/* <Route path='/assetclasses' element={<AssetClasses />} />
-                  <Route path='/recipes' element={<Recipes />} /> */}
-                  <Route path='/downloads' element={<Downloads />} />
+                  <Route path='/assetclasses' element={<AssetClasses />} />
+                  <Route path='/assetclasses' element={<AssetClasses />} />
+                  <Route path='/recipes' element={<Recipes />} />
+                  <Route path='/recipes/:recipeID' element={<Recipe />} />
+                  <Route path='/bookmarks' element={<Bookmarks />} />
                   <Route path='/config' element={<Config />} />
                 </Routes>
               </div>

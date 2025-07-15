@@ -1,12 +1,12 @@
 
-function Downloads() {
+function Bookmarks() {
   
   return (
     <>
       <div className='row p-2 p-lg-4 mt-4 mt-lg-0'>
         <div className='col-12'>
           
-          <p className='fw-bold'>Downloads under development...</p>
+          <p className='fw-bold'>Bookmarks under development...</p>
 
         </div>
       </div>
@@ -14,4 +14,4 @@ function Downloads() {
   );
 }
 
-export default Downloads;
+export default Bookmarks;

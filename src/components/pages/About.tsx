@@ -62,7 +62,7 @@ function About() {
                 </ul>
               </div>
               <div className={`${selectedSpecies === '' ? 'd-none' : ''}`}>
-                <h6 className='fw-bold'>Species Details</h6>
+                <h6 className='fw-bold'>Species Info</h6>
                 <ul className={`mb-0 ${isFullScreen ? 'text-xs' : ''}`}>
                   <li>Name: <strong>{selectedSpecies}</strong></li>
                   <li>Available genomes: <strong>1</strong></li>
