@@ -11,7 +11,7 @@ export const getAsset = async (assetDigest?: string) => {
   return data;
 };
 
-export const getAssets = async (name?: string, assetGroupName ?: string, genomeDigest?: string, recipeName?: string) => {
+export const getAssets = async (name?: string, assetGroupName ?: string, genomeDigest?: string, recipeName?: string, assetGroupID?: number) => {
   const url = `${API_BASE}/assets`;
 
   const params: any = {};
@@ -19,6 +19,7 @@ export const getAssets = async (name?: string, assetGroupName ?: string, genomeD
   if (assetGroupName) params.asset_group_name = assetGroupName;
   if (genomeDigest) params.genome_digest = genomeDigest;
   if (recipeName) params.recipe_name = recipeName;
+  if (assetGroupID) params.asset_group_id = assetGroupID;
 
   const { data } = await axios.get<any>(url, { params });
   return data;
@@ -38,10 +39,10 @@ export const useAsset = (assetDigest?: string) => {
   });
 };
 
-export const useAssets = (name?: string, assetGroupName ?: string, genomeDigest?: string, recipeName?: string) => {
+export const useAssets = (name?: string, assetGroupName ?: string, genomeDigest?: string, recipeName?: string, assetGroupID?: number) => {
   return useQuery({
-    queryKey: ['assets', name, assetGroupName, genomeDigest, recipeName],
-    queryFn: () => getAssets(name, assetGroupName, genomeDigest, recipeName),
+    queryKey: ['assets', name, assetGroupName, genomeDigest, recipeName, assetGroupID],
+    queryFn: () => getAssets(name, assetGroupName, genomeDigest, recipeName, assetGroupID),
   });
 };
 

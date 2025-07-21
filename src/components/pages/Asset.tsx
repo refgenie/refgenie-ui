@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAliases } from '../../queries/aliases';
 import { useArchives } from '../../queries/archives';
 import { useAsset } from '../../queries/assets';
-import { useAssetGroups } from '../../queries/assetGroups';
+import { useAssetGroup } from '../../queries/assetGroups';
 
 const API_BASE = 'https://api.refgenie.org/v4';
 
@@ -24,7 +24,9 @@ function Asset() {
   const { data: alias } = useAliases(undefined, genomeDigest);
   const { data: asset } = useAsset(assetDigest);
   const { data: archive } = useArchives(undefined, assetDigest);
-  const { data: assetGroup } = useAssetGroups(undefined, undefined, undefined, asset?.asset_group_id)
+  const { data: assetGroup } = useAssetGroup(asset?.asset_group_id)
+
+  console.log(assetGroup)
 
   return (
     <>
@@ -85,10 +87,10 @@ function Asset() {
               
               {/* <p className='text-ss mb-2'><strong>Asset Size: </strong>{(asset.size / 1024 / 1024 / 1024).toFixed(2)} gb</p> */}
 
-              <p className='text-ss mb-0'><strong>Asset Class: </strong>{assetGroup[0].name}</p>
-              <p className='text-ss mb-2'><strong>Asset Class ID: </strong>{assetGroup[0].asset_class_id}</p>
+              <p className='text-ss mb-0'><strong>Asset Class: </strong>{assetGroup.name}</p>
+              <p className='text-ss mb-2'><strong>Asset Class ID: </strong>{assetGroup.asset_class_id}</p>
 
-              <p className='text-ss mb-0 cursor-pointer' style={{width: 'fit-content'}} onClick={() => navigate(`/recipes/${asset.recipe_id}`)}><strong>Recipe: </strong>{assetGroup[0].name}</p>
+              <p className='text-ss mb-0 cursor-pointer' style={{width: 'fit-content'}} onClick={() => navigate(`/recipes/${asset.recipe_id}`)}><strong>Recipe: </strong>{assetGroup.name}</p>
               <p className='text-ss mb-2 cursor-pointer' style={{width: 'fit-content'}} onClick={() => navigate(`/recipes/${asset.recipe_id}`)}><strong>Recipe ID: </strong>{asset.recipe_id}</p>
 
               <p className='text-ss mb-0'><strong>Archive Digest: </strong>{archive[0].digest}</p>

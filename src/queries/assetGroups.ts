@@ -4,6 +4,13 @@ import { useQuery } from '@tanstack/react-query';
 const API_BASE = 'https://api.refgenie.org/v4';
 
 
+export const getAssetGroup= async (assetGroupID?: number) => {
+  const url = `${API_BASE}/asset_groups/${assetGroupID}`;
+
+  const { data } = await axios.get<any>(url);
+  return data;
+};
+
 export const getAssetGroups = async (genomeDigest?: string, assetClass?: string, assetGroupName?: string, assetGroupID?: number) => {
   const url = `${API_BASE}/asset_groups`;
 
@@ -15,6 +22,13 @@ export const getAssetGroups = async (genomeDigest?: string, assetClass?: string,
 
   const { data } = await axios.get<any>(url, { params });
   return data;
+};
+
+export const useAssetGroup = (assetGroupID?: number) => {
+  return useQuery({
+    queryKey: ['assetGroups', assetGroupID],
+    queryFn: () => getAssetGroup(assetGroupID),
+  });
 };
 
 export const useAssetGroups = (genomeDigest?: string, assetClass?: string, assetGroupName?: string, assetGroupID?: number) => {

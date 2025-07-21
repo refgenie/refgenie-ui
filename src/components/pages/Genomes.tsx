@@ -1,45 +1,45 @@
 import { useState } from 'react';
 import { useGenomes } from '../../queries/genomes';
-import { useAliases } from '../../queries/aliases';
+// import { useAliases } from '../../queries/aliases';
 import { useNavigate } from 'react-router-dom';
 
 function Genomes() {
   const navigate = useNavigate();
   
   const { data: genomes, isFetched: fetchedGenomes } = useGenomes();
-  const { data: aliases, isFetched: fetchedAliases } = useAliases();
+  // const { data: aliases, isFetched: fetchedAliases } = useAliases();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const aliasesRenamed = aliases?.map((alias: any) => ({ digest: alias.genome_digest, name: alias.name }))
+  // const aliasesRenamed = aliases?.map((alias: any) => ({ digest: alias.genome_digest, name: alias.name }))
 
-  function combineArrays<T extends Record<string, any>>(arr1: T[], arr2: T[], keyField: keyof T) {
-    const map = new Map<any, T>();
+  // function combineArrays<T extends Record<string, any>>(arr1: T[], arr2: T[], keyField: keyof T) {
+  //   const map = new Map<any, T>();
     
-    // Add all objects from first array
-    arr1.forEach(obj => map.set(obj[keyField], obj));
+  //   // Add all objects from first array
+  //   arr1.forEach(obj => map.set(obj[keyField], obj));
     
-    // Merge with objects from second array
-    arr2.forEach(obj => {
-      if (map.has(obj[keyField])) {
-        // Merge properties if key exists
-        map.set(obj[keyField], { ...map.get(obj[keyField]), ...obj });
-      } else {
-        // Add new object if key doesn't exist
-        map.set(obj[keyField], obj);
-      }
-    });
+  //   // Merge with objects from second array
+  //   arr2.forEach(obj => {
+  //     if (map.has(obj[keyField])) {
+  //       // Merge properties if key exists
+  //       map.set(obj[keyField], { ...map.get(obj[keyField]), ...obj });
+  //     } else {
+  //       // Add new object if key doesn't exist
+  //       map.set(obj[keyField], obj);
+  //     }
+  //   });
     
-    return Array.from(map.values());
-  }
+  //   return Array.from(map.values());
+  // }
 
-  const combined = (genomes && aliasesRenamed) 
-    ? combineArrays(genomes, aliasesRenamed, 'digest')
-    : genomes || [];
+  // const combined = (genomes && aliasesRenamed) 
+  //   ? combineArrays(genomes, aliasesRenamed, 'digest')
+  //   : genomes || [];
 
-  const filteredData = combined?.filter((row: any) => 
+  const filteredData = genomes?.filter((row: any) => 
     row.digest.toLowerCase().includes(searchTerm.toLowerCase()) || 
     row.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    row.name.toLowerCase().includes(searchTerm.toLowerCase())
+    row.aliases.some((alias: string) => alias.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
   return (
@@ -64,7 +64,7 @@ function Genomes() {
             </div>
           </div>
 
-          {filteredData && fetchedGenomes && fetchedAliases ? (
+          {filteredData && fetchedGenomes ? (
             <div className='rounded shadow-sm border text-xs mt-4'>
               <table className='table table-striped table-hover table-rounded'>
                 <thead>
@@ -72,14 +72,16 @@ function Genomes() {
                     <th>Genome Digest</th>
                     <th>Genome Alias</th>
                     <th>Description</th>
+                    <th>Assets</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredData.map((genome: any, index: number) => (
                     <tr key={index} className='cursor-pointer' onClick={() => navigate(`/genomes/${genome.digest}`)}>
                       <td>{genome.digest}</td>
-                      <td>{genome.name}</td>
+                      <td>{genome.aliases ? genome.aliases[0] : 'genome nickname'}</td>
                       <td>{genome.description}</td>
+                      <td>{genome.asset_count}</td>
                     </tr>
                   ))}
                 </tbody>
