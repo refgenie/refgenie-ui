@@ -1,9 +1,25 @@
 // tree types
-export type LevelColType = 'domain' | 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'genus' | 'species';
+export type LevelColType =
+  | 'domain'
+  | 'kingdom'
+  | 'phylum'
+  | 'class'
+  | 'order'
+  | 'family'
+  | 'genus'
+  | 'species';
 
 export type LevelMapType = Record<
   LevelColType,
-  'domain' | 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'genus' | 'species' | null
+  | 'domain'
+  | 'kingdom'
+  | 'phylum'
+  | 'class'
+  | 'order'
+  | 'family'
+  | 'genus'
+  | 'species'
+  | null
 >;
 
 export interface TreeNode {
@@ -16,7 +32,6 @@ export interface TreeNode {
 export interface RawDataRow {
   [key: string]: any;
 }
-
 
 // genome types
 export type Genome = {

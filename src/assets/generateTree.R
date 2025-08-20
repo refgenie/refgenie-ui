@@ -101,11 +101,11 @@ build_taxonomy_tree <- function(taxonomies) {
 }
 
 
-refgenie_url <- 'https://api.refgenie.org/v4/genomes'
+refgenie_url <- 'https://api.refgenie.org/v4/species/summary'
 refgenie_req <- GET(refgenie_url)
 refgenie_res <- content(refgenie_req, as = 'text', encoding = 'UTF-8') %>% fromJSON()
 
-genomes <- unique(gsub('\\..*', '', refgenie_res$description))
+genomes <- names(refgenie_res)
 
 taxonomies <- data.frame(matrix(nrow = 0, ncol = 8)) %>%
   setnames(c('domain', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'))

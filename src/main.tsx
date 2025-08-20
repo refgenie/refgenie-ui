@@ -1,9 +1,9 @@
-import ReactDOM from 'react-dom/client'
+import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
-import './style.css'
+import './style.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -21,11 +21,9 @@ import Recipe from './components/pages/Recipe';
 import Bookmarks from './components/pages/Bookmarks';
 import Config from './components/pages/Config';
 
-
 const queryClient = new QueryClient();
 
 function Main() {
-
   return (
     <BrowserRouter basename=''>
       <div className='d-flex flex-column flex-lg-row min-vh-100'>
@@ -40,7 +38,10 @@ function Main() {
                   <Route path='/search' element={<Search />} />
                   <Route path='/genomes' element={<Genomes />} />
                   <Route path='/genomes/:genomeDigest' element={<Genome />} />
-                  <Route path='/genomes/:genomeDigest/:assetDigest' element={<Asset />} />
+                  <Route
+                    path='/genomes/:genomeDigest/:assetDigest'
+                    element={<Asset />}
+                  />
                   <Route path='/assets' element={<Assets />} />
                   <Route path='/assetclasses' element={<AssetClasses />} />
                   <Route path='/assetclasses' element={<AssetClasses />} />
@@ -58,10 +59,9 @@ function Main() {
   );
 }
 
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
-    <Toaster position="bottom-right" />
+    <Toaster position='bottom-right' />
     <Main />
-  </QueryClientProvider>
-)
+  </QueryClientProvider>,
+);

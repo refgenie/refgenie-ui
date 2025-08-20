@@ -1,59 +1,22 @@
 import { useState } from 'react';
-import { useGenomes } from '../../queries/genomes';
-// import { useAliases } from '../../queries/aliases';
-import { useNavigate } from 'react-router-dom';
+import GenomesTable from '../genomes/GenomeTable';
 
 function Genomes() {
-  const navigate = useNavigate();
-  
-  const { data: genomes, isFetched: fetchedGenomes } = useGenomes();
-  // const { data: aliases, isFetched: fetchedAliases } = useAliases();
   const [searchTerm, setSearchTerm] = useState('');
-
-  // const aliasesRenamed = aliases?.map((alias: any) => ({ digest: alias.genome_digest, name: alias.name }))
-
-  // function combineArrays<T extends Record<string, any>>(arr1: T[], arr2: T[], keyField: keyof T) {
-  //   const map = new Map<any, T>();
-    
-  //   // Add all objects from first array
-  //   arr1.forEach(obj => map.set(obj[keyField], obj));
-    
-  //   // Merge with objects from second array
-  //   arr2.forEach(obj => {
-  //     if (map.has(obj[keyField])) {
-  //       // Merge properties if key exists
-  //       map.set(obj[keyField], { ...map.get(obj[keyField]), ...obj });
-  //     } else {
-  //       // Add new object if key doesn't exist
-  //       map.set(obj[keyField], obj);
-  //     }
-  //   });
-    
-  //   return Array.from(map.values());
-  // }
-
-  // const combined = (genomes && aliasesRenamed) 
-  //   ? combineArrays(genomes, aliasesRenamed, 'digest')
-  //   : genomes || [];
-
-  const filteredData = genomes?.filter((row: any) => 
-    row.digest.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    row.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    row.aliases.some((alias: string) => alias.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
 
   return (
     <>
       <div className='row p-2 p-lg-4 mt-4 mt-lg-0'>
         <div className='col-12'>
-
-          <div className="d-flex align-items-center justify-content-center gap-3">
-            <h6 className='fw-bold mb-0' style={{width: '10rem'}}>Search Genomes:</h6>
+          <div className='d-flex align-items-center justify-content-center gap-3'>
+            <h6 className='fw-bold mb-0' style={{ width: '10rem' }}>
+              Search Genomes:
+            </h6>
             <div className={`input-group rounded`}>
-              <input 
-                id='search-about' 
-                type='text' 
-                className='form-control' 
+              <input
+                id='search-about'
+                type='text'
+                className='form-control'
                 placeholder='hg38'
                 value={searchTerm}
                 onChange={(e) => {
@@ -64,34 +27,7 @@ function Genomes() {
             </div>
           </div>
 
-          {filteredData && fetchedGenomes ? (
-            <div className='rounded shadow-sm border text-xs mt-4'>
-              <table className='table table-striped table-hover table-rounded'>
-                <thead>
-                  <tr>
-                    <th>Genome Digest</th>
-                    <th>Genome Alias</th>
-                    <th>Description</th>
-                    <th>Assets</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredData.map((genome: any, index: number) => (
-                    <tr key={index} className='cursor-pointer' onClick={() => navigate(`/genomes/${genome.digest}`)}>
-                      <td>{genome.digest}</td>
-                      <td>{genome.aliases ? genome.aliases[0] : 'genome nickname'}</td>
-                      <td>{genome.description}</td>
-                      <td>{genome.asset_count}</td>
-                    </tr>
-                  ))}
-                </tbody>
-
-              </table>
-            </div>
-          ) : (
-            <p className='mt-4'>Loading...</p>
-          )}
-
+          <GenomesTable searchTerm={searchTerm} />
         </div>
       </div>
     </>

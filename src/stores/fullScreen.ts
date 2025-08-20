@@ -7,5 +7,6 @@ type TreeFullScreenStore = {
 
 export const useTreeFullScreen = create<TreeFullScreenStore>((set) => ({
   isFullScreen: false,
-  setIsFullScreen: (isFullScreen: boolean) => set({ isFullScreen: isFullScreen }),
+  setIsFullScreen: (isFullScreen: boolean) =>
+    set({ isFullScreen: isFullScreen }),
 }));

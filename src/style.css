@@ -2,20 +2,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Asap+Condensed:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 /* MAIN */
-main, p, span, button, a, ul, li, select, input {
+main,
+p,
+span,
+button,
+a,
+ul,
+li,
+select,
+input {
   font-family: 'Nunito', arial, sans-serif !important;
   font-weight: 400 !important;
   font-style: normal !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Nunito', arial, sans-serif  !important;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Nunito', arial, sans-serif !important;
   font-weight: 500 !important;
-  font-style: normal  !important;
+  font-style: normal !important;
 }
 
 .fst-condensed {
-  font-family: 'Asap Condensed', arial, sans-serif  !important;
+  font-family: 'Asap Condensed', arial, sans-serif !important;
 }
 
 .text-xs {
@@ -49,7 +62,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 992px) {
-  .sidebar, .desktop {
+  .sidebar,
+  .desktop {
     display: none;
   }
   .topbar {
@@ -83,7 +97,8 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     bottom: 0;
   }
-  .topbar, .mobile {
+  .topbar,
+  .mobile {
     display: none;
   }
   .content {
@@ -153,27 +168,37 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #ffffffbb;
 }
 
+.nav-hover i {
+  display: none;
+}
+
+.nav-hover:hover i {
+  display: block;
+}
+
 .bg-blur {
   z-index: 99999;
   backdrop-filter: blur(6px);
   background-color: #ffffffbb;
 }
 
-.tree-container .form-select {
+.tree-container .hover-hide {
   opacity: 0;
   transition: opacity 0.25s ease;
 }
 
-.tree-container:hover .form-select {
+.tree-container:hover .hover-hide {
   opacity: 1;
 }
 
-.tree-container::-webkit-scrollbar, body::-webkit-scrollbar {
+.tree-container::-webkit-scrollbar,
+body::-webkit-scrollbar {
   display: none;
 }
 
-.tree-container, body {
-  scrollbar-width: none; 
+.tree-container,
+body {
+  scrollbar-width: none;
 }
 
 .table-rounded thead tr:first-child th:first-child {

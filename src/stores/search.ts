@@ -8,7 +8,7 @@ type AboutSearchStore = {
 type SelectedSpeciesStore = {
   selectedSpecies: string;
   setSelectedSpecies: (searchText: string) => void;
-}
+};
 
 export const useAboutSearch = create<AboutSearchStore>((set) => ({
   searchTerm: '',
@@ -17,5 +17,6 @@ export const useAboutSearch = create<AboutSearchStore>((set) => ({
 
 export const useSelectedSpecies = create<SelectedSpeciesStore>((set) => ({
   selectedSpecies: '',
-  setSelectedSpecies: (speciesName: string) => set({ selectedSpecies: speciesName }),
+  setSelectedSpecies: (speciesName: string) =>
+    set({ selectedSpecies: speciesName }),
 }));

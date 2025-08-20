@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 
 const API_BASE = 'https://api.refgenie.org/v4';
 
-
 export const getGenome = async (genomeDigest?: string) => {
   const url = `${API_BASE}/genomes/${genomeDigest}`;
 
@@ -13,7 +12,7 @@ export const getGenome = async (genomeDigest?: string) => {
 
 export const getGenomes = async (genomeDigest?: string) => {
   const url = `${API_BASE}/genomes`;
-  
+
   const params: any = {};
   if (genomeDigest) params.digest = genomeDigest;
 

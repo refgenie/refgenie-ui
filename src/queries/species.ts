@@ -3,15 +3,16 @@ import { useQuery } from '@tanstack/react-query';
 
 const API_BASE = 'https://api.refgenie.org/v4';
 
-export const getAssetClasses = async () => {
-  const url = `${API_BASE}/asset_classes`;
+export const getSpeciesSummary = async () => {
+  const url = `${API_BASE}/species/summary`;
+
   const { data } = await axios.get<any>(url);
   return data;
 };
 
-export const useAssetClasses = () => {
+export const useSpeciesSummary = () => {
   return useQuery({
-    queryKey: ['assetClasses'],
-    queryFn: () => getAssetClasses(),
+    queryKey: ['species'],
+    queryFn: () => getSpeciesSummary(),
   });
 };

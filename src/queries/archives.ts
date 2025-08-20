@@ -3,7 +3,6 @@ import { useQuery, useQueries } from '@tanstack/react-query';
 
 const API_BASE = 'https://api.refgenie.org/v4';
 
-
 export const getArchives = async (digest?: string, assetDigest?: string) => {
   const url = `${API_BASE}/archives`;
 
@@ -24,9 +23,9 @@ export const useArchives = (digest?: string, assetDigest?: string) => {
 
 export const useAssetArchives = (assetDigests: string[] = []) => {
   return useQueries({
-    queries: assetDigests.map(assetDigest => ({
+    queries: assetDigests.map((assetDigest) => ({
       queryKey: ['archives', assetDigest],
       queryFn: () => getArchives(undefined, assetDigest),
-    }))
+    })),
   });
 };
