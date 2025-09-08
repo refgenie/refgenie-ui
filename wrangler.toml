@@ -1,7 +1,8 @@
 name = "refgenie-ui"
 compatibility_date = "2025-05-30"
+preview_urls = true
 
 [assets]
 directory = "./dist"
-preview_urls = true
+
 
