@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-import { useRecipes } from '../../queries/recipes';
+import { useRecipe } from '../../queries/recipes';
 
 const API_BASE = 'https://api.refgenie.org/v4';
 
@@ -14,8 +14,7 @@ function Recipe() {
 
   const [copied, setCopied] = useState(false);
 
-  const { data: recipes } = useRecipes();
-  const recipe = recipes?.filter((recipe: any) => recipe.id == recipeID)[0];
+  const { data: recipe } = useRecipe(recipeID);
 
   return (
     <>

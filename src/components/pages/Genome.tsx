@@ -27,20 +27,20 @@ function Genome() {
   const { data: assets } = useAssets(undefined, undefined, digest);
   const { data: assetGroups } = useAssetGroups(digest);
 
-  const assetDigests = assets?.map((asset: any) => asset.digest);
+  const assetDigests = assets?.items?.map((asset: any) => asset.digest);
 
   const archives = useAssetArchives(assetDigests);
   // const archivesIsLoading = archives.some(query => query.isFetching || query.isLoading);
   const archivesData = archives
-    .map((query) => query.data)
+    .map((query) => query.data?.items)
     .filter(Boolean)
     .flat();
 
   const combinedAssets = archivesData?.map((archive: any) => {
-    const matchingAsset = assets?.find(
+    const matchingAsset = assets?.items?.find(
       (asset: any) => asset.digest === archive.asset_digest,
     );
-    const matchingAssetGroup = assetGroups?.find(
+    const matchingAssetGroup = assetGroups?.items?.find(
       (assetGroup: any) => assetGroup.id === matchingAsset?.asset_group_id,
     );
 
@@ -56,7 +56,7 @@ function Genome() {
       <div className='row p-2 p-lg-4 mt-4 mt-lg-0'>
         <div className='col-12'>
           <div className='d-flex align-items-center'>
-            {alias && (
+            {alias?.items && (
               <h6 className='mb-0'>
                 <a
                   className='fw-bold text-decoration-none text-black cursor-pointer'
@@ -65,7 +65,7 @@ function Genome() {
                   Genomes
                 </a>
                 {' / '}
-                {alias && <span>{alias[0]?.name}</span>}
+                {alias?.items && <span>{alias?.items[0]?.name}</span>}
               </h6>
             )}
             <button
@@ -103,12 +103,12 @@ function Genome() {
 
           {/* {genome && <p className='mt-3 fst-italic text-muted'>{genome.description}</p>} */}
 
-          {genome && alias && (
+          {genome && alias?.items && (
             <>
               <p className='fw-bold mt-3 mb-1'>Details</p>
               <p className='text-ss mb-0'>
                 <strong>Genome Name: </strong>
-                {alias[0]?.name}
+                {alias?.items[0]?.name}
               </p>
               <p className='text-ss mb-0'>
                 <strong>Genome Digest: </strong>

@@ -16,6 +16,11 @@ export const getAssets = async (
   genomeDigest?: string,
   recipeName?: string,
   assetGroupID?: number,
+  query?: string, 
+  searchFields?: string, 
+  operator?: string, 
+  offset?: number, 
+  limit?: number
 ) => {
   const url = `${API_BASE}/assets`;
 
@@ -25,6 +30,11 @@ export const getAssets = async (
   if (genomeDigest) params.genome_digest = genomeDigest;
   if (recipeName) params.recipe_name = recipeName;
   if (assetGroupID) params.asset_group_id = assetGroupID;
+  if (query) params.q = query;
+  if (searchFields) params.search_fields = searchFields;
+  if (operator) params.operator = operator;
+  if (offset) params.offset = offset;
+  if (limit) params.limit = limit;
 
   const { data } = await axios.get<any>(url, { params });
   return data;
@@ -39,7 +49,7 @@ export const getAssetFiles = async (digest: string) => {
 
 export const useAsset = (assetDigest?: string) => {
   return useQuery({
-    queryKey: ['assets', assetDigest],
+    queryKey: ['asset', assetDigest],
     queryFn: () => getAsset(assetDigest),
   });
 };
@@ -50,6 +60,11 @@ export const useAssets = (
   genomeDigest?: string,
   recipeName?: string,
   assetGroupID?: number,
+  query?: string, 
+  searchFields?: string, 
+  operator?: string, 
+  offset?: number, 
+  limit?: number
 ) => {
   return useQuery({
     queryKey: [
@@ -59,9 +74,14 @@ export const useAssets = (
       genomeDigest,
       recipeName,
       assetGroupID,
+      query,
+      searchFields,
+      operator,
+      offset,
+      limit
     ],
     queryFn: () =>
-      getAssets(name, assetGroupName, genomeDigest, recipeName, assetGroupID),
+      getAssets(name, assetGroupName, genomeDigest, recipeName, assetGroupID, query, searchFields, operator, offset, limit),
   });
 };
 
