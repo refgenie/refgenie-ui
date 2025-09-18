@@ -30,7 +30,7 @@ function Asset() {
       <div className='row p-2 p-lg-4 mt-4 mt-lg-0'>
         <div className='col-12'>
           <div className='d-flex align-items-center'>
-            {alias && (
+            {alias?.items && (
               <h6 className='mb-0'>
                 <a
                   className='fw-bold text-decoration-none text-black cursor-pointer'
@@ -43,7 +43,7 @@ function Asset() {
                   className='fw-bold text-decoration-none text-black cursor-pointer'
                   onClick={() => navigate(`/genomes/${genomeDigest}`)}
                 >
-                  {alias[0]?.name}
+                  {alias?.items[0]?.name}
                 </a>
                 {' / '}
                 <span>{asset?.name}</span>
@@ -74,7 +74,7 @@ function Asset() {
             {archive && (
               <a
                 className='btn btn-secondary btn-sm ms-1'
-                href={`${API_BASE}/archives/${archive[0].digest}/download`}
+                href={`${API_BASE}/archives/${archive?.items[0].digest}/download`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <i className='bi bi-cloud-arrow-down-fill me-2' />
@@ -92,31 +92,31 @@ function Asset() {
             </a>
           </div>
 
-          {asset && archive && assetGroup && (
+          {asset && archive?.items && assetGroup && (
             <>
               <p className='fw-bold mt-3 mb-1'>Details</p>
               <p className='text-ss mb-0'>
                 <strong>Asset Name: </strong>
-                {asset.name}
+                {asset?.name}
               </p>
               <p className='text-ss mb-0'>
                 <strong>Asset Digest: </strong>
-                {asset.digest}
+                {asset?.digest}
               </p>
               <p className='text-ss mb-2'>
                 <strong>Asset Description: </strong>
-                {asset.description}
+                {asset?.description}
               </p>
 
               {/* <p className='text-ss mb-2'><strong>Asset Size: </strong>{(asset.size / 1024 / 1024 / 1024).toFixed(2)} gb</p> */}
 
               <p className='text-ss mb-0'>
                 <strong>Asset Class: </strong>
-                {assetGroup.name}
+                {assetGroup?.name}
               </p>
               <p className='text-ss mb-2'>
                 <strong>Asset Class ID: </strong>
-                {assetGroup.asset_class_id}
+                {assetGroup?.asset_class_id}
               </p>
 
               <p
@@ -125,7 +125,7 @@ function Asset() {
                 onClick={() => navigate(`/recipes/${asset.recipe_id}`)}
               >
                 <strong>Recipe: </strong>
-                {assetGroup.name}
+                {assetGroup?.name}
               </p>
               <p
                 className='text-ss mb-2 cursor-pointer'
@@ -133,16 +133,16 @@ function Asset() {
                 onClick={() => navigate(`/recipes/${asset.recipe_id}`)}
               >
                 <strong>Recipe ID: </strong>
-                {asset.recipe_id}
+                {asset?.recipe_id}
               </p>
 
               <p className='text-ss mb-0'>
                 <strong>Archive Digest: </strong>
-                {archive[0].digest}
+                {archive?.items[0].digest}
               </p>
               <p className='text-ss mb-0'>
                 <strong>Archive Size: </strong>
-                {(archive[0].size / 1024 / 1024 / 1024).toFixed(2)} gb
+                {(archive?.items[0].size / 1024 / 1024 / 1024).toFixed(2)} gb
               </p>
             </>
           )}
@@ -150,7 +150,7 @@ function Asset() {
           {archive && (
             <>
               <p className='fw-bold mt-4 mb-1'>Archive File Contents</p>
-              {archive[0].directory_contents.map(
+              {archive?.items[0].directory_contents.map(
                 (content: string, index: number) => (
                   <p className='text-ss mb-0' key={index}>
                     {content}
@@ -158,7 +158,7 @@ function Asset() {
                 ),
               )}
               <p className='fw-bold mt-4 mb-0'>Build Commands</p>
-              {archive[0].build_commands.map(
+              {archive?.items[0].build_commands.map(
                 (command: string, index: number) => (
                   <div className='mb-2' key={index}>
                     <code className='text-xs'>{command}</code>

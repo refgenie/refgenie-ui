@@ -16,6 +16,7 @@ import Genome from './components/pages/Genome';
 import Assets from './components/pages/Assets';
 import Asset from './components/pages/Asset';
 import AssetClasses from './components/pages/AssetClasses';
+import AssetClass from './components/pages/AssetClass';
 import Recipes from './components/pages/Recipes';
 import Recipe from './components/pages/Recipe';
 import Bookmarks from './components/pages/Bookmarks';
@@ -44,7 +45,10 @@ function Main() {
                   />
                   <Route path='/assets' element={<Assets />} />
                   <Route path='/assetclasses' element={<AssetClasses />} />
-                  <Route path='/assetclasses' element={<AssetClasses />} />
+                  <Route
+                    path='/assetclasses/:assetClassID'
+                    element={<AssetClass />}
+                  />
                   <Route path='/recipes' element={<Recipes />} />
                   <Route path='/recipes/:recipeID' element={<Recipe />} />
                   <Route path='/bookmarks' element={<Bookmarks />} />

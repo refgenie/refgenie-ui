@@ -11,6 +11,7 @@ import RecipeTable from '../recipes/RecipeTable';
 function Search() {
   const { searchTerm, setSearchTerm } = useAboutSearch();
   const [selectedSearch, setSelectedSearch] = useState('genomes');
+  const [pageSize, setPageSize] = useState(20);
 
   // const { data, isFetched } = useArchives();
 
@@ -35,6 +36,16 @@ function Search() {
               />
               <span className='input-group-text bi bi-search'></span>
             </div>
+            <select
+              className='form-select w-25'
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+            >
+              <option value={10}>Limit 10</option>
+              <option value={20}>Limit 20</option>
+              <option value={50}>Limit 50</option>
+              <option value={100}>Limit 100</option>
+            </select>
           </div>
 
           <div className='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-4 g-lg-4 g-2 mt-0 mx-5'>
@@ -121,16 +132,16 @@ function Search() {
                 </p>
               )}
               {searchTerm !== '' && selectedSearch === 'genomes' && (
-                <GenomesTable searchTerm={searchTerm} />
+                <GenomesTable searchTerm={searchTerm} pageSize={pageSize} />
               )}
               {searchTerm !== '' && selectedSearch === 'assets' && (
-                <AssetTable searchTerm={searchTerm} />
+                <AssetTable searchTerm={searchTerm} pageSize={pageSize} />
               )}
               {searchTerm !== '' && selectedSearch === 'asset_classes' && (
-                <AssetClassTable searchTerm={searchTerm} />
+                <AssetClassTable searchTerm={searchTerm} pageSize={pageSize} />
               )}
               {searchTerm !== '' && selectedSearch === 'recipes' && (
-                <RecipeTable searchTerm={searchTerm} />
+                <RecipeTable searchTerm={searchTerm} pageSize={pageSize} />
               )}
             </div>
           </div>

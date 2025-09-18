@@ -10,11 +10,25 @@ export const getGenome = async (genomeDigest?: string) => {
   return data;
 };
 
-export const getGenomes = async (genomeDigest?: string) => {
+export const getGenomes = async (
+  genomeDigest?: string,
+  alias?: string,
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
+) => {
   const url = `${API_BASE}/genomes`;
 
   const params: any = {};
   if (genomeDigest) params.digest = genomeDigest;
+  if (alias) params.alias = alias;
+  if (query) params.q = query;
+  if (searchFields) params.search_fields = searchFields;
+  if (operator) params.operator = operator;
+  if (offset) params.offset = offset;
+  if (limit) params.limit = limit;
 
   const { data } = await axios.get<any>(url, { params });
   return data;
@@ -22,14 +36,40 @@ export const getGenomes = async (genomeDigest?: string) => {
 
 export const useGenome = (genomeDigest?: string) => {
   return useQuery({
-    queryKey: ['genomes', genomeDigest],
+    queryKey: ['genome', genomeDigest],
     queryFn: () => getGenome(genomeDigest),
   });
 };
 
-export const useGenomes = (genomeDigest?: string) => {
+export const useGenomes = (
+  genomeDigest?: string,
+  alias?: string,
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
+) => {
   return useQuery({
-    queryKey: ['genomes', genomeDigest],
-    queryFn: () => getGenomes(genomeDigest),
+    queryKey: [
+      'genomes',
+      genomeDigest,
+      alias,
+      query,
+      searchFields,
+      operator,
+      offset,
+      limit,
+    ],
+    queryFn: () =>
+      getGenomes(
+        genomeDigest,
+        alias,
+        query,
+        searchFields,
+        operator,
+        offset,
+        limit,
+      ),
   });
 };
