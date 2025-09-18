@@ -16,29 +16,29 @@ type Recipe = {
 
 type RecipeTableProps = {
   searchTerm: string;
+  pageSize: number;
 };
 
 function RecipeTable(props: RecipeTableProps) {
-  const { searchTerm } = props;
+  const { searchTerm, pageSize } = props;
 
   const navigate = useNavigate();
   const [offsetIndex, setOffsetIndex] = useState(0);
-  const pageSize = 10;
 
   const { data: recipes, isFetched } = useRecipes(
     '', // outputAssetClass
-    '', // name  
-    '', // version  
+    '', // name
+    '', // version
     searchTerm, // query
     '', // searchFields
     'contains', // operator
     offsetIndex * pageSize, // offset
-    pageSize  // limit
+    pageSize, // limit
   );
 
   const maxPage = Math.ceil(recipes?.pagination?.total / pageSize);
   const page = offsetIndex + 1;
-  const minPage = 1;   
+  const minPage = 1;
 
   return (
     <>
@@ -73,7 +73,15 @@ function RecipeTable(props: RecipeTableProps) {
               <p className='mt-5 text-center text-muted'>No query results.</p>
             )}
           </div>
-          {(maxPage > minPage) && <PaginationControl page={page} minPage={minPage} maxPage={maxPage} offsetIndex={offsetIndex} setOffsetIndex={setOffsetIndex} />}
+          {maxPage > minPage && (
+            <PaginationControl
+              page={page}
+              minPage={minPage}
+              maxPage={maxPage}
+              offsetIndex={offsetIndex}
+              setOffsetIndex={setOffsetIndex}
+            />
+          )}
         </>
       ) : (
         <p className='mt-4'>Loading...</p>

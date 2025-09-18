@@ -25,36 +25,40 @@ type AssetGroup = {
 
 type AssetTableProps = {
   searchTerm: string;
+  pageSize: number;
 };
 
 function AssetTable(props: AssetTableProps) {
-  const { searchTerm } = props;
+  const { searchTerm, pageSize } = props;
 
   const navigate = useNavigate();
   const [offsetIndex, setOffsetIndex] = useState(0);
-  const pageSize = 10;
 
   const { data: assets, isFetched: assetsIsFetched } = useAssets(
     '', // name
-    '', // assetClass  
+    '', // assetClass
     '', // genomeDigest
-    '', // recipeName  
-    NaN, // assetGroupID  
+    '', // recipeName
+    NaN, // assetGroupID
     searchTerm, // query
     '', // searchFields
     'contains', // operator
     offsetIndex * pageSize, // offset
-    pageSize  // limit
+    pageSize, // limit
   );
 
   const maxPage = Math.ceil(assets?.pagination?.total / pageSize);
   const page = offsetIndex + 1;
   const minPage = 1;
 
-  const selectedAssetGroupIDs = assets?.items.map((asset: Asset)  => asset.asset_group_id)
-  const uniqueSelectedAssetGroupIDs = [...new Set(selectedAssetGroupIDs)]
+  const selectedAssetGroupIDs = assets?.items.map(
+    (asset: Asset) => asset.asset_group_id,
+  );
+  const uniqueSelectedAssetGroupIDs = [...new Set(selectedAssetGroupIDs)];
 
-  const assetGroups = useAssetAssetGroups(uniqueSelectedAssetGroupIDs as number[]);
+  const assetGroups = useAssetAssetGroups(
+    uniqueSelectedAssetGroupIDs as number[],
+  );
   // const archivesIsLoading = archives.some(query => query.isFetching || query.isLoading);
   const assetGroupsData = assetGroups
     .map((query) => query.data)
@@ -70,10 +74,11 @@ function AssetTable(props: AssetTableProps) {
     )
     .filter(Boolean);
 
-  const filteredAssetGroups = assetGroupsData?.filter((assetGroup: AssetGroup) =>
-    sortedAssets?.some(
-      (asset: Asset) => asset.asset_group_id === assetGroup.id,
-    ),
+  const filteredAssetGroups = assetGroupsData?.filter(
+    (assetGroup: AssetGroup) =>
+      sortedAssets?.some(
+        (asset: Asset) => asset.asset_group_id === assetGroup.id,
+      ),
   );
 
   return (
@@ -125,7 +130,15 @@ function AssetTable(props: AssetTableProps) {
               <p className='mt-5 text-center text-muted'>No query results.</p>
             )}
           </div>
-          {(maxPage > minPage) && <PaginationControl page={page} minPage={minPage} maxPage={maxPage} offsetIndex={offsetIndex} setOffsetIndex={setOffsetIndex} />}
+          {maxPage > minPage && (
+            <PaginationControl
+              page={page}
+              minPage={minPage}
+              maxPage={maxPage}
+              offsetIndex={offsetIndex}
+              setOffsetIndex={setOffsetIndex}
+            />
+          )}
         </>
       ) : (
         <p className='mt-4'>Loading...</p>

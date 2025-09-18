@@ -13,23 +13,23 @@ type AssetClass = {
 
 type AssetClassTableProps = {
   searchTerm: string;
+  pageSize: number;
 };
 
 function AssetClassTable(props: AssetClassTableProps) {
-  const { searchTerm } = props;
+  const { searchTerm, pageSize } = props;
 
   const navigate = useNavigate();
   const [offsetIndex, setOffsetIndex] = useState(0);
-  const pageSize = 10;
 
   const { data: assetClasses, isFetched } = useAssetClasses(
     '', // name
-    '', // version  
+    '', // version
     searchTerm, // query
     '', // searchFields
     'contains', // operator
     offsetIndex * pageSize, // offset
-    pageSize  // limit
+    pageSize, // limit
   );
 
   const maxPage = Math.ceil(assetClasses?.pagination?.total / pageSize);
@@ -44,7 +44,10 @@ function AssetClassTable(props: AssetClassTableProps) {
             {assetClasses?.items?.length > 0 ? (
               assetClasses?.items?.map((assetClass: AssetClass) => (
                 <div className='col mb-3' key={assetClass.id}>
-                  <div className='card asset-card cursor-pointer bg-body-tertiary shadow-sm' onClick={() => navigate(`/assetclasses/${assetClass.id}`)}>
+                  <div
+                    className='card asset-card cursor-pointer bg-body-tertiary shadow-sm'
+                    onClick={() => navigate(`/assetclasses/${assetClass.id}`)}
+                  >
                     <div className='card-body'>
                       <h6 className='fw-bold'>{assetClass.name}</h6>
                       <div className='text-xs'>
@@ -68,8 +71,16 @@ function AssetClassTable(props: AssetClassTableProps) {
               <p className='mt-5 text-center text-muted'>No query results.</p>
             )}
           </div>
-          {(maxPage > minPage) && <PaginationControl page={page} minPage={minPage} maxPage={maxPage} offsetIndex={offsetIndex} setOffsetIndex={setOffsetIndex} />}
-          </>
+          {maxPage > minPage && (
+            <PaginationControl
+              page={page}
+              minPage={minPage}
+              maxPage={maxPage}
+              offsetIndex={offsetIndex}
+              setOffsetIndex={setOffsetIndex}
+            />
+          )}
+        </>
       ) : (
         <p className='mt-4'>Loading...</p>
       )}

@@ -10,7 +10,16 @@ export const getRecipe = async (recipeID?: string) => {
   return data;
 };
 
-export const getRecipes = async (outputAssetClass?: string, name?: string, version?: string, query?: string, searchFields?: string, operator?: string, offset?: number, limit?: number) => {
+export const getRecipes = async (
+  outputAssetClass?: string,
+  name?: string,
+  version?: string,
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
+) => {
   const url = `${API_BASE}/recipes`;
 
   const params: any = {};
@@ -34,9 +43,38 @@ export const useRecipe = (recipeID?: string) => {
   });
 };
 
-export const useRecipes = (outputAssetClass?: string, name?: string, version?: string, query?: string, searchFields?: string, operator?: string, offset?: number, limit?: number) => {
+export const useRecipes = (
+  outputAssetClass?: string,
+  name?: string,
+  version?: string,
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
+) => {
   return useQuery({
-    queryKey: ['recipes', outputAssetClass, name, version, query, searchFields, operator, offset, limit],
-    queryFn: () => getRecipes(outputAssetClass, name, version, query, searchFields, operator, offset, limit),
+    queryKey: [
+      'recipes',
+      outputAssetClass,
+      name,
+      version,
+      query,
+      searchFields,
+      operator,
+      offset,
+      limit,
+    ],
+    queryFn: () =>
+      getRecipes(
+        outputAssetClass,
+        name,
+        version,
+        query,
+        searchFields,
+        operator,
+        offset,
+        limit,
+      ),
   });
 };

@@ -10,7 +10,15 @@ export const getGenome = async (genomeDigest?: string) => {
   return data;
 };
 
-export const getGenomes = async (genomeDigest?: string, alias?: string, query?: string, searchFields?: string, operator?: string, offset?: number, limit?: number) => {
+export const getGenomes = async (
+  genomeDigest?: string,
+  alias?: string,
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
+) => {
   const url = `${API_BASE}/genomes`;
 
   const params: any = {};
@@ -33,9 +41,35 @@ export const useGenome = (genomeDigest?: string) => {
   });
 };
 
-export const useGenomes = (genomeDigest?: string, alias?: string, query?: string, searchFields?: string, operator?: string, offset?: number, limit?: number) => {
+export const useGenomes = (
+  genomeDigest?: string,
+  alias?: string,
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
+) => {
   return useQuery({
-    queryKey: ['genomes', genomeDigest, alias, query, searchFields, operator, offset, limit],
-    queryFn: () => getGenomes(genomeDigest, alias, query, searchFields, operator, offset, limit),
+    queryKey: [
+      'genomes',
+      genomeDigest,
+      alias,
+      query,
+      searchFields,
+      operator,
+      offset,
+      limit,
+    ],
+    queryFn: () =>
+      getGenomes(
+        genomeDigest,
+        alias,
+        query,
+        searchFields,
+        operator,
+        offset,
+        limit,
+      ),
   });
 };

@@ -16,11 +16,11 @@ export const getAssets = async (
   genomeDigest?: string,
   recipeName?: string,
   assetGroupID?: number,
-  query?: string, 
-  searchFields?: string, 
-  operator?: string, 
-  offset?: number, 
-  limit?: number
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
 ) => {
   const url = `${API_BASE}/assets`;
 
@@ -60,11 +60,11 @@ export const useAssets = (
   genomeDigest?: string,
   recipeName?: string,
   assetGroupID?: number,
-  query?: string, 
-  searchFields?: string, 
-  operator?: string, 
-  offset?: number, 
-  limit?: number
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
 ) => {
   return useQuery({
     queryKey: [
@@ -78,10 +78,21 @@ export const useAssets = (
       searchFields,
       operator,
       offset,
-      limit
+      limit,
     ],
     queryFn: () =>
-      getAssets(name, assetGroupName, genomeDigest, recipeName, assetGroupID, query, searchFields, operator, offset, limit),
+      getAssets(
+        name,
+        assetGroupName,
+        genomeDigest,
+        recipeName,
+        assetGroupID,
+        query,
+        searchFields,
+        operator,
+        offset,
+        limit,
+      ),
   });
 };
 

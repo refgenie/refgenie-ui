@@ -3,6 +3,7 @@ import AssetTable from '../assets/AssetTable';
 
 function Assets() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [pageSize, setPageSize] = useState(10);
 
   return (
     <>
@@ -25,9 +26,19 @@ function Assets() {
               />
               <span className='input-group-text bi bi-search'></span>
             </div>
+            <select
+              className='form-select w-25'
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+            >
+              <option value={10}>Limit 10</option>
+              <option value={20}>Limit 20</option>
+              <option value={50}>Limit 50</option>
+              <option value={100}>Limit 100</option>
+            </select>
           </div>
 
-          <AssetTable searchTerm={searchTerm} />
+          <AssetTable searchTerm={searchTerm} pageSize={pageSize} />
         </div>
       </div>
     </>

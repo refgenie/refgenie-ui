@@ -10,7 +10,15 @@ export const getAssetClass = async (assetClassID?: string) => {
   return data;
 };
 
-export const getAssetClasses = async (name?: string, version?: string, query?: string, searchFields?: string, operator?: string, offset?: number, limit?: number) => {
+export const getAssetClasses = async (
+  name?: string,
+  version?: string,
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
+) => {
   const url = `${API_BASE}/asset_classes`;
 
   const params: any = {};
@@ -33,9 +41,35 @@ export const useAssetClass = (assetClassID?: string) => {
   });
 };
 
-export const useAssetClasses = (name?: string, version?: string, query?: string, searchFields?: string, operator?: string, offset?: number, limit?: number) => {
+export const useAssetClasses = (
+  name?: string,
+  version?: string,
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
+) => {
   return useQuery({
-    queryKey: ['assetClasses', name, version, query, searchFields, operator, offset, limit],
-    queryFn: () => getAssetClasses(name, version, query, searchFields, operator, offset, limit),
+    queryKey: [
+      'assetClasses',
+      name,
+      version,
+      query,
+      searchFields,
+      operator,
+      offset,
+      limit,
+    ],
+    queryFn: () =>
+      getAssetClasses(
+        name,
+        version,
+        query,
+        searchFields,
+        operator,
+        offset,
+        limit,
+      ),
   });
 };

@@ -5,29 +5,29 @@ import { PaginationControl } from '../pagination/PaginationControl';
 
 type GenomeTableProps = {
   searchTerm: string;
+  pageSize: number;
 };
 
 function GenomesTable(props: GenomeTableProps) {
-  const { searchTerm } = props;
+  const { searchTerm, pageSize } = props;
 
   const navigate = useNavigate();
   const [offsetIndex, setOffsetIndex] = useState(0);
-  const pageSize = 20;
 
   const { data: genomes, isFetched: fetchedGenomes } = useGenomes(
     '', // genomeDigest
-    '', // alias  
+    '', // alias
     searchTerm, // query
     '', // searchFields
     'contains', // operator
     offsetIndex * pageSize, // offset
-    pageSize  // limit
+    pageSize, // limit
   );
 
   const maxPage = Math.ceil(genomes?.pagination?.total / pageSize);
   const page = offsetIndex + 1;
   const minPage = 1;
-  
+
   return (
     <>
       {genomes && fetchedGenomes ? (
@@ -85,7 +85,15 @@ function GenomesTable(props: GenomeTableProps) {
               )}
             </table>
           </div>
-          {(maxPage > minPage) && <PaginationControl page={page} minPage={minPage} maxPage={maxPage} offsetIndex={offsetIndex} setOffsetIndex={setOffsetIndex} />}
+          {maxPage > minPage && (
+            <PaginationControl
+              page={page}
+              minPage={minPage}
+              maxPage={maxPage}
+              offsetIndex={offsetIndex}
+              setOffsetIndex={setOffsetIndex}
+            />
+          )}
         </>
       ) : (
         <p className='mt-4'>Loading...</p>

@@ -85,7 +85,6 @@ function AssetClass() {
                 <strong>Asset Class ID: </strong>
                 {assetClass.id}
               </p>
-
             </>
           )}
         </div>

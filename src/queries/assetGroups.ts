@@ -15,11 +15,11 @@ export const getAssetGroups = async (
   assetClass?: string,
   assetGroupName?: string,
   assetGroupID?: number,
-  query?: string, 
-  searchFields?: string, 
-  operator?: string, 
-  offset?: number, 
-  limit?: number
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
 ) => {
   const url = `${API_BASE}/asset_groups`;
 
@@ -50,11 +50,11 @@ export const useAssetGroups = (
   assetClass?: string,
   assetGroupName?: string,
   assetGroupID?: number,
-  query?: string, 
-  searchFields?: string, 
-  operator?: string, 
-  offset?: number, 
-  limit?: number
+  query?: string,
+  searchFields?: string,
+  operator?: string,
+  offset?: number,
+  limit?: number,
 ) => {
   return useQuery({
     queryKey: [
@@ -67,10 +67,20 @@ export const useAssetGroups = (
       searchFields,
       operator,
       offset,
-      limit
+      limit,
     ],
     queryFn: () =>
-      getAssetGroups(genomeDigest, assetClass, assetGroupName, assetGroupID, query, searchFields, operator, offset, limit),
+      getAssetGroups(
+        genomeDigest,
+        assetClass,
+        assetGroupName,
+        assetGroupID,
+        query,
+        searchFields,
+        operator,
+        offset,
+        limit,
+      ),
   });
 };
 

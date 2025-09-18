@@ -45,7 +45,10 @@ function Main() {
                   />
                   <Route path='/assets' element={<Assets />} />
                   <Route path='/assetclasses' element={<AssetClasses />} />
-                  <Route path='/assetclasses/:assetClassID' element={<AssetClass />} />
+                  <Route
+                    path='/assetclasses/:assetClassID'
+                    element={<AssetClass />}
+                  />
                   <Route path='/recipes' element={<Recipes />} />
                   <Route path='/recipes/:recipeID' element={<Recipe />} />
                   <Route path='/bookmarks' element={<Bookmarks />} />
