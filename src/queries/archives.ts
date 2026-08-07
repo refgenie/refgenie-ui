@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { useQuery, useQueries } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const API_BASE = 'https://api.refgenie.org/v4';
 
 export const getArchives = async (
   digest?: string,
   assetDigest?: string,
+  genomeDigest?: string,
   query?: string,
   searchFields?: string,
   operator?: string,
@@ -17,6 +18,7 @@ export const getArchives = async (
   const params: any = {};
   if (digest) params.digest = digest;
   if (assetDigest) params.asset_digest = assetDigest;
+  if (genomeDigest) params.genome_digest = genomeDigest;
   if (query) params.q = query;
   if (searchFields) params.search_fields = searchFields;
   if (operator) params.operator = operator;
@@ -51,6 +53,7 @@ export const useArchives = (
       getArchives(
         digest,
         assetDigest,
+        undefined,
         query,
         searchFields,
         operator,
@@ -60,11 +63,10 @@ export const useArchives = (
   });
 };
 
-export const useAssetArchives = (assetDigests: string[] = []) => {
-  return useQueries({
-    queries: assetDigests.map((assetDigest) => ({
-      queryKey: ['assetArchives', assetDigest],
-      queryFn: () => getArchives(undefined, assetDigest),
-    })),
+export const useGenomeArchives = (genomeDigest?: string) => {
+  return useQuery({
+    queryKey: ['genomeArchives', genomeDigest],
+    queryFn: () => getArchives(undefined, undefined, genomeDigest),
+    enabled: !!genomeDigest,
   });
 };

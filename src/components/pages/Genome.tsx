@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useGenome } from '../../queries/genomes';
 import { useAliases } from '../../queries/aliases';
-import { useAssetArchives } from '../../queries/archives';
+import { useGenomeArchives } from '../../queries/archives';
 import { useAssets } from '../../queries/assets';
 import { useAssetGroups } from '../../queries/assetGroups';
 
@@ -27,14 +27,8 @@ function Genome() {
   const { data: assets } = useAssets(undefined, undefined, digest);
   const { data: assetGroups } = useAssetGroups(digest);
 
-  const assetDigests = assets?.items?.map((asset: any) => asset.digest);
-
-  const archives = useAssetArchives(assetDigests);
-  // const archivesIsLoading = archives.some(query => query.isFetching || query.isLoading);
-  const archivesData = archives
-    .map((query) => query.data?.items)
-    .filter(Boolean)
-    .flat();
+  const { data: archives } = useGenomeArchives(digest);
+  const archivesData = archives?.items ?? [];
 
   const combinedAssets = archivesData?.map((archive: any) => {
     const matchingAsset = assets?.items?.find(
