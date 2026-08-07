@@ -104,10 +104,10 @@ function Recipe() {
                 {recipe.default_asset}
               </p>
 
-              {Object.entries(recipe.custom_properties).length > 0 && (
+              {Object.entries(recipe.custom_seek_keys ?? {}).length > 0 && (
                 <>
-                  <p className='fw-bold mt-4 mb-1'>Custom Properties</p>
-                  {Object.entries(recipe.custom_properties).map(
+                  <p className='fw-bold mt-4 mb-1'>Custom Seek Keys</p>
+                  {Object.entries(recipe.custom_seek_keys ?? {}).map(
                     ([key, content], index: number) => (
                       <p className='text-ss mb-0' key={index}>
                         <strong>{key}: </strong>
@@ -118,10 +118,10 @@ function Recipe() {
                 </>
               )}
 
-              {Object.entries(recipe.input_files).length > 0 && (
+              {Object.entries(recipe.input_files ?? {}).length > 0 && (
                 <>
                   <p className='fw-bold mt-4 mb-1'>Input Files</p>
-                  {Object.entries(recipe.input_files).map(
+                  {Object.entries(recipe.input_files ?? {}).map(
                     ([key, content], index: number) => (
                       <div key={index}>
                         <p className='text-ss mb-0'>
@@ -144,7 +144,7 @@ function Recipe() {
               )}
 
               <p className='fw-bold mt-4 mb-0'>Command Templates</p>
-              {recipe.command_templates.map(
+              {(recipe.command_templates ?? []).map(
                 (command: string, index: number) => (
                   <div className='mb-2' key={index}>
                     <code className='text-xs'>{command}</code>

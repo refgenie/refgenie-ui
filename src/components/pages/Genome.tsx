@@ -43,7 +43,7 @@ function Genome() {
       asset: matchingAsset,
       assetGroup: matchingAssetGroup,
     };
-  });
+  }).filter((group: any) => group.asset && group.assetGroup);
 
   return (
     <>
