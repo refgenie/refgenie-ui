@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAliases } from '../../queries/aliases';
 import { useArchives } from '../../queries/archives';
 import { useAsset } from '../../queries/assets';
-import { useAssetGroup } from '../../queries/assetGroups';
 
 const API_BASE = 'https://api.refgenie.org/v4';
 
@@ -23,7 +22,6 @@ function Asset() {
   const { data: alias } = useAliases(undefined, genomeDigest);
   const { data: asset } = useAsset(assetDigest);
   const { data: archive } = useArchives(undefined, assetDigest);
-  const { data: assetGroup } = useAssetGroup(asset?.asset_group_id);
 
   return (
     <>
@@ -92,7 +90,7 @@ function Asset() {
             </a>
           </div>
 
-          {asset && archive?.items && assetGroup && (
+          {asset && archive?.items && (
             <>
               <p className='fw-bold mt-3 mb-1'>Details</p>
               <p className='text-ss mb-0'>
@@ -112,11 +110,7 @@ function Asset() {
 
               <p className='text-ss mb-0'>
                 <strong>Asset Class: </strong>
-                {assetGroup?.name}
-              </p>
-              <p className='text-ss mb-2'>
-                <strong>Asset Class ID: </strong>
-                {assetGroup?.asset_class_id}
+                {asset?.asset_class_name}
               </p>
 
               <p
@@ -125,7 +119,7 @@ function Asset() {
                 onClick={() => navigate(`/recipes/${asset.recipe_id}`)}
               >
                 <strong>Recipe: </strong>
-                {assetGroup?.name}
+                {asset?.asset_group_name}
               </p>
               <p
                 className='text-ss mb-2 cursor-pointer'

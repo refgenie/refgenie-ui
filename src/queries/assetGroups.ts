@@ -1,14 +1,7 @@
 import axios from 'axios';
-import { useQuery, useQueries } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const API_BASE = 'https://api.refgenie.org/v4';
-
-export const getAssetGroup = async (assetGroupID?: number) => {
-  const url = `${API_BASE}/asset_groups/${assetGroupID}`;
-
-  const { data } = await axios.get<any>(url);
-  return data;
-};
 
 export const getAssetGroups = async (
   genomeDigest?: string,
@@ -36,13 +29,6 @@ export const getAssetGroups = async (
 
   const { data } = await axios.get<any>(url, { params });
   return data;
-};
-
-export const useAssetGroup = (assetGroupID?: number) => {
-  return useQuery({
-    queryKey: ['assetGroup', assetGroupID],
-    queryFn: () => getAssetGroup(assetGroupID),
-  });
 };
 
 export const useAssetGroups = (
@@ -81,14 +67,5 @@ export const useAssetGroups = (
         offset,
         limit,
       ),
-  });
-};
-
-export const useAssetAssetGroups = (assetGroupIDs: number[] = []) => {
-  return useQueries({
-    queries: assetGroupIDs.map((assetGroupID) => ({
-      queryKey: ['assetAssetGroups', assetGroupID],
-      queryFn: () => getAssetGroup(assetGroupID),
-    })),
   });
 };
