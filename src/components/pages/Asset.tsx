@@ -22,6 +22,7 @@ function Asset() {
   const { data: alias } = useAliases(undefined, genomeDigest);
   const { data: asset } = useAsset(assetDigest);
   const { data: archive } = useArchives(undefined, assetDigest);
+  const arch = archive?.items?.[0];
 
   return (
     <>
@@ -69,10 +70,10 @@ function Asset() {
                 </>
               )}
             </button>
-            {archive && (
+            {arch && (
               <a
                 className='btn btn-secondary btn-sm ms-1'
-                href={`${API_BASE}/archives/${archive?.items[0].digest}/download`}
+                href={`${API_BASE}/archives/${arch.digest}/download`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <i className='bi bi-cloud-arrow-down-fill me-2' />
@@ -90,7 +91,7 @@ function Asset() {
             </a>
           </div>
 
-          {asset && archive?.items && (
+          {asset && (
             <>
               <p className='fw-bold mt-3 mb-1'>Details</p>
               <p className='text-ss mb-0'>
@@ -130,21 +131,25 @@ function Asset() {
                 {asset?.recipe_id}
               </p>
 
-              <p className='text-ss mb-0'>
-                <strong>Archive Digest: </strong>
-                {archive?.items[0].digest}
-              </p>
-              <p className='text-ss mb-0'>
-                <strong>Archive Size: </strong>
-                {(archive?.items[0].size / 1024 / 1024 / 1024).toFixed(2)} gb
-              </p>
+              {arch && (
+                <>
+                  <p className='text-ss mb-0'>
+                    <strong>Archive Digest: </strong>
+                    {arch.digest}
+                  </p>
+                  <p className='text-ss mb-0'>
+                    <strong>Archive Size: </strong>
+                    {((arch.size ?? 0) / 1024 / 1024 / 1024).toFixed(2)} gb
+                  </p>
+                </>
+              )}
             </>
           )}
 
-          {archive && (
+          {arch && (
             <>
               <p className='fw-bold mt-4 mb-1'>Archive File Contents</p>
-              {archive?.items[0].directory_contents.map(
+              {(arch.directory_contents ?? []).map(
                 (content: string, index: number) => (
                   <p className='text-ss mb-0' key={index}>
                     {content}
@@ -152,7 +157,7 @@ function Asset() {
                 ),
               )}
               <p className='fw-bold mt-4 mb-0'>Build Commands</p>
-              {archive?.items[0].build_commands.map(
+              {(arch.build_commands ?? []).map(
                 (command: string, index: number) => (
                   <div className='mb-2' key={index}>
                     <code className='text-xs'>{command}</code>
