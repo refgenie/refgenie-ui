@@ -96,9 +96,10 @@ export const useAssets = (
   });
 };
 
-export const useAssetFiles = (digest: string) => {
+export const useAssetFiles = (digest?: string) => {
   return useQuery({
-    queryKey: ['assets', digest],
-    queryFn: () => getAssetFiles(digest),
+    queryKey: ['assetFiles', digest],
+    queryFn: () => getAssetFiles(digest as string),
+    enabled: !!digest,
   });
 };

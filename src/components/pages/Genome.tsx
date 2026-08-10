@@ -6,7 +6,7 @@ import { useGenome } from '../../queries/genomes';
 import { useAliases } from '../../queries/aliases';
 import { useGenomeArchives } from '../../queries/archives';
 import { useAssets } from '../../queries/assets';
-import { useAssetGroups } from '../../queries/assetGroups';
+import FileDownloads from '../assets/FileDownloads';
 
 const API_BASE = 'https://api.refgenie.org/v4';
 
@@ -25,25 +25,23 @@ function Genome() {
   const { data: genome } = useGenome(digest);
   const { data: alias } = useAliases(undefined, digest);
   const { data: assets } = useAssets(undefined, undefined, digest);
-  const { data: assetGroups } = useAssetGroups(digest);
 
   const { data: archives } = useGenomeArchives(digest);
   const archivesData = archives?.items ?? [];
 
-  const combinedAssets = archivesData?.map((archive: any) => {
-    const matchingAsset = assets?.items?.find(
-      (asset: any) => asset.digest === archive.asset_digest,
-    );
-    const matchingAssetGroup = assetGroups?.items?.find(
-      (assetGroup: any) => assetGroup.id === matchingAsset?.asset_group_id,
+  // Drive the list from assets (not archives) so file-mode assets — e.g.
+  // fasta_index with serving_modes=["file"], which have no archive tarball —
+  // still get a row. Left-join each asset to its archive (if any).
+  const combinedAssets = (assets?.items ?? []).map((asset: any) => {
+    const matchingArchive = archivesData.find(
+      (archive: any) => archive.asset_digest === asset.digest,
     );
 
     return {
-      archive,
-      asset: matchingAsset,
-      assetGroup: matchingAssetGroup,
+      asset,
+      archive: matchingArchive,
     };
-  }).filter((group: any) => group.asset && group.assetGroup);
+  });
 
   return (
     <>
@@ -130,21 +128,25 @@ function Genome() {
                     >
                       <div className='card-body'>
                         <h6 className='fw-bold'>
-                          {group.assetGroup.name} / {group.asset.name}
+                          {group.asset.asset_group_name} / {group.asset.name}
                         </h6>
                         <div className='text-xs'>
                           <p className='mb-2 fst-italic text-muted'>
                             {group.asset.description}
                           </p>
-                          <span>
-                            <strong>File Contents: </strong>
-                          </span>
-                          {group.archive.directory_contents.map(
-                            (item: any, itemIndex: number) => (
-                              <div className='text-muted' key={itemIndex}>
-                                {item}
-                              </div>
-                            ),
+                          {group.archive && (
+                            <>
+                              <span>
+                                <strong>File Contents: </strong>
+                              </span>
+                              {group.archive.directory_contents.map(
+                                (item: any, itemIndex: number) => (
+                                  <div className='text-muted' key={itemIndex}>
+                                    {item}
+                                  </div>
+                                ),
+                              )}
+                            </>
                           )}
 
                           <div className='mt-1 d-flex align-items-end'>
@@ -154,24 +156,35 @@ function Genome() {
                                 {group.asset.digest}
                               </span>
                             </span>
-                            <span className='ms-auto d-flex align-items-center'>
-                              <strong className='me-2'>
-                                Download (
-                                {(
-                                  group.archive.size /
-                                  1024 /
-                                  1024 /
-                                  1024
-                                ).toFixed(2)}{' '}
-                                gb):{' '}
-                              </strong>
-                              <a
-                                className='btn btn-secondary btn-xs px-2 py-1'
-                                href={`${API_BASE}/archives/${group.archive.digest}/download`}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                {`${group.assetGroup.name}__${group.asset.name}.tgz`}
-                              </a>
+                            <span className='ms-auto d-flex align-items-center flex-wrap justify-content-end'>
+                              {group.archive ? (
+                                <>
+                                  <strong className='me-2'>
+                                    Download (
+                                    {(
+                                      group.archive.size /
+                                      1024 /
+                                      1024 /
+                                      1024
+                                    ).toFixed(2)}{' '}
+                                    gb):{' '}
+                                  </strong>
+                                  <a
+                                    className='btn btn-secondary btn-xs px-2 py-1'
+                                    href={`${API_BASE}/archives/${group.archive.digest}/download`}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    {`${group.asset.asset_group_name}__${group.asset.name}.tgz`}
+                                  </a>
+                                </>
+                              ) : (
+                                <>
+                                  <strong className='me-2'>
+                                    Download files:{' '}
+                                  </strong>
+                                  <FileDownloads assetDigest={group.asset.digest} />
+                                </>
+                              )}
                             </span>
                           </div>
                         </div>
