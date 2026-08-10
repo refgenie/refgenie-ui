@@ -40,6 +40,8 @@ function GenomesTable(props: GenomeTableProps) {
                     <tr>
                       <th className='text-nowrap'>Genome Alias</th>
                       <th className='text-nowrap'>Species</th>
+                      <th className='text-nowrap'>Source</th>
+                      <th className='text-nowrap'>Accession</th>
                       <th className='text-nowrap'>Description</th>
                       <th className='text-nowrap'>Asset Count</th>
                     </tr>
@@ -55,6 +57,10 @@ function GenomesTable(props: GenomeTableProps) {
                           {genome.aliases[0] || genome.digest}
                         </td>
                         <td className='text-nowrap'>{genome.species_name}</td>
+                        <td className='text-nowrap'>{genome.assembly_source}</td>
+                        <td className='text-nowrap'>
+                          {genome.assembly_accession}
+                        </td>
                         <td>{genome.description}</td>
                         <td className='text-end text-nowrap'>
                           {genome.asset_count}
@@ -69,6 +75,8 @@ function GenomesTable(props: GenomeTableProps) {
                     <tr>
                       <th className='text-nowrap'>Genome Alias</th>
                       <th className='text-nowrap'>Species</th>
+                      <th className='text-nowrap'>Source</th>
+                      <th className='text-nowrap'>Accession</th>
                       <th className='text-nowrap'>Description</th>
                       <th className='text-nowrap'>Asset Count</th>
                     </tr>
@@ -76,6 +84,8 @@ function GenomesTable(props: GenomeTableProps) {
                   <tbody>
                     <tr>
                       <td className='text-nowrap'>No query results.</td>
+                      <td></td>
+                      <td></td>
                       <td></td>
                       <td></td>
                       <td></td>

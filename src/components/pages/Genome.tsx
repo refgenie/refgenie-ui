@@ -43,6 +43,42 @@ function Genome() {
     };
   });
 
+  // Genome-level metadata. Core fields are dedicated columns on the detail
+  // response; the long tail rides the read-only FHR sidecar blob (genome.fhr).
+  const fhr: any = genome?.fhr ?? {};
+  const vitalStats: any = fhr?.vitalStats ?? {};
+  const metadataAuthors: any[] = fhr?.metadataAuthor ?? [];
+  const assemblyAuthors: any[] = fhr?.assemblyAuthor ?? [];
+  const relatedLinks: string[] = fhr?.relatedLink ?? [];
+
+  const taxonUri =
+    genome?.taxon_uri ||
+    (genome?.taxon_id
+      ? `https://identifiers.org/taxonomy:${genome.taxon_id}`
+      : undefined);
+  const accessionUrl =
+    fhr?.accessionID?.url ||
+    (genome?.assembly_accession && /^GC[AF]_/.test(genome.assembly_accession)
+      ? `https://www.ncbi.nlm.nih.gov/datasets/genome/${genome.assembly_accession}/`
+      : undefined);
+
+  const hasOrganism =
+    genome?.species_name || genome?.common_name || genome?.taxon_id;
+  const hasAssembly =
+    genome?.assembly_source ||
+    genome?.assembly_accession ||
+    genome?.assembly_level ||
+    fhr?.version;
+  const hasProvenance =
+    fhr?.dateCreated ||
+    fhr?.license ||
+    fhr?.scholarlyArticle ||
+    fhr?.funding ||
+    metadataAuthors.length > 0 ||
+    assemblyAuthors.length > 0 ||
+    relatedLinks.length > 0;
+  const hasStats = vitalStats && Object.keys(vitalStats).length > 0;
+
   return (
     <>
       <div className='row p-2 p-lg-4 mt-4 mt-lg-0'>
@@ -110,6 +146,191 @@ function Genome() {
                 <strong>Genome Description: </strong>
                 {genome.description}
               </p>
+            </>
+          )}
+
+          {genome && hasOrganism && (
+            <>
+              <p className='fw-bold mt-4 mb-1'>Organism</p>
+              {genome.species_name && (
+                <p className='text-ss mb-0'>
+                  <strong>Scientific Name: </strong>
+                  <span className='fst-italic'>{genome.species_name}</span>
+                </p>
+              )}
+              {genome.common_name && (
+                <p className='text-ss mb-0'>
+                  <strong>Common Name: </strong>
+                  {genome.common_name}
+                </p>
+              )}
+              {genome.taxon_id && (
+                <p className='text-ss mb-0'>
+                  <strong>NCBI Taxon: </strong>
+                  {taxonUri ? (
+                    <a href={taxonUri} target='_blank' rel='noopener noreferrer'>
+                      {genome.taxon_id}
+                    </a>
+                  ) : (
+                    genome.taxon_id
+                  )}
+                </p>
+              )}
+            </>
+          )}
+
+          {genome && hasAssembly && (
+            <>
+              <p className='fw-bold mt-4 mb-1'>Assembly</p>
+              {genome.assembly_source && (
+                <p className='text-ss mb-0'>
+                  <strong>Source: </strong>
+                  {genome.assembly_source}
+                </p>
+              )}
+              {genome.assembly_accession && (
+                <p className='text-ss mb-0'>
+                  <strong>Accession: </strong>
+                  {accessionUrl ? (
+                    <a
+                      href={accessionUrl}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      {genome.assembly_accession}
+                    </a>
+                  ) : (
+                    genome.assembly_accession
+                  )}
+                </p>
+              )}
+              {genome.assembly_level && (
+                <p className='text-ss mb-0'>
+                  <strong>Level: </strong>
+                  {genome.assembly_level}
+                </p>
+              )}
+              {fhr?.version && (
+                <p className='text-ss mb-0'>
+                  <strong>Version: </strong>
+                  {fhr.version}
+                </p>
+              )}
+            </>
+          )}
+
+          {genome && hasProvenance && (
+            <>
+              <p className='fw-bold mt-4 mb-1'>Provenance &amp; Publication</p>
+              {fhr?.dateCreated && (
+                <p className='text-ss mb-0'>
+                  <strong>Date Created: </strong>
+                  {fhr.dateCreated}
+                </p>
+              )}
+              {metadataAuthors.length > 0 && (
+                <p className='text-ss mb-0'>
+                  <strong>Metadata Authors: </strong>
+                  {metadataAuthors
+                    .map((a: any) => a?.name)
+                    .filter(Boolean)
+                    .join(', ')}
+                </p>
+              )}
+              {assemblyAuthors.length > 0 && (
+                <p className='text-ss mb-0'>
+                  <strong>Assembly Authors: </strong>
+                  {assemblyAuthors
+                    .map((a: any) => a?.name)
+                    .filter(Boolean)
+                    .join(', ')}
+                </p>
+              )}
+              {fhr?.license && (
+                <p className='text-ss mb-0'>
+                  <strong>License: </strong>
+                  {fhr.license}
+                </p>
+              )}
+              {fhr?.scholarlyArticle && (
+                <p className='text-ss mb-0'>
+                  <strong>Publication: </strong>
+                  <a
+                    href={fhr.scholarlyArticle}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    {fhr.scholarlyArticle}
+                  </a>
+                </p>
+              )}
+              {fhr?.funding && (
+                <p className='text-ss mb-0'>
+                  <strong>Funding: </strong>
+                  {fhr.funding}
+                </p>
+              )}
+              {relatedLinks.length > 0 && (
+                <p className='text-ss mb-0'>
+                  <strong>Related Links: </strong>
+                  {relatedLinks.map((link: string, i: number) => (
+                    <span key={i}>
+                      {i > 0 && ', '}
+                      <a href={link} target='_blank' rel='noopener noreferrer'>
+                        {link}
+                      </a>
+                    </span>
+                  ))}
+                </p>
+              )}
+            </>
+          )}
+
+          {genome && hasStats && (
+            <>
+              <p className='fw-bold mt-4 mb-1'>Assembly Stats</p>
+              {vitalStats.N50 != null && (
+                <p className='text-ss mb-0'>
+                  <strong>N50: </strong>
+                  {vitalStats.N50}
+                </p>
+              )}
+              {vitalStats.L50 != null && (
+                <p className='text-ss mb-0'>
+                  <strong>L50: </strong>
+                  {vitalStats.L50}
+                </p>
+              )}
+              {vitalStats.L90 != null && (
+                <p className='text-ss mb-0'>
+                  <strong>L90: </strong>
+                  {vitalStats.L90}
+                </p>
+              )}
+              {vitalStats.totalBasePairs != null && (
+                <p className='text-ss mb-0'>
+                  <strong>Total Base Pairs: </strong>
+                  {vitalStats.totalBasePairs}
+                </p>
+              )}
+              {vitalStats.numberContigs != null && (
+                <p className='text-ss mb-0'>
+                  <strong>Contigs: </strong>
+                  {vitalStats.numberContigs}
+                </p>
+              )}
+              {vitalStats.numberScaffolds != null && (
+                <p className='text-ss mb-0'>
+                  <strong>Scaffolds: </strong>
+                  {vitalStats.numberScaffolds}
+                </p>
+              )}
+              {vitalStats.readTechnology && (
+                <p className='text-ss mb-0'>
+                  <strong>Read Technology: </strong>
+                  {vitalStats.readTechnology}
+                </p>
+              )}
             </>
           )}
 
