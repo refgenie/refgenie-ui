@@ -19,7 +19,17 @@ export type JobRecord = {
   kind: string;
   status: 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | string;
   error?: { code?: string; message?: string } | null;
-  progress?: { current?: number; total?: number } | null;
+  /** Matches the server's `JobProgress` wire shape (web-ui contracts §7):
+   * `percent` is 0-100 and already computed server-side, `null` for any
+   * reading with no known total (every build, any pull with no
+   * Content-Length) rather than a zero-length bar. */
+  progress?: {
+    phase?: string;
+    percent?: number | null;
+    message?: string | null;
+    bytes_done?: number | null;
+    bytes_total?: number | null;
+  } | null;
 };
 
 export type PullRequestBody = {

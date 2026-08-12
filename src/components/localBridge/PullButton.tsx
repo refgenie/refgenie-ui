@@ -71,8 +71,8 @@ function PullButton(props: PullButtonProps) {
       });
       const record = await waitForJob(bridge.baseUrl, ref.job_id, (update) => {
         const progress =
-          update.progress?.total && update.progress.current !== undefined
-            ? ` (${Math.round((100 * update.progress.current) / update.progress.total)}%)`
+          update.progress?.percent !== null && update.progress?.percent !== undefined
+            ? ` (${Math.round(update.progress.percent)}%)`
             : '';
         toasts.update(toastId, {
           title: 'Pulling to local refgenie',
