@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 
 import logo from '../assets/refgenie_logo.svg';
+import BridgeControl from './localBridge/BridgeControl';
 
 type NavLinkProps = {
   page: string;
@@ -108,6 +109,8 @@ function Navbar() {
                 <NavLink page={'bookmarks'} title={'Bookmarks'} position='side' currentPage={location}/>
                 <NavLink page={'config'} title={'Config'} position='side' currentPage={location}/>
               </div> */}
+
+              <BridgeControl />
 
               <p className='fst-condensed mt-3 mb-0'>Links</p>
               <div className=''>

@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
-const API_BASE = 'https://api.refgenie.org/v4';
+import { useApiClient } from '../services/api';
+import type { ApiClient } from '../services/api';
 
 export const getAliases = async (
+  api: ApiClient,
   name?: string,
   genomeDigest?: string,
   query?: string,
@@ -12,7 +14,7 @@ export const getAliases = async (
   offset?: number,
   limit?: number,
 ) => {
-  const url = `${API_BASE}/aliases`;
+  const url = `${api.baseUrl}/aliases`;
 
   const params: any = {};
   if (name) params.name = name;
@@ -36,8 +38,10 @@ export const useAliases = (
   offset?: number,
   limit?: number,
 ) => {
+  const api = useApiClient();
   return useQuery({
     queryKey: [
+      api.baseUrl,
       'aliases',
       name,
       genomeDigest,
@@ -49,6 +53,7 @@ export const useAliases = (
     ],
     queryFn: () =>
       getAliases(
+        api,
         name,
         genomeDigest,
         query,

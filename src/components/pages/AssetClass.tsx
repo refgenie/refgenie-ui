@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAssetClass } from '../../queries/assetClasses';
 
-const API_BASE = 'https://api.refgenie.org/v4';
+import { useApiClient } from '../../services/api';
 
 function AssetClass() {
   const navigate = useNavigate();
+  const API_BASE = useApiClient().baseUrl;
 
   const params = useParams();
   const assetClassID = params.assetClassID;

@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 import { useAssets } from '../../queries/assets';
+import { useApiClient } from '../../services/api';
+import { useLocalBridgeStore, useLocalDigestIndex } from '../../services/localBridge';
 import { PaginationControl } from '../pagination/PaginationControl';
 
 type Asset = {
@@ -24,6 +26,11 @@ function AssetTable(props: AssetTableProps) {
   const { searchTerm, pageSize } = props;
 
   const navigate = useNavigate();
+  const api = useApiClient();
+  const bridgeStatus = useLocalBridgeStore((state) => state.status);
+  const { data: localIndex } = useLocalDigestIndex();
+  // Presence badges only on the remote branch; digest intersection is exact.
+  const showLocalBadges = api.routeBase === '' && bridgeStatus === 'connected';
   const [offsetIndex, setOffsetIndex] = useState(0);
 
   const { data: assets, isFetched: assetsIsFetched } = useAssets(
@@ -62,13 +69,22 @@ function AssetTable(props: AssetTableProps) {
                       className='card asset-card cursor-pointer bg-body-tertiary shadow-sm'
                       onClick={() =>
                         navigate(
-                          `/genomes/${asset.genome_digest}/${asset.digest}`,
+                          `${api.routeBase}/genomes/${asset.genome_digest}/${asset.digest}`,
                         )
                       }
                     >
                       <div className='card-body'>
                         <h6 className='fw-bold'>
                           {asset.asset_group_name} / {asset.name}
+                          {showLocalBadges &&
+                            localIndex?.assetDigests.has(asset.digest) && (
+                              <span
+                                className='badge text-bg-success ms-2'
+                                title='You already have this asset on your local refgenie'
+                              >
+                                <i className='bi bi-hdd me-1'></i>Local
+                              </span>
+                            )}
                         </h6>
                         <div className='text-xs'>
                           <p className='mb-2 fst-italic text-muted'>

@@ -1,16 +1,18 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
-const API_BASE = 'https://api.refgenie.org/v4';
+import { useApiClient } from '../services/api';
+import type { ApiClient } from '../services/api';
 
-export const getRecipe = async (recipeID?: string) => {
-  const url = `${API_BASE}/recipes/${recipeID}`;
+export const getRecipe = async (api: ApiClient, recipeID?: string) => {
+  const url = `${api.baseUrl}/recipes/${recipeID}`;
 
   const { data } = await axios.get<any>(url);
   return data;
 };
 
 export const getRecipes = async (
+  api: ApiClient,
   outputAssetClass?: string,
   name?: string,
   version?: string,
@@ -20,7 +22,7 @@ export const getRecipes = async (
   offset?: number,
   limit?: number,
 ) => {
-  const url = `${API_BASE}/recipes`;
+  const url = `${api.baseUrl}/recipes`;
 
   const params: any = {};
   if (outputAssetClass) params.output_asset_class = outputAssetClass;
@@ -37,9 +39,10 @@ export const getRecipes = async (
 };
 
 export const useRecipe = (recipeID?: string) => {
+  const api = useApiClient();
   return useQuery({
-    queryKey: ['recipe', recipeID],
-    queryFn: () => getRecipe(recipeID),
+    queryKey: [api.baseUrl, 'recipe', recipeID],
+    queryFn: () => getRecipe(api, recipeID),
   });
 };
 
@@ -53,8 +56,10 @@ export const useRecipes = (
   offset?: number,
   limit?: number,
 ) => {
+  const api = useApiClient();
   return useQuery({
     queryKey: [
+      api.baseUrl,
       'recipes',
       outputAssetClass,
       name,
@@ -67,6 +72,7 @@ export const useRecipes = (
     ],
     queryFn: () =>
       getRecipes(
+        api,
         outputAssetClass,
         name,
         version,

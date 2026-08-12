@@ -1,16 +1,18 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
-const API_BASE = 'https://api.refgenie.org/v4';
+import { useApiClient } from '../services/api';
+import type { ApiClient } from '../services/api';
 
-export const getGenome = async (genomeDigest?: string) => {
-  const url = `${API_BASE}/genomes/${genomeDigest}`;
+export const getGenome = async (api: ApiClient, genomeDigest?: string) => {
+  const url = `${api.baseUrl}/genomes/${genomeDigest}`;
 
   const { data } = await axios.get<any>(url);
   return data;
 };
 
 export const getGenomes = async (
+  api: ApiClient,
   genomeDigest?: string,
   alias?: string,
   query?: string,
@@ -19,7 +21,7 @@ export const getGenomes = async (
   offset?: number,
   limit?: number,
 ) => {
-  const url = `${API_BASE}/genomes`;
+  const url = `${api.baseUrl}/genomes`;
 
   const params: any = {};
   if (genomeDigest) params.digest = genomeDigest;
@@ -35,9 +37,10 @@ export const getGenomes = async (
 };
 
 export const useGenome = (genomeDigest?: string) => {
+  const api = useApiClient();
   return useQuery({
-    queryKey: ['genome', genomeDigest],
-    queryFn: () => getGenome(genomeDigest),
+    queryKey: [api.baseUrl, 'genome', genomeDigest],
+    queryFn: () => getGenome(api, genomeDigest),
   });
 };
 
@@ -50,8 +53,10 @@ export const useGenomes = (
   offset?: number,
   limit?: number,
 ) => {
+  const api = useApiClient();
   return useQuery({
     queryKey: [
+      api.baseUrl,
       'genomes',
       genomeDigest,
       alias,
@@ -63,6 +68,7 @@ export const useGenomes = (
     ],
     queryFn: () =>
       getGenomes(
+        api,
         genomeDigest,
         alias,
         query,

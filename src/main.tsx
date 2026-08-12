@@ -9,6 +9,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import Navbar from './components/Navbar';
+import LocalScope from './components/localBridge/LocalScope';
+import { ToastProvider } from './components/toast/ToastProvider';
 import About from './components/pages/About';
 import Search from './components/pages/Search';
 import Genomes from './components/pages/Genomes';
@@ -53,6 +55,48 @@ function Main() {
                   <Route path='/recipes/:recipeID' element={<Recipe />} />
                   <Route path='/bookmarks' element={<Bookmarks />} />
                   <Route path='/config' element={<Config />} />
+                  {/* Local browse (localhost bridge): the same components
+                      rendered against the connected local refgenie. */}
+                  <Route
+                    path='/local'
+                    element={
+                      <LocalScope>
+                        <Genomes />
+                      </LocalScope>
+                    }
+                  />
+                  <Route
+                    path='/local/genomes'
+                    element={
+                      <LocalScope>
+                        <Genomes />
+                      </LocalScope>
+                    }
+                  />
+                  <Route
+                    path='/local/genomes/:genomeDigest'
+                    element={
+                      <LocalScope>
+                        <Genome />
+                      </LocalScope>
+                    }
+                  />
+                  <Route
+                    path='/local/genomes/:genomeDigest/:assetDigest'
+                    element={
+                      <LocalScope>
+                        <Asset />
+                      </LocalScope>
+                    }
+                  />
+                  <Route
+                    path='/local/assets'
+                    element={
+                      <LocalScope>
+                        <Assets />
+                      </LocalScope>
+                    }
+                  />
                 </Routes>
               </div>
             </div>
@@ -66,6 +110,8 @@ function Main() {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <Toaster position='bottom-right' />
-    <Main />
+    <ToastProvider>
+      <Main />
+    </ToastProvider>
   </QueryClientProvider>,
 );

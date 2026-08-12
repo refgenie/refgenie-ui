@@ -6,9 +6,8 @@ import { useGenome } from '../../queries/genomes';
 import { useAliases } from '../../queries/aliases';
 import { useGenomeArchives } from '../../queries/archives';
 import { useAssets } from '../../queries/assets';
+import { hasCapability, useApiClient } from '../../services/api';
 import FileDownloads from '../assets/FileDownloads';
-
-const API_BASE = 'https://api.refgenie.org/v4';
 
 // type Props = {
 //   genome: Genome,
@@ -16,6 +15,8 @@ const API_BASE = 'https://api.refgenie.org/v4';
 
 function Genome() {
   const navigate = useNavigate();
+  const api = useApiClient();
+  const API_BASE = api.baseUrl;
 
   const params = useParams();
   const digest = params.genomeDigest;
@@ -88,7 +89,7 @@ function Genome() {
               <h6 className='mb-0'>
                 <a
                   className='fw-bold text-decoration-none text-black cursor-pointer'
-                  onClick={() => navigate(`/genomes`)}
+                  onClick={() => navigate(`${api.routeBase}/genomes`)}
                 >
                   Genomes
                 </a>
@@ -344,7 +345,9 @@ function Genome() {
                     <div
                       className='card asset-card cursor-pointer bg-body-tertiary shadow-sm'
                       onClick={() =>
-                        navigate(`/genomes/${digest}/${group.asset.digest}`)
+                        navigate(
+                          `${api.routeBase}/genomes/${digest}/${group.asset.digest}`,
+                        )
                       }
                     >
                       <div className='card-body'>
@@ -398,14 +401,14 @@ function Genome() {
                                     {`${group.asset.asset_group_name}__${group.asset.name}.tgz`}
                                   </a>
                                 </>
-                              ) : (
+                              ) : hasCapability(api, 'downloads') ? (
                                 <>
                                   <strong className='me-2'>
                                     Download files:{' '}
                                   </strong>
                                   <FileDownloads assetDigest={group.asset.digest} />
                                 </>
-                              )}
+                              ) : null}
                             </span>
                           </div>
                         </div>

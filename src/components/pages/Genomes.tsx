@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import GenomesTable from '../genomes/GenomeTable';
+import ConnectCard from '../localBridge/ConnectCard';
+import { useApiClient } from '../../services/api';
 
 function Genomes() {
+  const api = useApiClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [pageSize, setPageSize] = useState(20);
 
@@ -37,6 +40,8 @@ function Genomes() {
               <option value={100}>Limit 100</option>
             </select>
           </div>
+
+          {api.routeBase === '' && <ConnectCard />}
 
           <GenomesTable searchTerm={searchTerm} pageSize={pageSize} />
         </div>

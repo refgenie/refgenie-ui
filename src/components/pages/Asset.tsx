@@ -6,11 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAliases } from '../../queries/aliases';
 import { useArchives } from '../../queries/archives';
 import { useAsset } from '../../queries/assets';
-
-const API_BASE = 'https://api.refgenie.org/v4';
+import { useApiClient } from '../../services/api';
+import PullButton from '../localBridge/PullButton';
 
 function Asset() {
   const navigate = useNavigate();
+  const api = useApiClient();
+  const API_BASE = api.baseUrl;
 
   const params = useParams();
   const genomeDigest = params.genomeDigest;
@@ -33,14 +35,14 @@ function Asset() {
               <h6 className='mb-0'>
                 <a
                   className='fw-bold text-decoration-none text-black cursor-pointer'
-                  onClick={() => navigate(`/genomes`)}
+                  onClick={() => navigate(`${api.routeBase}/genomes`)}
                 >
                   Genomes
                 </a>
                 {' / '}
                 <a
                   className='fw-bold text-decoration-none text-black cursor-pointer'
-                  onClick={() => navigate(`/genomes/${genomeDigest}`)}
+                  onClick={() => navigate(`${api.routeBase}/genomes/${genomeDigest}`)}
                 >
                   {alias?.items[0]?.name}
                 </a>
@@ -89,6 +91,13 @@ function Asset() {
               <i className='bi bi-hdd-network me-2' />
               API
             </a>
+            {genomeDigest && asset?.asset_group_name && (
+              <PullButton
+                genomeDigest={genomeDigest}
+                assetGroupName={asset.asset_group_name}
+                assetName={asset?.name}
+              />
+            )}
           </div>
 
           {asset && (
@@ -117,7 +126,11 @@ function Asset() {
               <p
                 className='text-ss mb-0 cursor-pointer'
                 style={{ width: 'fit-content' }}
-                onClick={() => navigate(`/recipes/${asset.recipe_id}`)}
+                onClick={() =>
+                  // Recipe ids are per-instance database ids; only link them
+                  // on the remote branch where the id belongs to this API.
+                  api.routeBase === '' && navigate(`/recipes/${asset.recipe_id}`)
+                }
               >
                 <strong>Recipe: </strong>
                 {asset?.asset_group_name}
@@ -125,7 +138,9 @@ function Asset() {
               <p
                 className='text-ss mb-2 cursor-pointer'
                 style={{ width: 'fit-content' }}
-                onClick={() => navigate(`/recipes/${asset.recipe_id}`)}
+                onClick={() =>
+                  api.routeBase === '' && navigate(`/recipes/${asset.recipe_id}`)
+                }
               >
                 <strong>Recipe ID: </strong>
                 {asset?.recipe_id}

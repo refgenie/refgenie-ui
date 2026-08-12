@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
-const API_BASE = 'https://api.refgenie.org/v4';
+import { useApiClient } from '../services/api';
+import type { ApiClient } from '../services/api';
 
 export const getAssetGroups = async (
+  api: ApiClient,
   genomeDigest?: string,
   assetClass?: string,
   assetGroupName?: string,
@@ -14,7 +16,7 @@ export const getAssetGroups = async (
   offset?: number,
   limit?: number,
 ) => {
-  const url = `${API_BASE}/asset_groups`;
+  const url = `${api.baseUrl}/asset_groups`;
 
   const params: any = {};
   if (genomeDigest) params.genome_digest = genomeDigest;
@@ -42,8 +44,10 @@ export const useAssetGroups = (
   offset?: number,
   limit?: number,
 ) => {
+  const api = useApiClient();
   return useQuery({
     queryKey: [
+      api.baseUrl,
       'assetGroups',
       genomeDigest,
       assetClass,
@@ -57,6 +61,7 @@ export const useAssetGroups = (
     ],
     queryFn: () =>
       getAssetGroups(
+        api,
         genomeDigest,
         assetClass,
         assetGroupName,

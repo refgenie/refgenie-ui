@@ -1,16 +1,18 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
-const API_BASE = 'https://api.refgenie.org/v4';
+import { useApiClient } from '../services/api';
+import type { ApiClient } from '../services/api';
 
-export const getAssetClass = async (assetClassID?: string) => {
-  const url = `${API_BASE}/asset_classes/${assetClassID}`;
+export const getAssetClass = async (api: ApiClient, assetClassID?: string) => {
+  const url = `${api.baseUrl}/asset_classes/${assetClassID}`;
 
   const { data } = await axios.get<any>(url);
   return data;
 };
 
 export const getAssetClasses = async (
+  api: ApiClient,
   name?: string,
   version?: string,
   query?: string,
@@ -19,7 +21,7 @@ export const getAssetClasses = async (
   offset?: number,
   limit?: number,
 ) => {
-  const url = `${API_BASE}/asset_classes`;
+  const url = `${api.baseUrl}/asset_classes`;
 
   const params: any = {};
   if (name) params.name = name;
@@ -35,9 +37,10 @@ export const getAssetClasses = async (
 };
 
 export const useAssetClass = (assetClassID?: string) => {
+  const api = useApiClient();
   return useQuery({
-    queryKey: ['assetClass', assetClassID],
-    queryFn: () => getAssetClass(assetClassID),
+    queryKey: [api.baseUrl, 'assetClass', assetClassID],
+    queryFn: () => getAssetClass(api, assetClassID),
   });
 };
 
@@ -50,8 +53,10 @@ export const useAssetClasses = (
   offset?: number,
   limit?: number,
 ) => {
+  const api = useApiClient();
   return useQuery({
     queryKey: [
+      api.baseUrl,
       'assetClasses',
       name,
       version,
@@ -63,6 +68,7 @@ export const useAssetClasses = (
     ],
     queryFn: () =>
       getAssetClasses(
+        api,
         name,
         version,
         query,

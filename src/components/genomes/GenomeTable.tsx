@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useGenomes } from '../../queries/genomes';
+import { useApiClient } from '../../services/api';
+import { useLocalBridgeStore, useLocalDigestIndex } from '../../services/localBridge';
 import { PaginationControl } from '../pagination/PaginationControl';
 
 type GenomeTableProps = {
@@ -12,6 +14,12 @@ function GenomesTable(props: GenomeTableProps) {
   const { searchTerm, pageSize } = props;
 
   const navigate = useNavigate();
+  const api = useApiClient();
+  const bridgeStatus = useLocalBridgeStore((state) => state.status);
+  const { data: localIndex } = useLocalDigestIndex();
+  // Presence badges only make sense on the remote branch: digests are
+  // content-derived, so remote-digest ∈ local-index is an exact match.
+  const showLocalBadges = api.routeBase === '' && bridgeStatus === 'connected';
   const [offsetIndex, setOffsetIndex] = useState(0);
 
   const { data: genomes, isFetched: fetchedGenomes } = useGenomes(
@@ -44,6 +52,7 @@ function GenomesTable(props: GenomeTableProps) {
                       <th className='text-nowrap'>Accession</th>
                       <th className='text-nowrap'>Description</th>
                       <th className='text-nowrap'>Asset Count</th>
+                      {showLocalBadges && <th className='text-nowrap'>Local</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -51,7 +60,9 @@ function GenomesTable(props: GenomeTableProps) {
                       <tr
                         key={index}
                         className='cursor-pointer'
-                        onClick={() => navigate(`/genomes/${genome.digest}`)}
+                        onClick={() =>
+                          navigate(`${api.routeBase}/genomes/${genome.digest}`)
+                        }
                       >
                         <td className='text-nowrap'>
                           {genome.aliases[0] || genome.digest}
@@ -65,6 +76,18 @@ function GenomesTable(props: GenomeTableProps) {
                         <td className='text-end text-nowrap'>
                           {genome.asset_count}
                         </td>
+                        {showLocalBadges && (
+                          <td className='text-nowrap'>
+                            {localIndex?.genomeDigests.has(genome.digest) && (
+                              <span
+                                className='badge text-bg-success'
+                                title='You already have this genome on your local refgenie'
+                              >
+                                <i className='bi bi-hdd me-1'></i>Local
+                              </span>
+                            )}
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
