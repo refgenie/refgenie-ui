@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { useLocalBridge } from '../../services/localBridge';
 
@@ -28,7 +29,7 @@ function ConnectDialog(props: ConnectDialogProps) {
   const parsedPort = Number(portText);
   const portValid = Number.isInteger(parsedPort) && parsedPort > 0 && parsedPort < 65536;
 
-  return (
+  return createPortal(
     <>
       <div className='modal d-block' tabIndex={-1} role='dialog'>
         <div className='modal-dialog modal-dialog-centered' role='document'>
@@ -122,7 +123,8 @@ function ConnectDialog(props: ConnectDialogProps) {
         </div>
       </div>
       <div className='modal-backdrop show'></div>
-    </>
+    </>,
+    document.body,
   );
 }
 
