@@ -8,6 +8,7 @@ preview_urls = true
 # on the apex to docs.refgenie.org, then falls through to the static SPA.
 routes = [
   { pattern = "refgenie.org", custom_domain = true },
+  { pattern = "www.refgenie.org", custom_domain = true },
   { pattern = "ui.refgenie.org", custom_domain = true },
 ]
 
