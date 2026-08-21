@@ -2,6 +2,13 @@ name = "refgenie-ui"
 compatibility_date = "2025-05-30"
 preview_urls = true
 
+# refgenie.org (apex) serves the UI. ui.refgenie.org stays attached so the
+# Phase 3 redirect rule (ui -> apex) has a hostname to fire on.
+routes = [
+  { pattern = "refgenie.org", custom_domain = true },
+  { pattern = "ui.refgenie.org", custom_domain = true },
+]
+
 [assets]
 directory = "./dist"
 not_found_handling = "single-page-application"
