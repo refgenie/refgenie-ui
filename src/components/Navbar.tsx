@@ -127,7 +127,7 @@ function Navbar() {
                 </a>
                 <a
                   className='text-decoration-none cursor-pointer text-black-50 nav-hover ps-2 rounded-2 d-flex align-items-center'
-                  href='https://refgenie.org'
+                  href='https://docs.refgenie.org'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
@@ -180,7 +180,7 @@ function Navbar() {
               <div className=''>
                 <NavLink page={'about'} title={'About'} position='side' currentPage={location}/>
                 <NavLink page={'search'} title={'Search'} position='side' currentPage={location}/>
-                <a className='text-decoration-none cursor-pointer text-black-50' href='https://refgenie.org' target='_blank' rel='noopener noreferrer'>
+                <a className='text-decoration-none cursor-pointer text-black-50' href='https://docs.refgenie.org' target='_blank' rel='noopener noreferrer'>
                   <p className='fst-condensed mb-0 nav-hover cursor-pointer text-black-50 fw-lighter ps-2 rounded-2'>Docs</p>
                 </a>
               </div>

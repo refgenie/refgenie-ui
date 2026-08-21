@@ -106,7 +106,7 @@ describe('environment detectors', () => {
     expect(isSelfLocal(8080, { origin: 'http://localhost:8080' })).toBe(true);
     expect(isSelfLocal(8080, { origin: 'http://127.0.0.1:8080' })).toBe(true);
     expect(isSelfLocal(8080, { origin: 'http://localhost:9000' })).toBe(false);
-    expect(isSelfLocal(8080, { origin: 'https://ui.refgenie.org' })).toBe(false);
+    expect(isSelfLocal(8080, { origin: 'https://refgenie.org' })).toBe(false);
   });
 });
 
