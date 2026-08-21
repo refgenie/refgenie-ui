@@ -1,9 +1,11 @@
 name = "refgenie-ui"
+main = "worker/index.js"
 compatibility_date = "2025-05-30"
 preview_urls = true
 
-# refgenie.org (apex) serves the UI. ui.refgenie.org stays attached so the
-# Phase 3 redirect rule (ui -> apex) has a hostname to fire on.
+# refgenie.org (apex) serves the UI. ui.refgenie.org stays attached; the Worker
+# (worker/index.js) 301s it to the apex and redirects the old docs deep-links
+# on the apex to docs.refgenie.org, then falls through to the static SPA.
 routes = [
   { pattern = "refgenie.org", custom_domain = true },
   { pattern = "ui.refgenie.org", custom_domain = true },
@@ -11,5 +13,7 @@ routes = [
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"
+run_worker_first = true
 not_found_handling = "single-page-application"
 
